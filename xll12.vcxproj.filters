@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="xll\memory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xll\xll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -27,9 +24,24 @@
     <ClInclude Include="xll\XLCALL.H">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xll\excel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xll\auto.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xll\defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xll\XLCALL.CPP">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xll\debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xll\auto.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

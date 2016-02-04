@@ -4,7 +4,19 @@
 //[module(name="xll12")];
 using namespace xll;
 
-void test_oper(int i)
+void test_swap()
+{
+	OPER12 str(L"foo");
+	OPER12 multi(2,3);
+	swap(str, multi);
+	ensure (str.xltype == xltypeMulti);
+	ensure (str.rows() == 2);
+	ensure (str.columns() == 3);
+	ensure (multi.xltype == xltypeStr);
+	ensure (multi == L"foo");
+}
+
+void test_oper()
 {
 	OPER12 o;
 	ensure (o.xltype == xltypeNil);
@@ -55,12 +67,41 @@ void test_str()
 	ensure (str == str2);
 
 	str = L"foobar";
+	ensure (str.xltype == xltypeStr);
+	ensure (str == L"foobar");
+
+	OPER12 o;
+	o = L"foobaz";
+	ensure (o == L"foobaz");
+}
+void test_bool()
+{
+	OPER12 b(true);
+	ensure (b.xltype == xltypeBool);
+	ensure (b.val.xbool);
+	ensure (b.val.xbool == 1);
+	ensure (b.val.xbool == TRUE);
+}
+void test_multi()
+{
+	OPER12 multi(2,3);
+	ensure (multi.xltype == xltypeMulti);
+	ensure (multi.rows() == multi.val.array.rows);
+	ensure (multi.columns() == multi.val.array.columns);
+	ensure (multi[0] == OPER12());
+
+	multi[0] = 1.23;
+	multi[1] = L"str";
 }
 
 int main()
 {
-	test_oper(0);
+	test_swap();
+	test_oper();
 	test_num();
 	test_str();
+	test_bool();
+	test_multi();
+
 	return 0;
 }

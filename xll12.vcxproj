@@ -166,12 +166,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="xll\memory.h" />
+    <ClInclude Include="xll\auto.h" />
+    <ClInclude Include="xll\defines.h" />
+    <ClInclude Include="xll\excel.h" />
     <ClInclude Include="xll\oper.h" />
     <ClInclude Include="xll\XLCALL.H" />
     <ClInclude Include="xll\xll.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="xll\auto.cpp" />
+    <ClCompile Include="xll\debug.cpp" />
     <ClCompile Include="xll\XLCALL.CPP" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,7 +1,6 @@
 // oper.h - C++ wrapper for OPER
 #pragma once
 #define NOMINMAX
-
 #include <Windows.h>
 #include "XLCALL.H"
 #include <algorithm>
@@ -9,21 +8,53 @@
 #include <memory>
 #include <string>
 
+enum class xlerr {
+	Null  = xlerrNull,
+	Div0  = xlerrDiv0,
+	Value = xlerrValue,
+	Ref   = xlerrRef,
+	Name  = xlerrName,
+	Num   = xlerrNum,
+	NA    = xlerrNA,
+	GettingData = xlerrGettingData
+};
+
 namespace xll {
 
 	struct OPER12 : public XLOPER12 
 	{
 		friend void swap(OPER12& a, OPER12& b)
 		{
-			using std::swap;
+			std::swap(a.xltype, b.xltype);
+			std::swap(a.val, b.val);
+		}
 
-			swap(a.xltype, b.xltype);
-			swap(a.val, b.val);
+		int type() const
+		{
+			return xltype&~(xlbitXLFree|xlbitDLLFree);
 		}
 
 		OPER12()
 		{
 			xltype = xltypeNil;
+		}
+		OPER12(const XLOPER12& o)
+		{
+			xltype = o.xltype;
+			if (xltype & xlbitXLFree) {
+				val = o.val;
+			}
+			else if (xltype == xltypeStr) {
+				allocate_str(o.val.str[0]);
+				copy_str(o.val.str + 1);
+			}
+			else if (xltype == xltypeMulti) {
+				allocate_multi(o.val.array.rows, o.val.array.columns);
+				uninitialized_copy_multi(o.val.array.lparray);
+			}
+			else {
+				val = o.val;
+			}
 		}
 		OPER12(const OPER12& o)
 		{
@@ -58,7 +89,16 @@ namespace xll {
 		}
 		~OPER12()
 		{
-			if (xltype == xltypeStr) {
+			if (xltype & xlbitXLFree) {
+				XLOPER12 o;
+				int ret = Excel12(xlFree, &o, 1, this);
+				ensure (ret == xlretSuccess);
+				ensure (o.xltype != xltypeErr);
+			}
+			else if (xltype & xlbitDLLFree) {
+				// do nothing
+			}
+			else if (xltype == xltypeStr) {
 				deallocate_str();
 			}
 			else if (xltype == xltypeMulti) {
@@ -69,10 +109,10 @@ namespace xll {
 
 		bool operator==(const OPER12& o) const
 		{
-			if (xltype != o.xltype)
+			if (type() != o.type())
 				return false;
 
-			switch (xltype&~(xlbitXLFree|xlbitDLLFree)) {
+			switch (type()) {
 			case xltypeNum:
 				return val.num == o.val.num;
 			case xltypeStr:
@@ -106,39 +146,7 @@ namespace xll {
 		}
 		// bool operator<(...)
 		
-
-		RW rows() const
-		{
-			return xltype == xltypeMulti ? val.array.rows 
-				: xltype == xltypeNil ? 0 : 1;
-		}
-		COL columns() const
-		{
-			return xltype == xltypeMulti ? val.array.columns 
-				: xltype == xltypeNil ? 0 : 1;
-		}
-		size_t size() const
-		{
-			return rows() * columns();
-		}
-
-		OPER12* begin()
-		{
-			return xltype == xltypeMulti ? static_cast<OPER12*>(val.array.lparray) : this;
-		}
-		const OPER12* begin() const
-		{
-			return xltype == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray) : this;
-		}
-		OPER12* end()
-		{
-			return xltype == xltypeMulti ? static_cast<OPER12*>(val.array.lparray + size()) : this + 1;
-		}
-		const OPER12* end() const
-		{
-			return xltype == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray + size()) : this + 1;
-		}
-
+		
 		// Num
 		explicit OPER12(const double& num)
 		{
@@ -164,6 +172,9 @@ namespace xll {
 		explicit OPER12(const XCHAR* str)
 			: OPER12(str, wcslen(str))
 		{ }
+		explicit OPER12(const std::wstring& str)
+			: OPER12(str.c_str(), str.length())
+		{ }
 		OPER12(const XCHAR* str, size_t len)
 		{
 			xltype = xltypeStr;
@@ -179,11 +190,61 @@ namespace xll {
 			return 0 == wcsncmp(str, val.str + 1, val.str[0]);
 		}
 
+		// Bool
+		explicit OPER12(const bool& xbool)
+		{
+			xltype = xltypeBool;
+			val.xbool = xbool;
+		}/*
+		OPER12& operator=(const bool& xbool)
+		{
+			return *this = OPER12(xbool);
+		}*/
+
+		// Ref
+
+		// Err
+		explicit OPER12(const xlerr& err)
+		{
+			xltype = xltypeErr;
+			val.err = static_cast<int>(err);
+		}
+
 		// Multi
 		OPER12(RW rw, COL col)
 		{
-			xltype = xltypeMulti;
-			val.array.lparray = nullptr;//alloc_oper.allocate(rw*col);
+			allocate_multi(rw, col);
+			uninitialized_fill_multi(OPER12());
+		}
+		RW rows() const
+		{
+			return xltype == xltypeMulti ? val.array.rows 
+				: xltype == xltypeNil ? 0 : 1;
+		}
+		COL columns() const
+		{
+			return xltype == xltypeMulti ? val.array.columns 
+				: xltype == xltypeNil ? 0 : 1;
+		}
+		size_t size() const
+		{
+			return rows() * columns();
+		}
+		OPER12* begin()
+		{
+			return xltype == xltypeMulti ? static_cast<OPER12*>(val.array.lparray) : this;
+		}
+		const OPER12* begin() const
+		{
+			return xltype == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray) : this;
+		}
+		OPER12* end()
+		{
+			return xltype == xltypeMulti ? static_cast<OPER12*>(val.array.lparray + size()) : this + 1;
+		}
+		const OPER12* end() const
+		{
+			return xltype == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray + size()) : this + 1;
 		}
 		OPER12& operator[](size_t i)
 		{
@@ -212,8 +273,12 @@ namespace xll {
 			return operator[](i + j*columns());
 		}
 
+		// Missing
+
+		// SRef
+
 		// Int
-		OPER12(const int& w)
+		explicit OPER12(const int& w)
 		{
 			xltype = xltypeInt;
 			val.w = w;
@@ -251,18 +316,26 @@ namespace xll {
 			val.array.columns = col;
 			xltype = xltypeMulti;
 		}
-		void uninitialied_copy_multi(const OPER12* i)
+		void uninitialized_copy_multi(const XLOPER12* i)
 		{
 			ensure (xltype == xltypeMulti);
 
 			for (auto& o : *this) {
-				new (static_cast<void*>(&o)) OPER12(*i++);
+				new (static_cast<void*>(&o)) XLOPER12(*i++);
+			}
+		}
+		void uninitialized_fill_multi(const OPER12& i)
+		{
+			ensure (xltype == xltypeMulti);
+
+			for (auto& o : *this) {
+				new (static_cast<void*>(&o)) OPER12(i);
 			}
 		}
 		void destroy_multi()
 		{
 			ensure (xltype == xltypeMulti);
-
+		
 			for (auto& o : *this)
 				o.~OPER12();
 		}
