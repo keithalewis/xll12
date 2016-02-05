@@ -29,6 +29,7 @@ namespace xll {
 			std::swap(a.val, b.val);
 		}
 
+		// Strip out if xlFree or xlAutoFree is involved.
 		int type() const
 		{
 			return xltype&~(xlbitXLFree|xlbitDLLFree);
@@ -41,6 +42,11 @@ namespace xll {
 		OPER12(const XLOPER12& o)
 		{
 			xltype = o.xltype;
+
+			// This only gets set for OPER12's being returned in threadsafe functions.
+			ensure (!(xltype & xlbitDLLFree));
+
+			// This gets set by Excel(). Forward to ~OPER12.
 			if (xltype & xlbitXLFree) {
 				val = o.val;
 			}
@@ -59,6 +65,10 @@ namespace xll {
 		OPER12(const OPER12& o)
 		{
 			xltype = o.xltype;
+
+			ensure (!(xltype & xlbitDLLFree));
+			ensure (!(xltype & xlbitXLFree));
+
 			if (xltype == xltypeStr) {
 				allocate_str(o.val.str[0]);
 				copy_str(o.val.str + 1);
@@ -96,7 +106,7 @@ namespace xll {
 				ensure (o.xltype != xltypeErr);
 			}
 			else if (xltype & xlbitDLLFree) {
-				// do nothing
+				// deleted by xlAutoFree112()
 			}
 			else if (xltype == xltypeStr) {
 				deallocate_str();

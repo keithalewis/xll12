@@ -1,6 +1,5 @@
 // defines.h - Excel definitions
 // Copyright (c) KALX, LLC. All rights reserved. No warranty is made.
-// included by xll.h
 #pragma once
 
 /// Use #pragma XLLEXPORT in function body instead of DEF file.
@@ -22,7 +21,7 @@
 #define XLL_X64(x) x
 #define XLL_X32(x)
 #else
-#define XLL_DECORATE(s,n) L"_" s L"@" L#n
+#define XLL_DECORATE(s,n) "_" s "@" #n
 #define XLL_X64(x)	
 #define XLL_X32(x) x
 #endif 
@@ -59,4 +58,3 @@
 #else
 #define DECLSPEC_IMPEXP __declspec(dllimport)
 #endif
-
