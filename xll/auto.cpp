@@ -10,7 +10,6 @@ extern "C"
 int __declspec(dllexport) WINAPI
 xlAutoOpen(void)
 {
-
 	return 1;
 }
 
@@ -18,7 +17,6 @@ extern "C"
 int __declspec(dllexport) WINAPI
 xlAutoClose(void)
 {
-
 	return 1;
 }
 
@@ -57,5 +55,3 @@ xlAutoRegister12(LPXLOPER12 pxName)
 	xResult = *pxName;
 	return &xResult;
 }
-
-

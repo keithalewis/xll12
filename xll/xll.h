@@ -5,4 +5,5 @@
 #include <cassert>
 #define ensure(x) assert(x)
 
-#include "oper.h"
+#include "auto.h"
+#include "excel.h"

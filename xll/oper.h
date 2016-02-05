@@ -1,4 +1,4 @@
-// oper.h - C++ wrapper for OPER
+// oper.h - C++ wrapper for XLOPER's
 #pragma once
 #define NOMINMAX
 #include <Windows.h>
