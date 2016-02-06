@@ -1,8 +1,12 @@
 // xll.t.cpp - Console testing program for xll12
 #include "../xll/xll.h"
+#include <ctime>
+#include <random>
 
 //[module(name="xll12")];
 using namespace xll;
+
+static std::default_random_engine dre;
 
 void test_swap()
 {
@@ -19,12 +23,12 @@ void test_swap()
 void test_oper()
 {
 	OPER12 o;
-	ensure (o.xltype == xltypeNil);
+	ensure (o.xltype == xltypeMissing);
 	OPER12 o2(o);
-	ensure (o2.xltype == xltypeNil);
+	ensure (o2.xltype == xltypeMissing);
 	ensure (o == o2);
 	o = o2;
-	ensure (o.xltype == xltypeNil);
+	ensure (o.xltype == xltypeMissing);
 	ensure (o == o2);
 	ensure (!(o != o2));
 }
@@ -73,6 +77,10 @@ void test_str()
 	OPER12 o;
 	o = L"foobaz";
 	ensure (o == L"foobaz");
+
+	const XCHAR* null = 0;
+	OPER12 Null(null);
+	ensure (Null.xltype == xltypeMissing);
 }
 void test_bool()
 {
@@ -92,10 +100,44 @@ void test_multi()
 
 	multi[0] = 1.23;
 	multi[1] = L"str";
+
+	int i = 0;
+	for (auto& m : multi)
+		ensure (m == multi[i++]);
+
+	multi.push_back(multi);
+	ensure (multi.xltype == xltypeMulti);
+	ensure (multi.rows() == 4);
+	ensure (multi.columns() == 3);
+/*
+	bool thrown = false;
+	try {
+		multi.push_back(OPER12(1.23));
+	}
+	catch (...) {
+		thrown = true;
+	}
+	ensure (thrown);
+*/
+	OPER12 m0;
+	m0.push_back(OPER12(L"foo"));
+	ensure (m0.xltype == xltypeMulti);
+	ensure (m0.rows() == 1);
+	ensure (m0.columns() == 1);
+	ensure (m0[0] == L"foo");
+
+	std::uniform_int_distribution<RW> u(1, 100);
+	for (int j = 0; j < 100; ++j) {
+		OPER12 a(u(dre), u(dre)), b(u(dre), u(dre));
+		if (a.columns() == b.columns())
+			a.push_back(b);
+	}
 }
 
 int main()
 {
+	dre.seed(static_cast<unsigned>(::time(0)));
+
 	test_swap();
 	test_oper();
 	test_num();

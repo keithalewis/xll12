@@ -3,6 +3,7 @@
 #pragma once
 #include "ensure.h"
 #include "XLCALL.H"
+#include <malloc.h>
 #include <algorithm>
 #include <limits>
 #include <memory>
@@ -37,7 +38,7 @@ namespace xll {
 
 		OPER12()
 		{
-			xltype = xltypeNil;
+			xltype = xltypeMissing;
 		}
 		OPER12(const XLOPER12& o)
 		{
@@ -89,7 +90,7 @@ namespace xll {
 			xltype = o.xltype;
 			val = o.val;
 
-			o.xltype = xltypeNil;
+			o.xltype = xltypeMissing;
 		}
 		OPER12& operator=(OPER12 o)
 		{
@@ -180,16 +181,21 @@ namespace xll {
 
 		// Str
 		explicit OPER12(const XCHAR* str)
-			: OPER12(str, wcslen(str))
+			: OPER12(str, str ? wcslen(str) : 0)
 		{ }
 		explicit OPER12(const std::wstring& str)
 			: OPER12(str.c_str(), str.length())
 		{ }
 		OPER12(const XCHAR* str, size_t len)
 		{
-			xltype = xltypeStr;
-			allocate_str(wcslen(str));
-			copy_str(str);
+			if (!str) {
+				xltype = xltypeMissing;
+			}
+			else {
+				xltype = xltypeStr;
+				allocate_str(len);
+				copy_str(str);
+			}
 		}
 		OPER12& operator=(const std::wstring& str)
 		{
@@ -229,12 +235,12 @@ namespace xll {
 		RW rows() const
 		{
 			return xltype == xltypeMulti ? val.array.rows 
-				: xltype == xltypeNil ? 0 : 1;
+				: xltype == xltypeMissing ? 0 : 1;
 		}
 		COL columns() const
 		{
 			return xltype == xltypeMulti ? val.array.columns 
-				: xltype == xltypeNil ? 0 : 1;
+				: xltype == xltypeMissing ? 0 : 1;
 		}
 		size_t size() const
 		{
@@ -283,6 +289,56 @@ namespace xll {
 			return operator[](i + j*columns());
 		}
 
+		OPER12& resize(RW rw, COL col)
+		{
+			if (rw == 0 || col == 0) {
+				this->~OPER12();
+				operator=(OPER12{});
+			}
+			else if (type() == xltypeMulti) {
+				reallocate_multi(rw, col);
+			}
+			else {
+				OPER12 this_(*this);
+				operator=(OPER12(rw, col));
+				operator[](0) = this_;
+			}
+
+			return *this;
+		}
+
+		OPER12& push_back(const OPER12& o)
+		{
+			if (size() == 0) {
+				operator=(o);
+				resize(rows(), columns());
+			}
+			else if (type() != xltypeMulti) {
+				resize(1, 1);
+				return push_back(o);
+			}
+			else {
+				auto size = this->size();
+				// conforming
+				if (rows() == 1) {
+					ensure (o.rows() == 1);
+					resize(1, columns() + o.size());
+				}
+				else if (columns() == 1) {
+					ensure (o.columns() == 1);
+					resize(rows() + o.rows(), 1);
+				}
+				else {
+					ensure (columns() == o.columns());
+					resize(rows() + o.rows(), columns());
+				}
+				for (auto i = size; i < this->size(); ++i)
+					operator[](i) = o[i - size];
+			}
+
+			return *this;
+		}
+
 		// Missing
 
 		// SRef
@@ -325,6 +381,19 @@ namespace xll {
 			val.array.rows = rw;
 			val.array.columns = col;
 			xltype = xltypeMulti;
+		}
+		void reallocate_multi(RW rw, COL col)
+		{
+			ensure (type() == xltypeMulti);
+			size_t size = rw*col;
+			if (this->size() < size) {
+				val.array.lparray = static_cast<XLOPER12*>(::realloc(val.array.lparray, size*sizeof(XLOPER12)));
+				ensure (val.array.lparray);
+			}
+			for (auto i = this->size(); i < size; ++i)
+				new (static_cast<void*>(val.array.lparray + i)) OPER12{};
+			val.array.rows = rw;
+			val.array.columns = col;
 		}
 		void uninitialized_copy_multi(const XLOPER12* i)
 		{
