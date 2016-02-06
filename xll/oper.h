@@ -1,7 +1,7 @@
 // oper.h - C++ wrapper for XLOPER's
+// Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
-#define NOMINMAX
-#include <Windows.h>
+#include "ensure.h"
 #include "XLCALL.H"
 #include <algorithm>
 #include <limits>

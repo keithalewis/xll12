@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="xll\auto.h" />
     <ClInclude Include="xll\defines.h" />
+    <ClInclude Include="xll\ensure.h" />
     <ClInclude Include="xll\excel.h" />
     <ClInclude Include="xll\oper.h" />
     <ClInclude Include="xll\XLCALL.H" />
