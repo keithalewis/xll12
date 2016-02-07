@@ -11,9 +11,10 @@ namespace xll {
 	{
 		OPER12 o;
 
-		int ret = Excel12(xlf, &o, sizeof...(args), &OPER12(args)...);
+		int ret = Excel12(xlf, &o, sizeof...(args), &args...);
 		ensure (ret == xlretSuccess);
-		o.xltype |= xlbitXLFree;
+		if (o.xltype == xltypeStr || o.xltype == xltypeMulti)
+			o.xltype |= xlbitXLFree;
 
 		return o;
 	}
@@ -22,11 +23,13 @@ namespace xll {
 		OPER12 o;
 
 		std::vector<const XLOPER12*> pargs;
-		for (const auto& arg : args)
+		for (auto& arg : args) {
 			pargs.push_back(&arg);
+		}
 		int ret = Excel12v(xlf, &o, static_cast<int>(pargs.size()), const_cast<LPXLOPER12*>(pargs.data()));
 		ensure (ret == xlretSuccess);
-		o.xltype |= xlbitXLFree;
+		if (o.xltype == xltypeStr || o.xltype == xltypeMulti)
+			o.xltype |= xlbitXLFree;
 
 		return o;
 	}

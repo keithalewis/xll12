@@ -46,10 +46,10 @@
 // Modify add-in function behavior.
 #define XLL_VOLATILE L"!"  // called every time sheet is recalced
 #define XLL_UNCALCED L"#"  // dereferencing uncalced cells returns old value
-#define XLL_THREAD_SAFE L"$" // declares function to be thread safe
+#define XLL_THREAD_SAFE L"$"    // declares function to be thread safe
 #define XLL_CLUSTER_SAFE L"&"	// declares function to be cluster safe
 #define XLL_ASYNCHRONOUS L"X"	// declares function to be asynchronous
-#define XLL_VOID     L">"	// return type to use for asynchronous functions
+#define XLL_VOID     L">"	    // return type to use for asynchronous functions
 
 #define XLL_HANDLE XLL_DOUBLE
 

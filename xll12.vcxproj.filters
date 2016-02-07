@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Visualizers">
+      <UniqueIdentifier>{1faa86b8-94e0-4473-81ab-5cfdf5f7b045}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xll\xll.h">
@@ -50,5 +53,13 @@
     <ClCompile Include="xll\auto.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Visualizers\oper.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="Visualizers\oper12.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

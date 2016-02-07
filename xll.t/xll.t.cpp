@@ -23,6 +23,7 @@ void test_swap()
 void test_oper()
 {
 	OPER12 o;
+	ensure (o.size() == 1);
 	ensure (o.xltype == xltypeMissing);
 	OPER12 o2(o);
 	ensure (o2.xltype == xltypeMissing);
@@ -123,8 +124,9 @@ void test_multi()
 	m0.push_back(OPER12(L"foo"));
 	ensure (m0.xltype == xltypeMulti);
 	ensure (m0.rows() == 1);
-	ensure (m0.columns() == 1);
-	ensure (m0[0] == L"foo");
+	ensure (m0.columns() == 2);
+	ensure (m0[0].xltype == xltypeMissing);
+	ensure (m0[1] == L"foo");
 
 	std::uniform_int_distribution<RW> u(1, 100);
 	for (int j = 0; j < 100; ++j) {

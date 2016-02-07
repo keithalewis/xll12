@@ -40,35 +40,9 @@ namespace xll {
 		{
 			xltype = xltypeMissing;
 		}
-		OPER12(const XLOPER12& o)
-		{
-			xltype = o.xltype;
-
-			// This only gets set for OPER12's being returned in threadsafe functions.
-			ensure (!(xltype & xlbitDLLFree));
-
-			// This gets set by Excel(). Forward to ~OPER12.
-			if (xltype & xlbitXLFree) {
-				val = o.val;
-			}
-			else if (xltype == xltypeStr) {
-				allocate_str(o.val.str[0]);
-				copy_str(o.val.str + 1);
-			}
-			else if (xltype == xltypeMulti) {
-				allocate_multi(o.val.array.rows, o.val.array.columns);
-				uninitialized_copy_multi(o.val.array.lparray);
-			}
-			else {
-				val = o.val;
-			}
-		}
 		OPER12(const OPER12& o)
 		{
-			xltype = o.xltype;
-
-			ensure (!(xltype & xlbitDLLFree));
-			ensure (!(xltype & xlbitXLFree));
+			xltype = o.type();
 
 			if (xltype == xltypeStr) {
 				allocate_str(o.val.str[0]);
@@ -116,6 +90,12 @@ namespace xll {
 				destroy_multi();
 				deallocate_multi();
 			}
+		}
+
+		// When returning to Excel
+		LPXLOPER12 XLFree()
+		{
+			return static_cast<LPXLOPER12>(this);
 		}
 
 		bool operator==(const OPER12& o) const
@@ -170,13 +150,13 @@ namespace xll {
 		}
 		bool operator==(const double& num) const
 		{
-			return xltype == xltypeNum && val.num == num;
+			return type() == xltypeNum && val.num == num;
 		}
 		operator double()
 		{
-			ensure (xltype == xltypeNum || xltype == xltypeInt);
+			ensure (type() == xltypeNum || type() == xltypeInt);
 
-			return xltype == xltypeNum ? val.num : val.w;
+			return type() == xltypeNum ? val.num : val.w;
 		}
 
 		// Str
@@ -234,37 +214,35 @@ namespace xll {
 		}
 		RW rows() const
 		{
-			return xltype == xltypeMulti ? val.array.rows 
-				: xltype == xltypeMissing ? 0 : 1;
+			return type() == xltypeMulti ? val.array.rows : 1;
 		}
 		COL columns() const
 		{
-			return xltype == xltypeMulti ? val.array.columns 
-				: xltype == xltypeMissing ? 0 : 1;
+			return type() == xltypeMulti ? val.array.columns : 1;
 		}
-		size_t size() const
+		auto size() const
 		{
 			return rows() * columns();
 		}
 		OPER12* begin()
 		{
-			return xltype == xltypeMulti ? static_cast<OPER12*>(val.array.lparray) : this;
+			return type() == xltypeMulti ? static_cast<OPER12*>(val.array.lparray) : this;
 		}
 		const OPER12* begin() const
 		{
-			return xltype == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray) : this;
+			return type() == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray) : this;
 		}
 		OPER12* end()
 		{
-			return xltype == xltypeMulti ? static_cast<OPER12*>(val.array.lparray + size()) : this + 1;
+			return type() == xltypeMulti ? static_cast<OPER12*>(val.array.lparray + size()) : this + 1;
 		}
 		const OPER12* end() const
 		{
-			return xltype == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray + size()) : this + 1;
+			return type() == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray + size()) : this + 1;
 		}
 		OPER12& operator[](size_t i)
 		{
-			if (xltype != xltypeMulti) {
+			if (type() != xltypeMulti) {
 				ensure (i == 0);
 				return *this;
 			}
@@ -273,7 +251,7 @@ namespace xll {
 		}
 		const OPER12& operator[](size_t i) const
 		{
-			if (xltype != xltypeMulti) {
+			if (type() != xltypeMulti) {
 				ensure (i == 0);
 				return *this;
 			}
@@ -309,17 +287,13 @@ namespace xll {
 
 		OPER12& push_back(const OPER12& o)
 		{
-			if (size() == 0) {
-				operator=(o);
-				resize(rows(), columns());
-			}
-			else if (type() != xltypeMulti) {
+			if (type() != xltypeMulti) {
 				resize(1, 1);
 				return push_back(o);
 			}
 			else {
 				auto size = this->size();
-				// conforming
+
 				if (rows() == 1) {
 					ensure (o.rows() == 1);
 					resize(1, columns() + o.size());
@@ -351,8 +325,8 @@ namespace xll {
 		}
 		bool operator==(const int& w) const
 		{
-			return xltype == xltypeInt && val.w == w
-				|| xltype == xltypeNum && val.num == w;
+			return type() == xltypeInt && val.w == w
+				|| type() == xltypeNum && val.num == w;
 		}
 	private:
 		void allocate_str(size_t len)
@@ -385,7 +359,7 @@ namespace xll {
 		void reallocate_multi(RW rw, COL col)
 		{
 			ensure (type() == xltypeMulti);
-			size_t size = rw*col;
+			auto size = rw*col;
 			if (this->size() < size) {
 				val.array.lparray = static_cast<XLOPER12*>(::realloc(val.array.lparray, size*sizeof(XLOPER12)));
 				ensure (val.array.lparray);

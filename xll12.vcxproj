@@ -182,6 +182,12 @@
     <ClCompile Include="xll\debug.cpp" />
     <ClCompile Include="xll\XLCALL.CPP" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Visualizers\oper.natvis" />
+    <Natvis Include="Visualizers\oper12.natvis">
+      <SubType>Designer</SubType>
+    </Natvis>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
