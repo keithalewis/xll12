@@ -92,6 +92,7 @@ namespace xll {
 			}
 		}
 
+		//! Not working.
 		// When returning to Excel
 		LPXLOPER12 XLFree()
 		{
@@ -100,8 +101,14 @@ namespace xll {
 
 		bool operator==(const OPER12& o) const
 		{
-			if (type() != o.type())
+			if (type() != o.type()) {
+				if (type() == xltypeNum && o.type() == xltypeInt)
+					return val.num == o.val.w;
+				if (type() == xltypeInt && o.type() == xltypeNum)
+					return val.w == o.val.num;
+
 				return false;
+			}
 
 			switch (type()) {
 			case xltypeNum:
@@ -113,13 +120,13 @@ namespace xll {
 			case xltypeRef:
 				return false;
 			case xltypeErr:
-				return val.err == o.val.err;
+				return val.err == o.val.err; //? false like NaN
 			case xltypeFlow:
 				return false; // ancient macro programming artifact
 			case xltypeMulti:
-				return val.array.rows == o.val.array.rows
-					&& val.array.columns == o.val.array.columns
-					&& true; //std::equal(begin(), end(), o.begin(), o.end());
+				return rows() == o.rows()
+					&& columns() == o.columns()
+					&& std::equal(begin(), end(), o.begin(), o.end());
 			case xltypeMissing:
 			case xltypeNil:
 				return true;

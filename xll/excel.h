@@ -18,16 +18,17 @@ namespace xll {
 
 		return o;
 	}
+
 	inline OPER12 Excelv(int xlf, const OPER12& args)
 	{
 		OPER12 o;
-
-		std::vector<const XLOPER12*> pargs;
-		for (auto& arg : args) {
-			pargs.push_back(&arg);
+		LPXLOPER12 pargs[255]; // just like XLCALL.CPP
+		for (int i = 0; i < args.size(); ++i) {
+			pargs[i] = (LPXLOPER12)&args[i];
 		}
-		int ret = Excel12v(xlf, &o, static_cast<int>(pargs.size()), const_cast<LPXLOPER12*>(pargs.data()));
+		int ret = Excel12v(xlf, &o, static_cast<int>(args.size()), pargs);
 		ensure (ret == xlretSuccess);
+		ensure (o.type() != xltypeErr);
 		if (o.xltype == xltypeStr || o.xltype == xltypeMulti)
 			o.xltype |= xlbitXLFree;
 

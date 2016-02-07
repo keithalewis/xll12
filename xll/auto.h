@@ -23,10 +23,8 @@
 namespace xll {
 
 	class Open {};
-	class OpenAfter {};
 	class Close {};
 	class Add {};
-	class RemoveBefore {};
 	class Remove {};
 
 	// Register macros to be called in xlAuto functions.

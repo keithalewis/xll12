@@ -6,35 +6,19 @@
 
 using namespace xll;
 
-// Called by Excel when the xll is opened.
-extern "C" 
-int __declspec(dllexport) WINAPI
-xlAutoOpen(void)
+template<class X>
+int Auto_(const char* caption)
 {
 	try {
-		ensure (Auto<Open>::Call());
-//		ensure (AddIn::RegisterAll());
-		ensure (Auto<OpenAfter>::Call());
-
-		// register OnXXX macros
-		/*
-		ensure ((On<Data,XLOPER>::Open()));
-		ensure ((On<Doubleclick,XLOPER>::Open()));
-		ensure ((On<Entry,XLOPER>::Open()));
-		ensure ((On<Key,XLOPER>::Open()));
-		ensure ((On<Recalc,XLOPER>::Open()));
-		ensure ((On<Sheet,XLOPER>::Open()));
-		ensure ((On<Time,XLOPER>::Open()));
-		ensure ((On<Window,XLOPER>::Open()));
-		*/
+		ensure (Auto<X>::Call());
 	}
 	catch (const std::exception& ex) {
-		MessageBoxA(GetActiveWindow(), ex.what(), "xlAutoOpen", MB_OK);
+		MessageBoxA(GetActiveWindow(), ex.what(), caption, MB_OK);
 
 		return FALSE;
 	}
 	catch (...) {
-		MessageBoxA(GetActiveWindow(), "Unknown exception", "xlAutoOpen", MB_OK);
+		MessageBoxA(GetActiveWindow(), "Unknown exception", caption, MB_OK);
 
 		return FALSE;
 	}
@@ -42,27 +26,33 @@ xlAutoOpen(void)
 	return TRUE;
 }
 
+// Called by Excel when the xll is opened.
+extern "C" 
+int __declspec(dllexport) WINAPI
+xlAutoOpen(void)
+{
+	return Auto_<Open>(__FUNCTION__);
+}
+
 extern "C"
 int __declspec(dllexport) WINAPI
 xlAutoClose(void)
 {
-	return 1;
+	return Auto_<Close>(__FUNCTION__);
 }
 
 extern "C"
 int __declspec(dllexport) WINAPI
 xlAutoAdd(void)
 {
-
-	return 1;
+	return Auto_<Add>(__FUNCTION__);
 }
 
 extern "C"
 int __declspec(dllexport) WINAPI
 xlAutoRemove(void)
 {
-
-	return 1;
+	return Auto_<Remove>(__FUNCTION__);
 }
 
 extern "C"

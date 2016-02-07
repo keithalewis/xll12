@@ -2,6 +2,11 @@
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include "excel.h"
+#include <stdlib.h>
+#include <cuchar>
+#include <algorithm>
+#include <iterator>
+#include <map>
 
 namespace xll {
 
@@ -173,5 +178,68 @@ namespace xll {
 		return args;
 	}
 
+	inline std::wstring mbstowcs(const std::string& s)
+	{
+		std::wstring S;
+
+		std::transform(s.begin(), s.end(), std::back_inserter(S), [](const char& c) {
+			XCHAR C;
+			::mbstowcs(&C, &c, 1);
+			return C;
+		});
+
+		return S;
+	}
+	// Convert __FUNCTION__ to arguments for xlfRegister
+	inline OPER12 Demangle(const XCHAR* F)
+	{
+		OPER12 args(1, ARG::ArgumentHelp);
+
+		static std::map<XCHAR,const XCHAR*> arg_map = {
+			{ L'F', XLL_SHORT },
+			{ L'G', XLL_WORD }, // also USHORT
+			{ L'H', XLL_BOOL },
+			{ L'J', XLL_LONG },
+			{ L'N', XLL_DOUBLE },
+		};
+
+		// C to Excel naming convention
+		auto function_text = [](OPER12 o) {
+			ensure (o.type() == xltypeStr);
+			for (int i = 1; i <= o.val.str[0]; ++i) {
+				if (o.val.str[i] == L'_')
+					o.val.str[i] = L'.';
+				else
+				o.val.str[i] = ::towupper(o.val.str[i]);
+			}
+
+			return o;
+		};
+
+		args[ARG::ModuleText] = Excel(xlGetName);
+		args[ARG::MacroType] = 1; // function
+								  
+		// "?foo@@YGNN@Z"
+
+		ensure (F && *F == '?');
+		auto E = wcschr(F, '@');
+		ensure (E);
+		args[ARG::Procedure] = OPER12(F, E - F);
+		args[ARG::FunctionText] = function_text(OPER12(F + 1, E - F - 1));
+
+		F = E;
+		ensure (*++F == L'@');
+		ensure (*++F == L'Y');
+		ensure (*++F == L'G');
+		ensure (arg_map.find(*++F) != arg_map.end());
+		OPER12& type = args[ARG::TypeText] = arg_map[*F];
+		while (*++F != L'@') {
+			// if (*F == L'P') { pointer...
+			ensure (arg_map.find(*F) != arg_map.end());
+			type = Excel(xlfConcatenate, type, OPER12(arg_map[*F]));
+		}
+
+		return args;
+	}
 
 } // xll
