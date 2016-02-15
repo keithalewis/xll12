@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <limits>
 #include <memory>
-#include <string>
 
 enum class xlerr {
 	Null  = xlerrNull,
@@ -20,8 +19,37 @@ enum class xlerr {
 	GettingData = xlerrGettingData
 };
 
+bool operator==(const XLREF12& r, const XLREF12& s)
+{
+	return r.colFirst == s.colFirst
+		&& r.colLast == s.colLast
+		&& r.rwFirst == s.rwFirst
+		&& r.rwLast == s.rwLast;
+}
+
 namespace xll {
 
+	struct REF12 : public XLREF12 {
+		// default is A1
+		REF12(RW rw = 0, COL col = 0, RW height = 1, COL width = 1)
+			: XLREF12{rw, rw + height - 1, col, col + width - 1}
+		{ }
+		// translate by rw, col
+		REF12& move(RW rw, COL col = 0)
+		{
+			rwFirst  += rw;
+			rwLast   += rw;
+			colFirst += col;
+			colLast  += col;
+
+			return *this;
+		}
+		REF12& up(RW rw = 1) { return move(-rw, 0); }
+		REF12& down(RW rw = 1) { return move(rw, 0); }
+		REF12& left(COL col = 1) { return move(0, -col); }
+		REF12& right(COL col = 1) { return move(0, col); }
+	};
+		
 	struct OPER12 : public XLOPER12 
 	{
 		friend void swap(OPER12& a, OPER12& b)
@@ -75,10 +103,7 @@ namespace xll {
 		~OPER12()
 		{
 			if (xltype & xlbitXLFree) {
-				XLOPER12 o;
-				int ret = Excel12(xlFree, &o, 1, this);
-				ensure (ret == xlretSuccess);
-				ensure (o.xltype != xltypeErr);
+				Excel12(xlFree, nullptr, 1, this);
 			}
 			else if (xltype & xlbitDLLFree) {
 				// deleted by xlAutoFree112()
@@ -90,13 +115,6 @@ namespace xll {
 				destroy_multi();
 				deallocate_multi();
 			}
-		}
-
-		//! Not working.
-		// When returning to Excel
-		LPXLOPER12 XLFree()
-		{
-			return static_cast<LPXLOPER12>(this);
 		}
 
 		bool operator==(const OPER12& o) const
@@ -114,11 +132,11 @@ namespace xll {
 			case xltypeNum:
 				return val.num == o.val.num;
 			case xltypeStr:
-				return val.str[0] == o.val.str[0] && 0 == wcsncmp(val.str + 1, o.val.str + 1, val.str[0]);
+				return val.str[0] == o.val.str[0] && 0 == _wcsnicmp(val.str + 1, o.val.str + 1, val.str[0]);
 			case xltypeBool:
 				return val.xbool == o.val.xbool;
 			case xltypeRef:
-				return false;
+				return false; //! compare sub references
 			case xltypeErr:
 				return val.err == o.val.err; //? false like NaN
 			case xltypeFlow:
@@ -130,6 +148,8 @@ namespace xll {
 			case xltypeMissing:
 			case xltypeNil:
 				return true;
+			case xltypeSRef:
+				return val.sref.ref == o.val.sref.ref;
 			case xltypeInt:
 				return val.w == o.val.w;
 			case xltypeBigData:
@@ -170,8 +190,9 @@ namespace xll {
 		explicit OPER12(const XCHAR* str)
 			: OPER12(str, str ? wcslen(str) : 0)
 		{ }
-		explicit OPER12(const std::wstring& str)
-			: OPER12(str.c_str(), str.length())
+		template<int n>
+		OPER12(const XCHAR (&str)[n])
+			: OPER12(str, n - 1) // char arrays have termniating null
 		{ }
 		OPER12(const XCHAR* str, size_t len)
 		{
@@ -184,9 +205,19 @@ namespace xll {
 				copy_str(str);
 			}
 		}
-		OPER12& operator=(const std::wstring& str)
+		OPER12& operator=(const XCHAR* str)
 		{
-			return *this = OPER12(str.c_str(), str.length());
+			return operator=(OPER12(str));
+		}
+		// append
+		OPER12& operator+=(const XCHAR* str)
+		{
+			size_t len = wcslen(str);
+			XCHAR* end = val.str + 1 + val.str[0];
+			reallocate_str(wcslen(str));
+			wmemcpy(end, str, len);
+
+			return *this;
 		}
 		bool operator==(const XCHAR* str) const
 		{
@@ -201,7 +232,7 @@ namespace xll {
 		}/*
 		OPER12& operator=(const bool& xbool)
 		{
-			return *this = OPER12(xbool);
+			return operator=(OPER12(xbool));
 		}*/
 
 		// Ref
@@ -323,6 +354,11 @@ namespace xll {
 		// Missing
 
 		// SRef
+		explicit OPER12(const XLREF12& ref)
+		{
+			xltype = xltypeSRef;
+			val.sref.ref = ref;
+		}
 
 		// Int
 		explicit OPER12(const int& w)
@@ -343,6 +379,15 @@ namespace xll {
 			ensure (val.str);
 			val.str[0] = static_cast<XCHAR>(len);
 			xltype = xltypeStr;
+		}
+		void reallocate_str(size_t len)
+		{
+			ensure (xltype == xltypeStr);
+			len += val.str[0];
+			ensure (len < std::numeric_limits<XCHAR>::max());
+			val.str = static_cast<XCHAR*>(::realloc(val.str, (1 + len)*sizeof(XCHAR)));
+			ensure (val.str);
+			val.str[0] = static_cast<XCHAR>(len);
 		}
 		void copy_str(const XCHAR* str)
 		{
@@ -365,7 +410,7 @@ namespace xll {
 		}
 		void reallocate_multi(RW rw, COL col)
 		{
-			ensure (type() == xltypeMulti);
+			ensure (xltype == xltypeMulti);
 			auto size = rw*col;
 			if (this->size() < size) {
 				val.array.lparray = static_cast<XLOPER12*>(::realloc(val.array.lparray, size*sizeof(XLOPER12)));

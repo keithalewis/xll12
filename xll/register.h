@@ -1,7 +1,8 @@
-// register.h - register and Excel add-in
+// register.h - register an Excel add-in
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include "excel.h"
+#include "defines.h"
 #include <stdlib.h>
 #include <cuchar>
 #include <algorithm>
@@ -40,6 +41,11 @@ namespace xll {
 		{
 			return args;
 		}
+		Args()
+			: arity(0)
+		{
+			args[ARG::ModuleText] = Excel(xlGetName);
+		}
 		Args(xcstr ReturnType, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
 			: arity(0)
 		{
@@ -51,31 +57,31 @@ namespace xll {
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = MacroType;
 		}
-		Args& Procedure(xcstr procedure)
+		Args& Procedure(const OPER12& procedure)
 		{
 			args[ARG::Procedure] = procedure;
 
 			return *this;
 		}
-		Args& TypeText(xcstr typeText)
+		Args& TypeText(const OPER12& typeText)
 		{
 			args[ARG::TypeText] = typeText;
 
 			return *this;
 		}
-		Args& FunctionText(xcstr functionText)
+		Args& FunctionText(const OPER12& functionText)
 		{
 			args[ARG::FunctionText] = functionText;
 
 			return *this;
 		}
-		Args& MacroType(xcstr macroType)
+		Args& MacroType(int macroType)
 		{
 			args[ARG::MacroType] = macroType;
 
 			return *this;
 		}
-		Args& Category(xcstr category)
+		Args& Category(const OPER12& category)
 		{
 			args[ARG::Category] = category;
 
@@ -87,19 +93,19 @@ namespace xll {
 
 			return *this;
 		}
-		Args& HelpTopic(xcstr helpTopic)
+		Args& HelpTopic(const OPER12& helpTopic)
 		{
 			args[ARG::HelpTopic] = helpTopic;
 
 			return *this;
 		}
-		Args& FunctionHelp(xcstr functionHelp)
+		Args& FunctionHelp(const OPER12& functionHelp)
 		{
 			args[ARG::FunctionHelp] = functionHelp;
 
 			return *this;
 		}
-		Args& ArgumentHelp(int i, xcstr argumentHelp)
+		Args& ArgumentHelp(int i, const OPER12& argumentHelp)
 		{
 			ensure (i != 0);
 
@@ -111,30 +117,30 @@ namespace xll {
 			return *this;
 		}
 
-		Args& Arg(xcstr type, xcstr text, xcstr helpText = 0)
+		Args& Arg(const OPER12& type, const OPER12& text, const OPER12& helpText = OPER12{})
 		{
 			OPER12& Type = args[ARG::TypeText];
-			Type = Excel(xlfConcatenate, Type, OPER12(type));
+			Type = Excel(xlfConcatenate, Type, type);
 			
 			OPER12& Text = args[ARG::ArgumentText];
 			if (Excel(xlfLen, Text) != 0)
 				Text = Excel(xlfConcatenate, Text, OPER12(L", "));
-			Text = Excel(xlfConcatenate, OPER12(text));
+			Text = Excel(xlfConcatenate, text);
 			
 			++arity;
-			if (helpText)
+			if (helpText.type() != xltypeMissing)
 				ArgumentHelp(Arity(), helpText);
 
 			return *this;
 		}
-		Args& Num(xcstr text, xcstr helpText = 0)
+		Args& Num(const OPER12& text, const OPER12& helpText = OPER12{})
 		{
-			return Arg(XLL_DOUBLE, text, helpText);
+			return Arg(OPER12(XLL_DOUBLE), text, helpText);
 		}
 		// Str ...
 	};
 
-	OPER12 Arguments(
+	inline OPER12 Arguments(
 		xcstr Procedure,        // C function
 		xcstr TypeText,         // return type and arg codes 
 		xcstr FunctionText,     // Excel function
@@ -177,30 +183,16 @@ namespace xll {
 
 		return args;
 	}
-
-	inline std::wstring mbstowcs(const std::string& s)
+	/*
+	// Convert __FUNCDNAME__ to arguments for xlfRegister
+	inline Args Demangle(const XCHAR* F)
 	{
-		std::wstring S;
-
-		std::transform(s.begin(), s.end(), std::back_inserter(S), [](const char& c) {
-			XCHAR C;
-			::mbstowcs(&C, &c, 1);
-			return C;
-		});
-
-		return S;
-	}
-	// Convert __FUNCTION__ to arguments for xlfRegister
-	inline OPER12 Demangle(const XCHAR* F)
-	{
-		OPER12 args(1, ARG::ArgumentHelp);
-
-		static std::map<XCHAR,const XCHAR*> arg_map = {
-			{ L'F', XLL_SHORT },
-			{ L'G', XLL_WORD }, // also USHORT
-			{ L'H', XLL_BOOL },
-			{ L'J', XLL_LONG },
-			{ L'N', XLL_DOUBLE },
+		static std::map<XCHAR,const OPER12> arg_map = {
+			{ L'F', OPER12(XLL_SHORT) },
+			{ L'G', OPER12(XLL_WORD) }, // also USHORT
+			{ L'H', OPER12(XLL_BOOL) },
+			{ L'J', OPER12(XLL_LONG) },
+			{ L'N', OPER12(XLL_DOUBLE) },
 		};
 
 		// C to Excel naming convention
@@ -210,36 +202,36 @@ namespace xll {
 				if (o.val.str[i] == L'_')
 					o.val.str[i] = L'.';
 				else
-				o.val.str[i] = ::towupper(o.val.str[i]);
+					o.val.str[i] = ::towupper(o.val.str[i]);
 			}
 
 			return o;
 		};
 
-		args[ARG::ModuleText] = Excel(xlGetName);
-		args[ARG::MacroType] = 1; // function
+		Args args;
+		args.MacroType(1); // function
 								  
 		// "?foo@@YGNN@Z"
 
 		ensure (F && *F == '?');
-		auto E = wcschr(F, '@');
+		auto E = wcschr(F, L'@');
 		ensure (E);
-		args[ARG::Procedure] = OPER12(F, E - F);
-		args[ARG::FunctionText] = function_text(OPER12(F + 1, E - F - 1));
+		args.Procedure(OPER12(F, E - F));
+		args.FunctionText(function_text(OPER12(F + 1, E - F - 1)));
 
 		F = E;
 		ensure (*++F == L'@');
 		ensure (*++F == L'Y');
 		ensure (*++F == L'G');
 		ensure (arg_map.find(*++F) != arg_map.end());
-		OPER12& type = args[ARG::TypeText] = arg_map[*F];
+		args.TypeText(arg_map[*F]);
 		while (*++F != L'@') {
 			// if (*F == L'P') { pointer...
 			ensure (arg_map.find(*F) != arg_map.end());
-			type = Excel(xlfConcatenate, type, OPER12(arg_map[*F]));
+//			type = Excel(xlfConcatenate, type, OPER12(arg_map[*F]));
 		}
 
 		return args;
 	}
-
+	*/
 } // xll

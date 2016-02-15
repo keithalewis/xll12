@@ -8,6 +8,25 @@ using namespace xll;
 
 static std::default_random_engine dre;
 
+void test_sref()
+{
+	REF12 r1, r2;
+	ensure (r1 == r2);
+	REF12 r3(1,2,3,4);
+	REF12 r4(r3);
+	ensure (r3 == r4);
+	r2 = r3;
+	ensure (r2 == r3);
+
+	OPER12 o1(r2);
+	ensure (o1.type() == xltypeSRef);
+	ensure (r2 == o1.val.sref.ref);
+
+	OPER12 o2(REF12(1,2,3,4));
+	ensure (o1 == o2);
+	ensure (o2.val.sref.ref == r2);
+}
+
 void test_swap()
 {
 	OPER12 str(L"foo");
@@ -42,7 +61,7 @@ void test_num()
 	ensure (num == 1.23); // operator double
 	ensure (1.23 == num);
 	ensure (num);
-	num = 0; // calls operator=(double)
+	num = 0.; // calls operator=(double)
 	ensure (num.xltype == xltypeNum);
 	ensure (num.val.num == 0);
 	ensure (num == 0);
@@ -78,6 +97,8 @@ void test_str()
 	OPER12 o;
 	o = L"foobaz";
 	ensure (o == L"foobaz");
+	o += L"blah";
+	ensure (o == L"foobazblah");
 
 	const XCHAR* null = 0;
 	OPER12 Null(null);
@@ -140,6 +161,7 @@ int main()
 {
 	dre.seed(static_cast<unsigned>(::time(0)));
 
+	test_sref();
 	test_swap();
 	test_oper();
 	test_num();

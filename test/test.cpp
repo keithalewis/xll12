@@ -5,13 +5,30 @@ using namespace xll;
 
 int xll_test()
 {
-	OPER12 o1 = Arguments(L"?foo2", XLL_DOUBLE XLL_DOUBLE, L"FOO2", L"Num");
-	OPER12 o2 = Args(XLL_DOUBLE, L"?foo", L"FOO").Arg(XLL_DOUBLE, L"Num");
-//	ensure (o1 == o2);
-//	Excelv(xlfRegister, o1);
-//	Excelv(xlfRegister, o2);
+	try {
+		OPER12 o1 = Arguments(L"?foo", XLL_DOUBLE XLL_DOUBLE, L"FOO", L"Num");
+		OPER12 o2 = Args(XLL_DOUBLE, L"?foo", L"FOO").Arg(XLL_DOUBLE, L"Num");
+		ensure (o1 == o2);
+		Excelv(xlfRegister, o1);
+		o2[ARG::FunctionText].val.str[3] = L'P';
+		Excelv(xlfRegister, o2);
 
-	return 1;
+		{
+			OPER12 foo(L"foo");
+			OPER12 foo2 = Excel(xlfLeft, Excel(xlfConcatenate, foo, foo), OPER12(4));
+			ensure (foo2 == L"foof");
+		}
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+		return FALSE;
+	}
+	catch (...) {
+		XLL_ERROR("unknown exception");
+		return FALSE;
+	}
+
+	return TRUE;
 }
 Auto<Open> xao_test(xll_test);
 
@@ -43,7 +60,6 @@ Auto<Open> xao_foo([]{
 //		XLL_LPXLOPER
 		, L"FOO", L"0,0,0,0,0,0,0,0,0,0,0")); return 1;
 });
-const char* funcdname[100];
 double WINAPI foo(
 	BOOL xbool 
 	,double num 
@@ -59,9 +75,8 @@ double WINAPI foo(
 )
 {
 #pragma XLLEXPORT
-	const char* f = __FUNCDNAME__;
-	funcdname[__COUNTER__] = __FUNCDNAME__;
-	f = f;
+	//const char* f = __FUNCDNAME__;
+	//funcdname[__COUNTER__] = __FUNCDNAME__;
 	xbool = xbool;	// "?foo@@YGNH@Z"
 	num = num;		// "?foo@@YGNHN@Z"
 	cstr = cstr;	// "?foo@@YGNHNPA_W@Z"
@@ -76,14 +91,16 @@ double WINAPI foo(
 
 	return 0;
 }
-
-const char* demangle;
+/*
+const XCHAR* demangle;
+#define L_(x) L#x
 // Register baz
-Auto<Open> xao_baz([]() { Excelv(xlfRegister, Demangle(mbstowcs(demangle).c_str())); return 1; });
+//Auto<Open> xao_baz([]() { Excelv(xlfRegister, Demangle(demangle)); return 1; });
 double WINAPI baz(BOOL b)
 {
 #pragma XLLEXPORT
-	demangle = __FUNCDNAME__;
+	demangle = L_(__FUNCDNAME__);
 
 	return 1 - b;
 }
+*/

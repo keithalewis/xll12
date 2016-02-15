@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <CodeAnalysisRuleSet>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -172,6 +172,7 @@
     <ClInclude Include="xll\auto.h" />
     <ClInclude Include="xll\defines.h" />
     <ClInclude Include="xll\ensure.h" />
+    <ClInclude Include="xll\error.h" />
     <ClInclude Include="xll\excel.h" />
     <ClInclude Include="xll\oper.h" />
     <ClInclude Include="xll\register.h" />
@@ -181,6 +182,7 @@
   <ItemGroup>
     <ClCompile Include="xll\auto.cpp" />
     <ClCompile Include="xll\debug.cpp" />
+    <ClCompile Include="xll\error.cpp" />
     <ClCompile Include="xll\XLCALL.CPP" />
   </ItemGroup>
   <ItemGroup>

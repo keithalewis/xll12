@@ -3,5 +3,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 
+#include "error.h"
 #include "auto.h"
 #include "register.h"
