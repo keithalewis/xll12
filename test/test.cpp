@@ -3,6 +3,11 @@
 
 using namespace xll;
 
+// minimal function registration example
+Auto<Open> xao_test0([](){ Excelv(xlfRegister, OPER12{Excel(xlGetName),
+		OPER12(L"?foo"), OPER12(XLL_DOUBLE XLL_DOUBLE),
+	OPER12(L"FOO0"), OPER12(L"Num"), OPER12(1)}); return 1; });
+	
 int xll_test()
 {
 	try {
@@ -12,6 +17,12 @@ int xll_test()
 				OPER12(L"?foo"), OPER12(XLL_DOUBLE XLL_DOUBLE),
 				OPER12(L"FOO"), OPER12(L"Num"), OPER12(1)};
 			Excelv(xlfRegister, o);
+		}
+		{
+			// register by hand
+			Excelv(xlfRegister, OPER12{Excel(xlGetName),
+				OPER12(L"?foo"), OPER12(XLL_DOUBLE XLL_DOUBLE),
+				OPER12(L"FOO"), OPER12(L"Num"), OPER12(1)});
 		}
 		{
 			OPER12 o1 = Arguments(L"?foo", XLL_DOUBLE XLL_DOUBLE, L"FOO", L"Num");

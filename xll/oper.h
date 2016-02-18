@@ -27,6 +27,14 @@ inline bool operator==(const XLREF12& r, const XLREF12& s)
 		&& r.rwFirst == s.rwFirst
 		&& r.rwLast == s.rwLast;
 }
+// strict weak ordering
+inline bool operator<(const XLREF12& r, const XLREF12& s)
+{
+	return r.colFirst < s.colFirst
+		|| r.colFirst == s.colFirst && r.colLast < s.colLast
+		|| r.colFirst == s.colFirst && r.colLast == s.colLast && r.rwFirst > s.rwFirst
+		|| r.colFirst == s.colFirst && r.colLast == s.colLast && r.rwFirst == s.rwFirst && r.rwLast < s.rwLast;
+}
 
 namespace xll {
 
@@ -50,7 +58,16 @@ namespace xll {
 		REF12& left(COL col = 1) { return move(0, -col); }
 		REF12& right(COL col = 1) { return move(0, col); }
 	};
+	inline REF12 move(const REF12& r, RW rw = 0, COL col = 0)
+	{
+		REF12 r_(r);
+	
+		r_.move(rw, col);
+
+		return r_;
+	}
 		
+	/// 
 	struct OPER12 : public XLOPER12 
 	{
 		friend void swap(OPER12& a, OPER12& b)

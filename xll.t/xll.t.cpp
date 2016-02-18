@@ -25,6 +25,40 @@ void test_sref()
 	OPER12 o2(REF12(1,2,3,4));
 	ensure (o1 == o2);
 	ensure (o2.val.sref.ref == r2);
+
+	{
+		REF12 r(1,2,3,4);
+		r.move(1,1);
+		ensure (r == REF12(2,3,3,4));
+		r.up();
+		ensure (r == REF12(1,3,3,4));
+		r.right();
+		ensure (r == REF12(1,4,3,4));
+		r.down();
+		ensure (r == REF12(2,4,3,4));
+		r.left();
+		ensure (r == REF12(2,3,3,4));
+
+		ensure (move(r, 2, 3) == REF12(4, 6, 3, 4));
+	}
+	{
+		// strict-weak ordering
+		// !(x < y) && !(y < x) is an equivalence relation
+		// x R x, x R y => y R x, !(x R y) and y R z => x R z
+		std::uniform_int_distribution<RW> u(1, 10);
+		auto R = [](const REF12& x, const REF12& y) {
+			return !(x < y) && !(y < x);
+		};
+		auto ref = [&u]() { return REF12(u(dre),u(dre),u(dre),u(dre)); };
+		for (int i = 0; i < 100; ++i) {
+			auto x = ref(), y = ref(), z = ref();
+			ensure (R(x, x));
+			ensure (R(y, y));
+			ensure (R(z, z));
+			ensure (R(x, y) ? R(y, x) : true);
+			ensure ((R(x, y) && R(y, z)) ? R(x, z) : true);
+		}
+	}
 }
 
 void test_swap()
