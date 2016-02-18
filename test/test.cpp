@@ -6,13 +6,21 @@ using namespace xll;
 int xll_test()
 {
 	try {
-		OPER12 o1 = Arguments(L"?foo", XLL_DOUBLE XLL_DOUBLE, L"FOO", L"Num");
-		OPER12 o2 = Args(XLL_DOUBLE, L"?foo", L"FOO").Arg(XLL_DOUBLE, L"Num");
-		ensure (o1 == o2);
-		Excelv(xlfRegister, o1);
-		o2[ARG::FunctionText].val.str[3] = L'P';
-		Excelv(xlfRegister, o2);
-
+		{
+			// register by hand
+			OPER12 o{Excel(xlGetName),
+				OPER12(L"?foo"), OPER12(XLL_DOUBLE XLL_DOUBLE),
+				OPER12(L"FOO"), OPER12(L"Num"), OPER12(1)};
+			Excelv(xlfRegister, o);
+		}
+		{
+			OPER12 o1 = Arguments(L"?foo", XLL_DOUBLE XLL_DOUBLE, L"FOO", L"Num");
+			OPER12 o2 = Args(XLL_DOUBLE, L"?foo", L"FOO").Arg(XLL_DOUBLE, L"Num");
+			ensure (o1 == o2);
+			Excelv(xlfRegister, o1);
+			o2[ARG::FunctionText].val.str[3] = L'P';
+			Excelv(xlfRegister, o2);
+		}
 		{
 			OPER12 foo(L"foo");
 			OPER12 foo2 = Excel(xlfLeft, Excel(xlfConcatenate, foo, foo), OPER12(4));
@@ -35,14 +43,13 @@ int xll_test()
 Auto<Open> xao_test(xll_test);
 
 Auto<Open> xao_foo2([]{
-	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
+	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO_").Arg(XLL_DOUBLE, L"Num"));
+//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
 	return 1;
 });
 double WINAPI foo2(double x)
 {
 #pragma XLLEXPORT
-	const char* f = __FUNCDNAME__;
-	f = f;
 	return 2*x;
 }
 
