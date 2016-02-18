@@ -152,8 +152,11 @@ void test_multi()
 	std::uniform_int_distribution<RW> u(1, 100);
 	for (int j = 0; j < 100; ++j) {
 		OPER12 a(u(dre), u(dre)), b(u(dre), u(dre));
-		if (a.columns() == b.columns())
+		if (a.columns() == b.columns()) {
+			if (a.rows() == 1 && b.rows() != 1)
+				b.resize(1, b.size());
 			a.push_back(b);
+		}
 	}
 
 	{
@@ -171,8 +174,8 @@ void test_multi()
 		ensure (o(0,0) == 1.23);
 		ensure (o(0,1) == OPER12());
 		ensure (o(1,0) == L"foo");
-//		ensure (o(1,1) == true);
-		}
+		ensure (o(1,1) == true);
+	}
 }
 int main()
 {

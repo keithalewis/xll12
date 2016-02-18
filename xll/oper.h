@@ -164,23 +164,45 @@ namespace xll {
 			return !operator==(o);
 		}
 		// bool operator<(...)
-		
-		
+
+		template<class T>
+		OPER12& operator=(const T& t)
+		{
+			operator=(OPER12(t));
+
+			return *this;
+		}
+		template<class T>
+		bool operator==(const T& t) const
+		{
+			return operator==(OPER12(t));
+		}
+		template<class T>
+		bool operator!=(const T& t) const
+		{
+			return !operator==(OPER12(t));
+		}
+
 		// Num
 		explicit OPER12(const double& num)
 		{
 			xltype = xltypeNum;
 			val.num = num;
 		}
+		/*
 		OPER12& operator=(const double& num)
 		{
 			return *this = OPER12(num);
 		}
+		
 		bool operator==(const double& num) const
 		{
-			return type() == xltypeNum && val.num == num;
+			return type() == xltypeNum && val.num == num
+				|| type() == xltypeInt && val.w == num;
 		}
-		operator double()
+		*/
+
+		operator double() const
 		{
 			ensure (type() == xltypeNum || type() == xltypeInt);
 
@@ -206,10 +228,12 @@ namespace xll {
 				copy_str(str);
 			}
 		}
+		/*
 		OPER12& operator=(const XCHAR* str)
 		{
 			return operator=(OPER12(str));
 		}
+		*/
 		// append
 		OPER12& operator+=(const XCHAR* str)
 		{
@@ -220,21 +244,24 @@ namespace xll {
 
 			return *this;
 		}
+		/*
 		bool operator==(const XCHAR* str) const
 		{
 			return 0 == wcsncmp(str, val.str + 1, val.str[0]);
 		}
-
+		*/
 		// Bool
 		explicit OPER12(const bool& xbool)
 		{
 			xltype = xltypeBool;
 			val.xbool = xbool;
 		}
+		/*
 		OPER12& operator=(const bool& xbool)
 		{
 			return operator=(OPER12(xbool));
 		}
+		*/
 
 		// Ref
 
@@ -388,6 +415,7 @@ namespace xll {
 			xltype = xltypeInt;
 			val.w = w;
 		}
+		/*
 		OPER12& operator=(const int& w)
 		{
 			xltype = xltypeInt;
@@ -395,11 +423,13 @@ namespace xll {
 
 			return *this;
 		}
+		
 		bool operator==(const int& w) const
 		{
 			return type() == xltypeInt && val.w == w
 				|| type() == xltypeNum && val.num == w;
 		}
+		*/
 	private:
 		void allocate_str(size_t len)
 		{
