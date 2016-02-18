@@ -5,6 +5,7 @@
 #include "XLCALL.H"
 #include <malloc.h>
 #include <algorithm>
+#include <initializer_list>
 #include <limits>
 #include <memory>
 
@@ -19,7 +20,7 @@ enum class xlerr {
 	GettingData = xlerrGettingData
 };
 
-bool operator==(const XLREF12& r, const XLREF12& s)
+inline bool operator==(const XLREF12& r, const XLREF12& s)
 {
 	return r.colFirst == s.colFirst
 		&& r.colLast == s.colLast
@@ -229,11 +230,11 @@ namespace xll {
 		{
 			xltype = xltypeBool;
 			val.xbool = xbool;
-		}/*
+		}
 		OPER12& operator=(const bool& xbool)
 		{
 			return operator=(OPER12(xbool));
-		}*/
+		}
 
 		// Ref
 
@@ -249,6 +250,27 @@ namespace xll {
 		{
 			allocate_multi(rw, col);
 			uninitialized_fill_multi(OPER12());
+		}
+		OPER12(std::initializer_list<OPER12> o)
+			: OPER12(1, o.size())
+		{
+			std::copy(o.begin(), o.end(), begin());
+		}
+		OPER12(std::initializer_list<std::initializer_list<OPER12>> o)
+			: OPER12(o.size(), o.begin()->size())
+		{
+			size_t cols = columns();
+			for (const auto& r : o)
+				if (r.size() > cols)
+					cols = r.size();
+			if (cols > static_cast<size_t>(columns()))
+				resize(rows(), cols);
+
+			size_t i = 0;
+			for (const auto& r : o) {
+				std::copy(r.begin(), r.end(), begin() + i*cols);
+				++i;
+			}
 		}
 		RW rows() const
 		{
@@ -298,11 +320,11 @@ namespace xll {
 		}
 		OPER12& operator()(RW i, COL j)
 		{
-			return operator[](i + j*columns());
+			return operator[](i*columns() + j);
 		}
 		const OPER12& operator()(RW i, COL j) const
 		{
-			return operator[](i + j*columns());
+			return operator[](i*columns() + j);
 		}
 
 		OPER12& resize(RW rw, COL col)
@@ -365,6 +387,13 @@ namespace xll {
 		{
 			xltype = xltypeInt;
 			val.w = w;
+		}
+		OPER12& operator=(const int& w)
+		{
+			xltype = xltypeInt;
+			val.w = w;
+
+			return *this;
 		}
 		bool operator==(const int& w) const
 		{

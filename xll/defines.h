@@ -58,3 +58,8 @@
 #else
 #define DECLSPEC_IMPEXP __declspec(dllimport)
 #endif
+
+// Convenience wrappers for Excel calls
+#define XLF(fn, ...) xll::Excel(xlf##fn, __VA_ARGS__)
+#define XLC(fn, ...) xll::Excel(xlc##fn, __VA_ARGS__)
+#define XL_(fn, ...) xll::Excel(xl ##fn, __VA_ARGS__)

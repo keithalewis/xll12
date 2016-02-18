@@ -13,8 +13,8 @@ struct RegKey {
 	RegKey(HKEY hkey, LPCTSTR subkey, REGSAM sam = KEY_ALL_ACCESS)
 		: hkey(hkey), h(0), subkey(subkey), sam(sam)
 	{ }
-	RegKey(const RegKey&) = default;
-	RegKey& operator=(const RegKey&) = default;
+	RegKey(const RegKey&) = delete;
+	RegKey& operator=(const RegKey&) = delete;
 	~RegKey()
 	{
 		Close();
@@ -62,42 +62,59 @@ struct RegKey {
 };
 
 struct xll_alert {
+	enum : DWORD { NOT_SET = (DWORD)-1 };
 	DWORD level;
 	xll_alert()
-		: level((DWORD)~0)
+		: level(NOT_SET)
 	{
-		RegKey rk(HKEY_CURRENT_USER, TEXT("KALX\\xll"), KEY_QUERY_VALUE|KEY_SET_VALUE|KEY_READ);
-		if (ERROR_SUCCESS != rk.Create()) {
-			XLL_ERROR("create key failed: KALX\\xll", true);
-			return;
-		}
-		if (rk.disposition == REG_CREATED_NEW_KEY) {
-			level = XLL_ALERT_ERROR|XLL_ALERT_WARNING|XLL_ALERT_INFO;
-			if (ERROR_SUCCESS != rk.SetValue(TEXT("xll_alert_level"), level)) {
-				level = (DWORD)~0;
-				return;
-			}
-		}
-		else {
-			if (ERROR_SUCCESS != rk.QueryValue(TEXT("xll_alert_level"), &level)) {
-				level = (DWORD)~0;
-				return;
-			}
-		}
+		level = load();
+		if (level == NOT_SET)
+			level = make(XLL_ALERT_ERROR|XLL_ALERT_WARNING|XLL_ALERT_INFO);
 	}
-	void set(DWORD _level)
+	// fail if exists
+	bool make(DWORD value)
+	{
+		RegKey rk(HKEY_CURRENT_USER, TEXT("KALX\\xll"), KEY_SET_VALUE);
+		if (ERROR_SUCCESS != rk.Create()) {
+			return false;
+		}
+		if (rk.disposition != REG_CREATED_NEW_KEY)
+			return false;
+		
+		return ERROR_SUCCESS == rk.SetValue(TEXT("xll_alert_level"), value);
+	}
+	// existing key
+	DWORD load()
+	{
+		DWORD value{NOT_SET};
+
+		RegKey rk(HKEY_CURRENT_USER, TEXT("KALX\\xll"), KEY_READ);
+		rk.QueryValue(TEXT("xll_alert_level"), &value);
+
+		return value;
+	}
+	bool save(DWORD value)
 	{
 		RegKey rk(HKEY_CURRENT_USER, TEXT("KALX\\xll"), KEY_SET_VALUE);
 		if (ERROR_SUCCESS != rk.Open()) {
 			XLL_ERROR("Open key failed: KALX\\xll", true);
-			return;
-		}
-		if (ERROR_SUCCESS != rk.SetValue(TEXT("xll_alert_level"), _level)) {
-			level = (DWORD)~0;
-			return;
+			return false;
 		}
 
+		return ERROR_SUCCESS == rk.SetValue(TEXT("xll_alert_level"), value);
+	}
+	// return old value
+	// unchanged if registry operations fail
+	DWORD set(DWORD _level)
+	{
+		DWORD level_ = level;
+		if (!make(_level))
+			if (!save(_level))
+				return NOT_SET;
+
 		level = _level;
+
+		return level_;
 	}
 } xll_alert_;
 
@@ -108,6 +125,8 @@ XLL_ALERT(const char* text, const char* caption, WORD level, UINT type, bool for
 		if (IDCANCEL == MessageBoxA(GetForegroundWindow(), text, caption, MB_OKCANCEL|type))
 			xll_alert_.set(xll_alert_.level & ~level);
 	}
+	// set registry value for next session
+	xll_alert_.save(xll_alert_.level | level);
 
 	return xll_alert_.level;
 }

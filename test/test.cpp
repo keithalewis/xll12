@@ -17,6 +17,8 @@ int xll_test()
 			OPER12 foo(L"foo");
 			OPER12 foo2 = Excel(xlfLeft, Excel(xlfConcatenate, foo, foo), OPER12(4));
 			ensure (foo2 == L"foof");
+			foo2 = XLF(Right, XLF(Concatenate, foo, foo), OPER12(4));
+			ensure (foo2 == L"ofoo");
 		}
 	}
 	catch (const std::exception& ex) {
@@ -32,6 +34,10 @@ int xll_test()
 }
 Auto<Open> xao_test(xll_test);
 
+Auto<Open> xao_foo2([]{
+	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
+	return 1;
+});
 double WINAPI foo2(double x)
 {
 #pragma XLLEXPORT
@@ -39,12 +45,7 @@ double WINAPI foo2(double x)
 	f = f;
 	return 2*x;
 }
-/*
-Auto<Open> xao_foo2([]{
-	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
-	return 1;
-});
-*/
+
 Auto<Open> xao_foo([]{
 	Excelv(xlfRegister, Arguments(L"?foo", XLL_DOUBLE 
 		XLL_BOOL 

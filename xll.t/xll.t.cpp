@@ -155,8 +155,25 @@ void test_multi()
 		if (a.columns() == b.columns())
 			a.push_back(b);
 	}
-}
 
+	{
+		OPER12 o{OPER12(1.23), OPER12(L"foo")};
+		ensure (o.xltype == xltypeMulti);
+		ensure (o.size() == 2);
+		ensure (o[0] == 1.23);
+		ensure (o[1] == L"foo");
+	}
+	{
+		OPER12 o{{OPER12(1.23)},{OPER12(L"foo"), OPER12(true)}};
+		ensure (o.xltype == xltypeMulti);
+		ensure (o.rows() == 2);
+		ensure (o.columns() == 2);
+		ensure (o(0,0) == 1.23);
+		ensure (o(0,1) == OPER12());
+		ensure (o(1,0) == L"foo");
+//		ensure (o(1,1) == true);
+		}
+}
 int main()
 {
 	dre.seed(static_cast<unsigned>(::time(0)));
