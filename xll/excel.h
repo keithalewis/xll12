@@ -27,11 +27,15 @@ namespace xll {
 		}
 		int ret = Excel12v(xlf, &o, static_cast<int>(args.size()), pargs);
 		ensure (ret == xlretSuccess);
-		ensure (o.type() != xltypeErr);
 		if (o.xltype == xltypeStr || o.xltype == xltypeMulti)
 			o.xltype |= xlbitXLFree;
 
 		return o;
 	}
 
+} // namespace xll
+
+inline xll::OPER12 operator&(const xll::OPER12& a, const xll::OPER12& b)
+{
+	return xll::Excel(xlfConcatenate, a, b);
 }

@@ -38,7 +38,14 @@ inline bool operator<(const XLREF12& r, const XLREF12& s)
 
 namespace xll {
 
-	struct REF12 : public XLREF12 {
+	/// <summary>
+	/// Wrapper for XLREF12 class
+	/// </summary>
+	/// <remarks>
+	/// The constructor uses <c>height</c> and <c>width</c> instead of <c>rw/colFirst/Last</c>
+	/// </remarks>
+	class REF12 : public XLREF12 {
+	public:
 		// default is A1
 		REF12(RW rw = 0, COL col = 0, RW height = 1, COL width = 1)
 			: XLREF12{rw, rw + height - 1, col, col + width - 1}
@@ -252,7 +259,7 @@ namespace xll {
 		}
 		*/
 		// append
-		OPER12& operator+=(const XCHAR* str)
+		OPER12& operator&=(const XCHAR* str)
 		{
 			size_t len = wcslen(str);
 			XCHAR* end = val.str + 1 + val.str[0];
@@ -529,3 +536,14 @@ namespace xll {
 	};
 
 } // xll
+
+/*
+inline bool operator==(const xll::OPER12& a, const xll::OPER12& b)
+{
+	return a.operator==(b);
+}
+inline bool operator<(const xll::OPER12& a, const xll::OPER12& b)
+{
+	return a.operator<(b);
+}
+*/

@@ -15,7 +15,9 @@ enum {
 //	XLL_ALERT_LOG     = 8	// turn on logging (should be separate!!!)
 };
 
-/// OKCANCEL message box. Cancel turns off alert bit
+/// OKCANCEL message box. Cancel turns off error bit
 int XLL_ERROR(const char* e, bool force = false);
+/// OKCANCEL message box. Cancel turns off warning bit
 int XLL_WARNING(const char* e, bool force = false);
+/// OKCANCEL message box. Cancel turns off info bit
 int XLL_INFO(const char* e, bool force = false);

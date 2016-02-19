@@ -4,10 +4,21 @@
 using namespace xll;
 
 // minimal function registration example
-Auto<Open> xao_test0([](){ Excelv(xlfRegister, OPER12{Excel(xlGetName),
+int xll_foo0(void)
+{ 
+	Excelv(xlfRegister, OPER12{Excel(xlGetName),
 		OPER12(L"?foo"), OPER12(XLL_DOUBLE XLL_DOUBLE),
-	OPER12(L"FOO0"), OPER12(L"Num"), OPER12(1)}); return 1; });
-	
+		OPER12(L"FOO0"), OPER12(L"Num"), OPER12(1)});
+
+	return 1; 
+};
+double WINAPI foo(double x)
+{
+#pragma XLLEXPORT
+	return x;
+}
+Auto<Open> xao_foo0(xll_foo0);
+
 int xll_test()
 {
 	try {
@@ -25,6 +36,14 @@ int xll_test()
 				OPER12(L"FOO"), OPER12(L"Num"), OPER12(1)});
 		}
 		{
+			Args o;
+			o.Procedure(L"?foo");
+			o.TypeText(L"BB");
+			o.FunctionText(L"FOO");
+			o.MacroType(1);
+			XLF(Register, o);
+		}
+		{
 			OPER12 o1 = Arguments(L"?foo", XLL_DOUBLE XLL_DOUBLE, L"FOO", L"Num");
 			OPER12 o2 = Args(XLL_DOUBLE, L"?foo", L"FOO").Arg(XLL_DOUBLE, L"Num");
 			ensure (o1 == o2);
@@ -38,6 +57,11 @@ int xll_test()
 			ensure (foo2 == L"foof");
 			foo2 = XLF(Right, XLF(Concatenate, foo, foo), OPER12(4));
 			ensure (foo2 == L"ofoo");
+		}
+		{
+			OPER12 o1(L"foo"), o2(1.23);
+			OPER12 o3 = o1 & o2;
+			ensure (o3 == L"foo1.23");
 		}
 	}
 	catch (const std::exception& ex) {
@@ -53,73 +77,16 @@ int xll_test()
 }
 Auto<Open> xao_test(xll_test);
 
-Auto<Open> xao_foo2([]{
-	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO_").Arg(XLL_DOUBLE, L"Num"));
+// lambdas work
+Auto<Open> xao_foo2_([]{
+	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+// #VALUE! since FOO2 is the name of a cell
 //	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
 	return 1;
 });
 double WINAPI foo2(double x)
 {
 #pragma XLLEXPORT
+
 	return 2*x;
 }
-
-Auto<Open> xao_foo([]{
-	Excelv(xlfRegister, Arguments(L"?foo", XLL_DOUBLE 
-		XLL_BOOL 
-		XLL_DOUBLE 
-		XLL_CSTRING
-		XLL_PSTRING
-		XLL_USHORT
-		XLL_WORD
-		XLL_SHORT
-		XLL_LONG
-		XLL_FP
-		XLL_LPOPER
-//		XLL_LPXLOPER
-		, L"FOO", L"0,0,0,0,0,0,0,0,0,0,0")); return 1;
-});
-double WINAPI foo(
-	BOOL xbool 
-	,double num 
-	,XCHAR* cstr
-	,XCHAR* pstr
-	,USHORT us
-	,WORD word
-	,SHORT s
-	,LONG l
-	,FP12* fp
-	,LPXLOPER12 po
-//	,LPXLOPER12 px
-)
-{
-#pragma XLLEXPORT
-	//const char* f = __FUNCDNAME__;
-	//funcdname[__COUNTER__] = __FUNCDNAME__;
-	xbool = xbool;	// "?foo@@YGNH@Z"
-	num = num;		// "?foo@@YGNHN@Z"
-	cstr = cstr;	// "?foo@@YGNHNPA_W@Z"
-	pstr = pstr;	// "?foo@@YGNHNPA_W0@Z"
-	us = us;		// "?foo@@YGNHNPA_W0G@Z"
-	word = word;	// "?foo@@YGNHNPA_W0GG@Z"
-	s = s;			// "?foo@@YGNHNPA_W0GGF@Z"
-	l = l;			// "?foo@@YGNHNPA_W0GGFJ@Z"
-	fp = fp;		// "?foo@@YGNHNPA_W0GGFJPAU_FP12@@@Z"
-	po = po;		// "?foo@@YGNHNPA_W0GGFJPAU_FP12@@PAUxloper12@@@Z
-//	px = px;		// "?foo@@YGNHNPA_W0GGFJPAU_FP12@@PAUxloper12@@2@Z"
-
-	return 0;
-}
-/*
-const XCHAR* demangle;
-#define L_(x) L#x
-// Register baz
-//Auto<Open> xao_baz([]() { Excelv(xlfRegister, Demangle(demangle)); return 1; });
-double WINAPI baz(BOOL b)
-{
-#pragma XLLEXPORT
-	demangle = L_(__FUNCDNAME__);
-
-	return 1 - b;
-}
-*/

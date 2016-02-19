@@ -2,8 +2,8 @@
 // Copyright (c) KALX, LLC. All rights reserved. No warranty is made.
 #pragma once
 
-/// Use #pragma XLLEXPORT in function body instead of DEF file.
-/// !!! use constexpr and static_assert to detect if decorated name is stdcall !!!
+// Use #pragma XLLEXPORT in function body instead of DEF file.
+// !!! use constexpr and static_assert to detect if decorated name is stdcall !!!
 // constexpr bool is_stdcall(const char* f) { return strchr(f, "@"); } ???
 #define XLLEXPORT comment(linker, "/export:" __FUNCDNAME__ "=" __FUNCTION__)
 

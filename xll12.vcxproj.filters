@@ -39,10 +39,10 @@
     <ClInclude Include="xll\ensure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xll\register.h">
+    <ClInclude Include="xll\error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xll\error.h">
+    <ClInclude Include="xll\args.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,6 +59,9 @@
     <ClCompile Include="xll\error.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="xll\oper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Visualizers\oper.natvis">
@@ -67,5 +70,8 @@
     <Natvis Include="Visualizers\oper12.natvis">
       <Filter>Visualizers</Filter>
     </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="xll12.bat" />
   </ItemGroup>
 </Project>

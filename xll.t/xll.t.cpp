@@ -131,7 +131,7 @@ void test_str()
 	OPER12 o;
 	o = L"foobaz";
 	ensure (o == L"foobaz");
-	o += L"blah";
+	o &= L"blah";
 	ensure (o == L"foobazblah");
 
 	const XCHAR* null = 0;

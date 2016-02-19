@@ -1,4 +1,4 @@
-// register.h - register an Excel add-in
+// args.h - Arguments to register an Excel add-in
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include "excel.h"
@@ -37,15 +37,24 @@ namespace xll {
 			//! parse TypeText
 			return arity;
 		}
+		// For use as Excelv(xlfRegister, Args(....))
 		operator const OPER12&() const
 		{
 			return args;
 		}
 		Args()
+			: arity(0), args(1, ARG::FunctionHelp)
+		{ }
+		// Macro
+		Args(xcstr Procedure, xcstr FunctionText)
 			: arity(0)
 		{
 			args[ARG::ModuleText] = Excel(xlGetName);
+			args[ARG::Procedure] = Procedure;
+			args[ARG::FunctionText] = FunctionText;
+			args[ARG::MacroType] = OPER12(2);
 		}
+		// Function
 		Args(xcstr ReturnType, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
 			: arity(0)
 		{
@@ -57,19 +66,20 @@ namespace xll {
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = MacroType;
 		}
-		Args& Procedure(const OPER12& procedure)
+
+		Args& Procedure(xcstr procedure)
 		{
 			args[ARG::Procedure] = procedure;
 
 			return *this;
 		}
-		Args& TypeText(const OPER12& typeText)
+		Args& TypeText(xcstr typeText)
 		{
 			args[ARG::TypeText] = typeText;
 
 			return *this;
 		}
-		Args& FunctionText(const OPER12& functionText)
+		Args& FunctionText(xcstr functionText)
 		{
 			args[ARG::FunctionText] = functionText;
 
@@ -81,7 +91,11 @@ namespace xll {
 
 			return *this;
 		}
-		Args& Category(const OPER12& category)
+		Args& Hidden()
+		{
+			return MacroType(0);
+		}
+		Args& Category(xcstr category)
 		{
 			args[ARG::Category] = category;
 
@@ -93,49 +107,69 @@ namespace xll {
 
 			return *this;
 		}
-		Args& HelpTopic(const OPER12& helpTopic)
+		Args& HelpTopic(xcstr helpTopic)
 		{
 			args[ARG::HelpTopic] = helpTopic;
 
 			return *this;
 		}
-		Args& FunctionHelp(const OPER12& functionHelp)
+		Args& FunctionHelp(xcstr functionHelp)
 		{
 			args[ARG::FunctionHelp] = functionHelp;
 
 			return *this;
 		}
-		Args& ArgumentHelp(int i, const OPER12& argumentHelp)
+		Args& ArgumentHelp(int i, xcstr argumentHelp)
 		{
 			ensure (i != 0);
 
 			if (args.size() < ARG::ArgumentHelp + i)
-				args.resize(ARG::ArgumentHelp + i, 1);
+				args.resize(i, ARG::ArgumentHelp + i);
 
 			args[ARG::ArgumentHelp + i - 1] = argumentHelp;
 
 			return *this;
 		}
 
-		Args& Arg(const OPER12& type, const OPER12& text, const OPER12& helpText = OPER12{})
+		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr)
 		{
 			OPER12& Type = args[ARG::TypeText];
-			Type = Excel(xlfConcatenate, Type, type);
+			Type = Excel(xlfConcatenate, Type, OPER12(type));
 			
 			OPER12& Text = args[ARG::ArgumentText];
-			if (Excel(xlfLen, Text) != 0)
-				Text = Excel(xlfConcatenate, Text, OPER12(L", "));
-			Text = Excel(xlfConcatenate, text);
+			if (arity > 0)
+				Text &= L", ";
+			Text = Excel(xlfConcatenate, Text, OPER12(text));
 			
 			++arity;
-			if (helpText.type() != xltypeMissing)
+			if (helpText && *helpText)
 				ArgumentHelp(Arity(), helpText);
 
 			return *this;
 		}
-		Args& Num(const OPER12& text, const OPER12& helpText = OPER12{})
+		// Argument modifiers
+		Args& Threadsafe()
 		{
-			return Arg(OPER12(XLL_DOUBLE), text, helpText);
+			args[ARG::ArgumentText] &= XLL_THREAD_SAFE;
+
+			return *this;
+		}
+		Args& Uncalced()
+		{
+			args[ARG::ArgumentText] &= XLL_UNCALCED;
+
+			return *this;
+		}
+		Args& Volatile()
+		{
+			args[ARG::ArgumentText] &= XLL_VOLATILE;
+
+			return *this;
+		}
+
+		Args& Num(xcstr text, xcstr helpText = nullptr)
+		{
+			return Arg(XLL_DOUBLE, text, helpText);
 		}
 		// Str ...
 	};
