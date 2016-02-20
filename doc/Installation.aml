@@ -12,13 +12,13 @@
            a specific number of sub-topics when creating the outline.  Specify
            zero (0) to limit it to top-level sections only.  -->
       <!-- <autoOutline /> -->
-      <para>Click on the 
+      <para>Clone the 
         <externalLink>
-		<linkText>xll library</linkText>
-		<linkUri>http://kalx.net/dnload/setup.zip</linkUri>
+		<linkText>xll12 library</linkText>
+		<linkUri>https://github.com/keithalewis/xll12.git</linkUri>
 		<linkTarget>_blank</linkTarget>
 		</externalLink>
-		link, then extract and run <codeInline>xll.msi</codeInline>.
+		using git.
       </para>
       <para>
       	Start Visual Studio 2013 and create a new project. You

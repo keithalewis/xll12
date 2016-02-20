@@ -36,6 +36,7 @@ int xll_test()
 				OPER12(L"FOO"), OPER12(L"Num"), OPER12(1)});
 		}
 		{
+			// register using Args class
 			Args o;
 			o.Procedure(L"?foo");
 			o.TypeText(L"BB");
@@ -44,6 +45,7 @@ int xll_test()
 			XLF(Register, o);
 		}
 		{
+			// Arguments vs Args
 			OPER12 o1 = Arguments(L"?foo", XLL_DOUBLE XLL_DOUBLE, L"FOO", L"Num");
 			OPER12 o2 = Args(XLL_DOUBLE, L"?foo", L"FOO").Arg(XLL_DOUBLE, L"Num");
 			ensure (o1 == o2);
@@ -52,6 +54,7 @@ int xll_test()
 			Excelv(xlfRegister, o2);
 		}
 		{
+			// test Excel() and xlFree
 			OPER12 foo(L"foo");
 			OPER12 foo2 = Excel(xlfLeft, Excel(xlfConcatenate, foo, foo), OPER12(4));
 			ensure (foo2 == L"foof");
@@ -59,6 +62,7 @@ int xll_test()
 			ensure (foo2 == L"ofoo");
 		}
 		{
+			// operator& work like Excel concatenation
 			OPER12 o1(L"foo"), o2(1.23);
 			OPER12 o3 = o1 & o2;
 			ensure (o3 == L"foo1.23");
@@ -77,7 +81,7 @@ int xll_test()
 }
 Auto<Open> xao_test(xll_test);
 
-// lambdas work
+// lambdas work too
 Auto<Open> xao_foo2_([]{
 	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
 // #VALUE! since FOO2 is the name of a cell

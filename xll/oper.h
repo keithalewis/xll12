@@ -65,13 +65,9 @@ namespace xll {
 		REF12& left(COL col = 1) { return move(0, -col); }
 		REF12& right(COL col = 1) { return move(0, col); }
 	};
-	inline REF12 move(const REF12& r, RW rw = 0, COL col = 0)
+	inline REF12 move(REF12 r, RW rw = 0, COL col = 0)
 	{
-		REF12 r_(r);
-	
-		r_.move(rw, col);
-
-		return r_;
+		return r.move(rw, col);
 	}
 		
 	/// 

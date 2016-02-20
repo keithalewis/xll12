@@ -72,5 +72,6 @@ xlAutoRegister12(LPXLOPER12 pxName)
 	static XLOPER12 xResult;
 
 	xResult = *pxName;
+
 	return &xResult;
 }

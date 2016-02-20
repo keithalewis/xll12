@@ -35,7 +35,8 @@ BOOL WINAPI xll_foo1(double)
 }
 
 
-Auto<Open> xao_foo2([]() { return Excelv(xlfRegister, Arguments(L"?xll_foo2", XLL_BOOL XLL_DOUBLE XLL_DOUBLE, L"XLL.FOO2"))
+Auto<Open> xao_foo2([]() { 
+	return Excelv(xlfRegister, Arguments(L"?xll_foo2", XLL_BOOL XLL_DOUBLE XLL_DOUBLE, L"XLL.FOO2"))
 	.xltype == xltypeNum; });
 BOOL WINAPI xll_foo2(double,double)
 {
