@@ -257,9 +257,10 @@ namespace xll {
 		// append
 		OPER12& operator&=(const XCHAR* str)
 		{
-			size_t len = wcslen(str);
-			XCHAR* end = val.str + 1 + val.str[0];
-			reallocate_str(wcslen(str));
+			size_t origLen = val.str[0];
+			size_t len = wcslen(str);			
+			reallocate_str(len);
+			XCHAR* end = val.str + 1 + origLen;
 			wmemcpy(end, str, len);
 
 			return *this;
@@ -299,19 +300,19 @@ namespace xll {
 			uninitialized_fill_multi(OPER12());
 		}
 		OPER12(std::initializer_list<OPER12> o)
-			: OPER12(1, o.size())
+			: OPER12(1, static_cast<COL>(o.size()))
 		{
 			std::copy(o.begin(), o.end(), begin());
 		}
 		OPER12(std::initializer_list<std::initializer_list<OPER12>> o)
-			: OPER12(o.size(), o.begin()->size())
+			: OPER12(static_cast<RW>(o.size()), static_cast<COL>(o.begin()->size()))
 		{
 			size_t cols = columns();
 			for (const auto& r : o)
 				if (r.size() > cols)
 					cols = r.size();
 			if (cols > static_cast<size_t>(columns()))
-				resize(rows(), cols);
+				resize(rows(), static_cast<COL>(cols));
 
 			size_t i = 0;
 			for (const auto& r : o) {
@@ -456,8 +457,10 @@ namespace xll {
 			ensure (len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::malloc((1 + len)*sizeof(XCHAR)));
 			ensure (val.str);
-			val.str[0] = static_cast<XCHAR>(len);
-			xltype = xltypeStr;
+			if (val.str) {
+				val.str[0] = static_cast<XCHAR>(len);
+				xltype = xltypeStr;
+			}
 		}
 		void reallocate_str(size_t len)
 		{
@@ -466,7 +469,9 @@ namespace xll {
 			ensure (len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::realloc(val.str, (1 + len)*sizeof(XCHAR)));
 			ensure (val.str);
-			val.str[0] = static_cast<XCHAR>(len);
+			if (val.str) {
+				val.str[0] = static_cast<XCHAR>(len);
+			}
 		}
 		void copy_str(const XCHAR* str)
 		{
