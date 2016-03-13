@@ -211,6 +211,27 @@ void test_multi()
 		ensure (o(1,1) == true);
 	}
 }
+void test_handle()
+{
+	std::unique_ptr<int> pi{new int()};
+	HANDLEX h = p2h<int>(pi.get());
+	ensure (pi.get() == h2p<int>(h));
+}
+
+void test_arity()
+{
+	Args args;
+	ensure (args.Arity() == 0);
+	args.Num(L"x", L"is an x");
+	ensure (args.Arity() == 1);
+	args.Arg(XLL_CSTRING, L"s", L"is a string");
+	ensure (args.Arity() == 2);
+	args.Uncalced();
+	ensure (args.Arity() == 2);
+	args.Volatile();
+	ensure (args.Arity() == 2);
+}
+
 int main()
 {
 	dre.seed(static_cast<unsigned>(::time(0)));
@@ -222,6 +243,8 @@ int main()
 	test_str();
 	test_bool();
 	test_multi();
+	test_handle();
+	test_arity();
 
 	return 0;
 }

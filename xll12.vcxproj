@@ -175,6 +175,8 @@
     <ClInclude Include="xll\ensure.h" />
     <ClInclude Include="xll\error.h" />
     <ClInclude Include="xll\excel.h" />
+    <ClInclude Include="xll\handle.h" />
+    <ClInclude Include="xll\on.h" />
     <ClInclude Include="xll\oper.h" />
     <ClInclude Include="xll\args.h" />
     <ClInclude Include="xll\XLCALL.H" />

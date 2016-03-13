@@ -88,6 +88,7 @@
     <ContentLayout Include="Content Layout.content" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="The Life of an xll.aml" />
     <None Include="Reference\Reference.aml" />
     <None Include="Reference\AddIn.aml" />
     <None Include="Documentation.aml" />

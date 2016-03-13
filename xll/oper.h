@@ -20,6 +20,21 @@ enum class xlerr {
 	GettingData = xlerrGettingData
 };
 
+enum class xltype {
+	Num = xltypeNum,        // IEEE 64-bit floating point
+	Str = xltypeStr,        // Counted string
+	Bool = xltypeBool,      // Boolean value
+	Ref = xltypeRef,        // Reference to multiple ranges
+	Err = xltypeErr,        // Excel error type
+	Flow = xltypeFlow,      // not used
+	Multi = xltypeMulti,    // A range of OPERs
+	Missing = xltypeMissing,// Argument not specified
+	Nil = xltypeNil,        // Empty data type
+	SRef = xltypeSRef,      // Single reference to a range
+	Int = xltypeInt,        // Integer type that never occurs
+	BigData = xltypeBigData,// Binary data
+};
+
 inline bool operator==(const XLREF12& r, const XLREF12& s)
 {
 	return r.colFirst == s.colFirst
@@ -42,7 +57,7 @@ namespace xll {
 	/// Wrapper for XLREF12 class
 	/// </summary>
 	/// <remarks>
-	/// The constructor uses <c>height</c> and <c>width</c> instead of <c>rw/colFirst/Last</c>
+	/// The constructor uses <c>height</c> and <c>width</c> instead of <c>rw/colLast</c>
 	/// </remarks>
 	class REF12 : public XLREF12 {
 	public:
@@ -70,7 +85,9 @@ namespace xll {
 		return r.move(rw, col);
 	}
 		
-	/// 
+	/// <summary>
+	/// Value type that represents an Excel cell or range.
+	/// </summary>
 	struct OPER12 : public XLOPER12 
 	{
 		friend void swap(OPER12& a, OPER12& b)
@@ -85,9 +102,9 @@ namespace xll {
 			return xltype&~(xlbitXLFree|xlbitDLLFree);
 		}
 
-		OPER12()
+		OPER12(::xltype type = xltype::Missing)
 		{
-			xltype = xltypeMissing;
+			xltype = static_cast<DWORD>(type);
 		}
 		OPER12(const OPER12& o)
 		{
@@ -257,10 +274,18 @@ namespace xll {
 		// append
 		OPER12& operator&=(const XCHAR* str)
 		{
-			size_t len = wcslen(str);
-			XCHAR* end = val.str + 1 + val.str[0];
-			reallocate_str(wcslen(str));
-			wmemcpy(end, str, len);
+			if (xltype == xltypeStr) {
+				size_t len = wcslen(str);
+				size_t end = 1 + val.str[0];
+				reallocate_str(val.str[0] + len);
+				wmemcpy(val.str + end, str, len);
+			}
+			else if (xltype == xltypeNil || xltype == xltypeMissing) {
+				operator=(str);
+			}
+			else {
+				throw std::runtime_error("OPER12::operator&=: this must be a string, missing, or nil");
+			}
 
 			return *this;
 		}
@@ -299,19 +324,19 @@ namespace xll {
 			uninitialized_fill_multi(OPER12());
 		}
 		OPER12(std::initializer_list<OPER12> o)
-			: OPER12(1, o.size())
+			: OPER12(1, static_cast<COL>(o.size()))
 		{
 			std::copy(o.begin(), o.end(), begin());
 		}
 		OPER12(std::initializer_list<std::initializer_list<OPER12>> o)
-			: OPER12(o.size(), o.begin()->size())
+			: OPER12(static_cast<RW>(o.size()), static_cast<COL>(o.begin()->size()))
 		{
 			size_t cols = columns();
 			for (const auto& r : o)
 				if (r.size() > cols)
 					cols = r.size();
 			if (cols > static_cast<size_t>(columns()))
-				resize(rows(), cols);
+				resize(rows(), static_cast<COL>(cols));
 
 			size_t i = 0;
 			for (const auto& r : o) {
@@ -462,7 +487,6 @@ namespace xll {
 		void reallocate_str(size_t len)
 		{
 			ensure (xltype == xltypeStr);
-			len += val.str[0];
 			ensure (len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::realloc(val.str, (1 + len)*sizeof(XCHAR)));
 			ensure (val.str);

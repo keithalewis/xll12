@@ -4,5 +4,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "error.h"
-#include "auto.h"
+#include "on.h"
 #include "args.h"
+#include "handle.h"

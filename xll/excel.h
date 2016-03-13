@@ -12,7 +12,7 @@ namespace xll {
 
 		int ret = Excel12(xlf, &o, sizeof...(args), &args...);
 		ensure (ret == xlretSuccess);
-		if (o.xltype == xltypeStr || o.xltype == xltypeMulti)
+		if (o.xltype&(xltypeStr|xltypeMulti))
 			o.xltype |= xlbitXLFree;
 
 		return o;
@@ -27,7 +27,7 @@ namespace xll {
 		}
 		int ret = Excel12v(xlf, &o, static_cast<int>(args.size()), pargs);
 		ensure (ret == xlretSuccess);
-		if (o.xltype == xltypeStr || o.xltype == xltypeMulti)
+		if (o.xltype&(xltypeStr|xltypeMulti))
 			o.xltype |= xlbitXLFree;
 
 		return o;

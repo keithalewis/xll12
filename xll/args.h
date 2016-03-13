@@ -30,11 +30,20 @@ namespace xll {
 
 	class Args {
 		OPER12 args;
-		int arity;
+		mutable int arity;
 	public:
 		int Arity() const
 		{
-			//! parse TypeText
+			if (arity == 0 && args.size() > ARG::TypeText) {
+				const OPER12& tt = args[ARG::TypeText];
+				if (tt.type() == xltypeStr) {
+					// see defines.h
+					arity = std::count_if(tt.val.str + 1, tt.val.str + 1 + tt.val.str[0], 
+						[](XCHAR c) { return L'A' <= c && L'U'; });
+					--arity; // don't count return value
+				}
+			}
+			
 			return arity;
 		}
 		// For use as Excelv(xlfRegister, Args(....))
@@ -44,10 +53,12 @@ namespace xll {
 		}
 		Args()
 			: arity(0), args(1, ARG::FunctionHelp)
-		{ }
+		{
+			std::fill(args.begin(), args.end(), OPER12(xltype::Missing));
+		}
 		// Macro
 		Args(xcstr Procedure, xcstr FunctionText)
-			: arity(0)
+			: Args()
 		{
 			args[ARG::ModuleText] = Excel(xlGetName);
 			args[ARG::Procedure] = Procedure;
@@ -56,10 +67,8 @@ namespace xll {
 		}
 		// Function
 		Args(xcstr ReturnType, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
-			: arity(0)
+			: Args()
 		{
-			args.resize(1, ARG::ArgumentHelp + 9);
-
 			args[ARG::ModuleText] = Excel(xlGetName);
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = ReturnType;
@@ -134,12 +143,12 @@ namespace xll {
 		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr)
 		{
 			OPER12& Type = args[ARG::TypeText];
-			Type = Excel(xlfConcatenate, Type, OPER12(type));
+			Type &= type;
 			
 			OPER12& Text = args[ARG::ArgumentText];
 			if (arity > 0)
 				Text &= L", ";
-			Text = Excel(xlfConcatenate, Text, OPER12(text));
+			Text &= text;
 			
 			++arity;
 			if (helpText && *helpText)

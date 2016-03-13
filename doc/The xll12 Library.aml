@@ -18,8 +18,7 @@
       	<linkTarget>_blank</linkTarget> 
       	</externalLink> add-in library
       	makes it easy to call C/C++ or even Fortran code from
-      	from Microsoft Excel. The only thing required is to
-      	write a function that calls your function and register
+      	from Microsoft Excel. Just write a function and register
       	it with Excel.
       	</para>
     </introduction>
@@ -58,7 +57,7 @@
           You can also generate documentation integrated
           with Excel help using the same tool Microsoft uses. If you want
           someone else to benefit from your handiwork just give them the add-in,
-          help file, and workbooks you created for a portable and professional
+          help file, and workbooks you create for a portable and professional
           solution.
         </para>
         <para>

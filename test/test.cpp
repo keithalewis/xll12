@@ -2,7 +2,7 @@
 #include "../xll/xll.h"
 
 using namespace xll;
-
+#if 0
 // minimal function registration example
 int xll_foo0(void)
 { 
@@ -94,3 +94,5 @@ double WINAPI foo2(double x)
 
 	return 2*x;
 }
+
+#endif // 0
