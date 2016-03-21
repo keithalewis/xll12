@@ -16,7 +16,7 @@ double WINAPI foo2(double x)
 }
 
 
-Auto<Open> xao_alert([]() { return Excelv(xlfRegister, Args(L"?xll_alert", L"XLL.ALERT")).type() == xltypeNum;});
+//Auto<Open> xao_alert([]() { return Excelv(xlfRegister, Args(L"?xll_alert", L"XLL.ALERT")).type() == xltypeNum;});
 int WINAPI xll_alert()
 {
 #pragma XLLEXPORT
