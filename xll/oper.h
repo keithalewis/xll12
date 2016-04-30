@@ -56,16 +56,18 @@ namespace xll {
 	/// <summary>
 	/// Wrapper for XLREF12 class
 	/// </summary>
+	/// The <c>XLREF12</c> class represents a reference to a two dimensional
+	/// range of cells.
 	/// <remarks>
 	/// The constructor uses <c>height</c> and <c>width</c> instead of <c>rw/colLast</c>
 	/// </remarks>
 	class REF12 : public XLREF12 {
 	public:
-		// default is A1
+		/// Construct a reference to atwo dimensional range.
 		REF12(RW rw = 0, COL col = 0, RW height = 1, COL width = 1)
 			: XLREF12{rw, rw + height - 1, col, col + width - 1}
 		{ }
-		// translate by rw, col
+		/// Translate a reference by rw, col
 		REF12& move(RW rw, COL col = 0)
 		{
 			rwFirst  += rw;
@@ -80,6 +82,7 @@ namespace xll {
 		REF12& left(COL col = 1) { return move(0, -col); }
 		REF12& right(COL col = 1) { return move(0, col); }
 	};
+	/// Return a reference translated by <c>rw</c> and <c>col</c>.
 	inline REF12 move(REF12 r, RW rw = 0, COL col = 0)
 	{
 		return r.move(rw, col);

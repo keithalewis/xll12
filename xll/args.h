@@ -11,7 +11,7 @@
 
 namespace xll {
 
-	// See https://msdn.microsoft.com/en-us/library/office/bb687900.aspx
+	/// See https://msdn.microsoft.com/en-us/library/office/bb687900.aspx
 	enum ARG {
 		ModuleText,   // from xlGetName
 		Procedure,    // C function
@@ -28,35 +28,39 @@ namespace xll {
 
 	using xcstr = const XCHAR*;
 
+	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
 		OPER12 args;
 		mutable int arity;
 	public:
+		/// <summary>Number of function arguments</summary>
 		int Arity() const
 		{
-			if (arity == 0 && args.size() > ARG::TypeText) {
-				const OPER12& tt = args[ARG::TypeText];
-				if (tt.type() == xltypeStr) {
-					// see defines.h
-					arity = std::count_if(tt.val.str + 1, tt.val.str + 1 + tt.val.str[0], 
-						[](XCHAR c) { return L'A' <= c && L'U'; });
-					--arity; // don't count return value
-				}
-			}
+			return arity;
+		}
+		/// <summary>Number of function arguments</summary>
+		/// Detect the number of arguments based on the text type of a function.
+		static int Arity(const OPER12& tt)
+		{
+			ensure (tt.type() == xltypeStr);
+			int arity = std::count_if(tt.val.str + 1, tt.val.str + 1 + tt.val.str[0], 
+				[](XCHAR c) { return L'A' <= c && c <= L'U'; });
+			--arity; // don't count return value
 			
 			return arity;
 		}
-		// For use as Excelv(xlfRegister, Args(....))
+		/// For use as Excelv(xlfRegister, Args(....))
 		operator const OPER12&() const
 		{
 			return args;
 		}
+		/// Common default.
 		Args()
 			: arity(0), args(1, ARG::ArgumentHelp)
 		{
 			std::fill(args.begin(), args.end(), OPER12(xltype::Nil));
 		}
-		// Macro
+		/// Macro
 		Args(xcstr Procedure, xcstr FunctionText)
 			: Args()
 		{
@@ -65,69 +69,83 @@ namespace xll {
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(2);
 		}
-		// Function
-		Args(xcstr ReturnType, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
+		/// Function
+		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
 			: Args()
 		{
 			args[ARG::ModuleText] = Excel(xlGetName);
 			args[ARG::Procedure] = Procedure;
-			args[ARG::TypeText] = ReturnType;
+			args[ARG::TypeText] = TypeText;
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = MacroType;
+
+			arity = Arity(args[ARG::TypeText]);
 		}
 
+		/// Set the name of the C/C++ function to be called.
 		Args& Procedure(xcstr procedure)
 		{
 			args[ARG::Procedure] = procedure;
 
 			return *this;
 		}
+		/// Specify the return type and argument types of the function.
 		Args& TypeText(xcstr typeText)
 		{
 			args[ARG::TypeText] = typeText;
 
 			return *this;
 		}
+		/// Specify the name of the function or macro to be used by Excel.
 		Args& FunctionText(xcstr functionText)
 		{
 			args[ARG::FunctionText] = functionText;
 
 			return *this;
 		}
+		/// Specify the macro type of the function.
+		/// Use 1 for functions, 2 for macros, and 0 for hidden functions. 
 		Args& MacroType(int macroType)
 		{
 			args[ARG::MacroType] = macroType;
 
 			return *this;
 		}
+		/// Hide the name of the function from Excel.
 		Args& Hidden()
 		{
 			return MacroType(0);
 		}
+		/// Set the category to be used in the function wizard.
 		Args& Category(xcstr category)
 		{
 			args[ARG::Category] = category;
 
 			return *this;
 		}
+		/// Specify the shortcut text for calling the function.
 		Args& ShortcutText(XCHAR shortcutText)
 		{
 			args[ARG::ShortcutText] = OPER12(&shortcutText, 1);
 
 			return *this;
 		}
+		/// Specify the help topic to be used in the Function Wizard.
+		/// !!!This must have the format...
 		Args& HelpTopic(xcstr helpTopic)
 		{
 			args[ARG::HelpTopic] = helpTopic;
 
 			return *this;
 		}
+		/// Specify the function help displayed in the Functinon Wizard.
 		Args& FunctionHelp(xcstr functionHelp)
 		{
 			args[ARG::FunctionHelp] = functionHelp;
 
 			return *this;
 		}
+		/// Specify individual argument help in the Function Wizard.
 		Args& ArgumentHelp(int i, xcstr argumentHelp)
 		{
 			ensure (i != 0);
@@ -139,7 +157,7 @@ namespace xll {
 
 			return *this;
 		}
-
+		/// Add an individual argument.
 		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr)
 		{
 			OPER12& Type = args[ARG::TypeText];
@@ -152,30 +170,30 @@ namespace xll {
 			
 			++arity;
 			if (helpText && *helpText)
-				ArgumentHelp(Arity(), helpText);
+				ArgumentHelp(arity, helpText);
 
 			return *this;
 		}
-		// Argument modifiers
+		/// Argument modifiers
 		Args& Threadsafe()
 		{
-			args[ARG::ArgumentText] &= XLL_THREAD_SAFE;
+			args[ARG::TypeText] &= XLL_THREAD_SAFE;
 
 			return *this;
 		}
 		Args& Uncalced()
 		{
-			args[ARG::ArgumentText] &= XLL_UNCALCED;
+			args[ARG::TypeText] &= XLL_UNCALCED;
 
 			return *this;
 		}
 		Args& Volatile()
 		{
-			args[ARG::ArgumentText] &= XLL_VOLATILE;
+			args[ARG::TypeText] &= XLL_VOLATILE;
 
 			return *this;
 		}
-
+		/// Convenience function for number types.
 		Args& Num(xcstr text, xcstr helpText = nullptr)
 		{
 			return Arg(XLL_DOUBLE, text, helpText);
@@ -183,6 +201,8 @@ namespace xll {
 		// Str ...
 	};
 
+	/// Array appropriate for xlfRegister.
+	/// Use like <c>Excelv(xlfRegister, Arguments(...))</c>
 	inline OPER12 Arguments(
 		xcstr Procedure,        // C function
 		xcstr TypeText,         // return type and arg codes 
