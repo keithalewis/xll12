@@ -10,7 +10,7 @@ namespace xll {
 	{
 		OPER12 o;
 
-		int ret = Excel12(xlf, &o, sizeof...(args), &args...);
+		int ret = ::Excel12(xlf, &o, sizeof...(args), &args...);
 		ensure (ret == xlretSuccess);
 		if (o.xltype&(xltypeStr|xltypeMulti))
 			o.xltype |= xlbitXLFree;
@@ -21,11 +21,12 @@ namespace xll {
 	inline OPER12 Excelv(int xlf, const OPER12& args)
 	{
 		OPER12 o;
-		LPXLOPER12 pargs[255]; // just like XLCALL.CPP
+		LPXLOPER12 pargs[256]; // just like XLCALL.CPP
+		ensure (o.size() < 256);
 		for (int i = 0; i < args.size(); ++i) {
 			pargs[i] = (LPXLOPER12)&args[i];
 		}
-		int ret = Excel12v(xlf, &o, static_cast<int>(args.size()), pargs);
+		int ret = ::Excel12v(xlf, &o, static_cast<int>(args.size()), pargs);
 		ensure (ret == xlretSuccess);
 		if (o.xltype&(xltypeStr|xltypeMulti))
 			o.xltype |= xlbitXLFree;

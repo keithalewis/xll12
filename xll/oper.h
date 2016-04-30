@@ -130,7 +130,7 @@ namespace xll {
 			xltype = o.xltype;
 			val = o.val;
 
-			o.xltype = xltypeMissing;
+			o.xltype = xltypeNil;
 		}
 		OPER12& operator=(OPER12 o)
 		{

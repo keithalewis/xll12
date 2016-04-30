@@ -52,9 +52,9 @@ namespace xll {
 			return args;
 		}
 		Args()
-			: arity(0), args(1, ARG::FunctionHelp)
+			: arity(0), args(1, ARG::ArgumentHelp)
 		{
-			std::fill(args.begin(), args.end(), OPER12(xltype::Missing));
+			std::fill(args.begin(), args.end(), OPER12(xltype::Nil));
 		}
 		// Macro
 		Args(xcstr Procedure, xcstr FunctionText)
