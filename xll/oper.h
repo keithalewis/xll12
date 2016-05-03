@@ -95,8 +95,10 @@ namespace xll {
 	{
 		friend void swap(OPER12& a, OPER12& b)
 		{
-			std::swap(a.xltype, b.xltype);
-			std::swap(a.val, b.val);
+			using std::swap;
+
+			swap(a.xltype, b.xltype);
+			swap(a.val, b.val);
 		}
 
 		// Strip out if xlFree or xlAutoFree is involved.
@@ -483,8 +485,9 @@ namespace xll {
 		{
 			ensure (len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::malloc((1 + len)*sizeof(XCHAR)));
-			ensure (val.str);
-			val.str[0] = static_cast<XCHAR>(len);
+			ensure (val.str != nullptr);
+			if (val.str)
+				val.str[0] = static_cast<XCHAR>(len);
 			xltype = xltypeStr;
 		}
 		void reallocate_str(size_t len)
@@ -493,7 +496,8 @@ namespace xll {
 			ensure (len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::realloc(val.str, (1 + len)*sizeof(XCHAR)));
 			ensure (val.str);
-			val.str[0] = static_cast<XCHAR>(len);
+			if (val.str)
+				val.str[0] = static_cast<XCHAR>(len);
 		}
 		void copy_str(const XCHAR* str)
 		{
