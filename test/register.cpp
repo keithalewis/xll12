@@ -2,7 +2,7 @@
 #include "../xll/xll.h"
 
 using namespace xll;
-Auto<Open> xao_foo2_([]{
+Auto<Open> xao_foo2_([&]{
 	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
 	// #VALUE! since FOO2 is the name of a cell
 	//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
@@ -14,6 +14,20 @@ double WINAPI foo2(double x)
 
 	return 2*x;
 }
+/*
+AddIn xai_foo3(Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
+	.Arg(XLL_DOUBLE, L"Num")
+	.Category(L"MyCategory")
+	.FunctionHelp(L"Call foo3")
+);
+double WINAPI foo3(double x)
+{
+#pragma XLLEXPORT
+
+	return 3*x;
+}
+*/
 
 
 Auto<Open> xao_alert([]() { return Excelv(xlfRegister, Args(L"?xll_alert", L"XLL.ALERT")).type() == xltypeNum;});

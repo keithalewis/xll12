@@ -1,8 +1,8 @@
 // args.h - Arguments to register an Excel add-in
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
-#include "excel.h"
 #include "defines.h"
+#include "excel.h"
 #include <stdlib.h>
 #include <cuchar>
 #include <algorithm>
@@ -28,6 +28,22 @@ namespace xll {
 
 	using xcstr = const XCHAR*;
 
+	inline const OPER12& XlGetName()
+	{
+		static OPER12 hModule;
+		
+		if (hModule.xltype != xltypeStr) {
+			hModule = Excel(xlGetName);
+			/*
+			WCHAR name[2048];
+			DWORD size = 2048;
+			GetModuleFileNameW(xll_hModule, name, size);
+			hModule = OPER12(name);
+			*/
+		}
+
+		return hModule;
+	}
 	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
 		OPER12 args;
@@ -64,7 +80,7 @@ namespace xll {
 		Args(xcstr Procedure, xcstr FunctionText)
 			: Args()
 		{
-			args[ARG::ModuleText] = Excel(xlGetName);
+			args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(2);
@@ -73,7 +89,7 @@ namespace xll {
 		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
 			: Args()
 		{
-			args[ARG::ModuleText] = Excel(xlGetName);
+			args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = TypeText;
 			args[ARG::FunctionText] = FunctionText;
@@ -89,6 +105,7 @@ namespace xll {
 
 			return *this;
 		}
+
 		/// Specify the return type and argument types of the function.
 		Args& TypeText(xcstr typeText)
 		{
@@ -102,6 +119,10 @@ namespace xll {
 			args[ARG::FunctionText] = functionText;
 
 			return *this;
+		}
+		const OPER12& FunctionText() const
+		{
+			return args[ARG::FunctionText];
 		}
 		/// Specify the macro type of the function.
 		/// Use 1 for functions, 2 for macros, and 0 for hidden functions. 
@@ -200,6 +221,9 @@ namespace xll {
 		}
 		// Str ...
 	};
+
+	using Function = Args;
+	using Macro = Args;
 
 	/// Array appropriate for xlfRegister.
 	/// Use like <c>Excelv(xlfRegister, Arguments(...))</c>
