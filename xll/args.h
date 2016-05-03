@@ -59,8 +59,11 @@ namespace xll {
 		static int Arity(const OPER12& tt)
 		{
 			ensure (tt.type() == xltypeStr);
-			int arity = std::count_if(tt.val.str + 1, tt.val.str + 1 + tt.val.str[0], 
-				[](XCHAR c) { return L'A' <= c && c <= L'U'; });
+			XCHAR* b = tt.val.str + 1;
+			XCHAR* e = b + tt.val.str[0];
+			int arity = static_cast<int>(std::count_if(b, e, 
+				[](const XCHAR& c) { return L'A' <= c && c <= L'U'; }
+			));
 			--arity; // don't count return value
 			
 			return arity;
