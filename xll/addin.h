@@ -7,14 +7,18 @@ namespace xll {
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
 	public:
+		/// Returns the RegisterId (Num) give the function text
+		static OPER12 RegisterId(const OPER12& functionText)
+		{
+			return Excel(xlfEvaluate, Excel(xlfConcatenate, OPER12(L"="), functionText)); 
+		}
 		AddIn(const Args& args)
 		{
-			Auto<Open> ao([&]() { return xltypeNum == Excelv(xlfRegister, args).type(); });
+			Auto<Open> ao([&]() { 
+				return Register(args).isNum();
+			});
 			Auto<Close> ac([&]() {
-				return xltypeNum == Excel(xlfUnregister,	
-					// The RegisterId of the function.
-					Excelv(xlfEvaluate, 
-						Excel(xlfConcatenate, OPER12(L"="), args.FunctionText()))); 
+				return Excel(xlfUnregister, RegisterId(args.FunctionText())).isNum();
 			});
 		}
 	};

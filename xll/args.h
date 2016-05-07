@@ -28,27 +28,28 @@ namespace xll {
 
 	using xcstr = const XCHAR*;
 
-	inline const OPER12& XlGetName()
-	{
-		static OPER12 hModule;
-		
-		if (hModule.xltype != xltypeStr) {
-			hModule = Excel(xlGetName);
-			/*
-			WCHAR name[2048];
-			DWORD size = 2048;
-			GetModuleFileNameW(xll_hModule, name, size);
-			hModule = OPER12(name);
-			*/
-		}
-
-		return hModule;
-	}
 	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
 		OPER12 args;
 		mutable int arity;
 	public:
+		/// Name of Excel add-in
+		static OPER12& XlGetName()
+		{
+			static OPER12 hModule;
+
+			if (hModule.xltype != xltypeStr) {
+				hModule = Excel(xlGetName);
+				/*
+				WCHAR name[2048];
+				DWORD size = 2048;
+				GetModuleFileNameW(xll_hModule, name, size);
+				hModule = OPER12(name);
+				*/
+			}
+
+			return hModule;
+		}
 		/// <summary>Number of function arguments</summary>
 		int Arity() const
 		{
@@ -83,7 +84,7 @@ namespace xll {
 		Args(xcstr Procedure, xcstr FunctionText)
 			: Args()
 		{
-			args[ARG::ModuleText] = XlGetName();
+			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(2);
@@ -92,13 +93,20 @@ namespace xll {
 		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
 			: Args()
 		{
-			args[ARG::ModuleText] = XlGetName();
+			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = TypeText;
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = MacroType;
 
 			arity = Arity(args[ARG::TypeText]);
+		}
+
+		Args& ModuleText(const OPER12& moduleText)
+		{
+			args[ARG::ModuleText] = moduleText;
+
+			return *this;
 		}
 
 		/// Set the name of the C/C++ function to be called.
@@ -251,7 +259,12 @@ namespace xll {
 		xcstr ArgumentHelp9 = 0
 	)
 	{
-		OPER12 args(Excel(xlGetName));
+		OPER12 args(0);
+		try {
+			args[ARG::ModuleText] = Excel(xlGetName);
+		}
+		catch (...)
+		{  }
 		args.push_back(OPER12(Procedure));
 		args.push_back(OPER12(TypeText));
 		args.push_back(OPER12(FunctionText));
@@ -273,6 +286,17 @@ namespace xll {
 
 		return args;
 	}
+
+	/// Register an add-in function or macro
+	inline OPER12 Register(const Args& args)
+	{
+		Args args_(args);
+
+		args_.ModuleText(Excel(xlGetName));
+
+		return Excelv(xlfRegister, args_);
+	}
+
 	/*
 	// Convert __FUNCDNAME__ to arguments for xlfRegister
 	inline Args Demangle(const XCHAR* F)

@@ -2,11 +2,10 @@
 #include "../xll/xll.h"
 
 using namespace xll;
-Auto<Open> xao_foo2_([&]{
-	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+Auto<Open> xao_foo2_([]{
+	return Register(Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num")).isNum();
 	// #VALUE! since FOO2 is the name of a cell
 	//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
-	return 1;
 });
 double WINAPI foo2(double x)
 {
@@ -15,7 +14,7 @@ double WINAPI foo2(double x)
 	return 2*x;
 }
 /*
-AddIn xai_foo3(Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+AddIn xai_foo3(
 Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
 	.Arg(XLL_DOUBLE, L"Num")
 	.Category(L"MyCategory")
@@ -30,7 +29,7 @@ double WINAPI foo3(double x)
 */
 
 
-Auto<Open> xao_alert([]() { return Excelv(xlfRegister, Args(L"?xll_alert", L"XLL.ALERT")).type() == xltypeNum;});
+Auto<Open> xao_alert([]() { return Register(Args(L"?xll_alert", L"XLL.ALERT")).isNum();});
 int WINAPI xll_alert()
 {
 #pragma XLLEXPORT
