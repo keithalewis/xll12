@@ -256,9 +256,14 @@ namespace xll {
 
 		operator double() const
 		{
-			ensure (type() == xltypeNum || type() == xltypeInt);
+			if (type() == xltypeNum)
+				return val.num;
+			if (type() == xltypeInt)
+				return val.w;
+			if (type() == xltypeBool)
+				return val.xbool;
 
-			return type() == xltypeNum ? val.num : val.w;
+			throw std::runtime_error("OPER12::operator double() only used for num, int, and bool");
 		}
 		int isNum() const
 		{
@@ -284,6 +289,9 @@ namespace xll {
 				copy_str(str);
 			}
 		}
+		OPER12(const std::wstring& str)
+			: OPER12(str.data(), str.length())
+		{ }
 		int isStr() const
 		{
 			return type() == xltypeStr ? TRUE : FALSE;
@@ -294,11 +302,12 @@ namespace xll {
 			return operator=(OPER12(str));
 		}
 		*/
-		// append
-		OPER12& operator&=(const XCHAR* str)
+		///  Append a string
+		OPER12& append(const XCHAR* str, size_t len = 0)
 		{
 			if (xltype == xltypeStr) {
-				size_t len = wcslen(str);
+				if (!len)
+					len = wcslen(str);
 				size_t end = 1 + val.str[0];
 				reallocate_str(val.str[0] + len);
 				wmemcpy(val.str + end, str, len);
@@ -311,6 +320,14 @@ namespace xll {
 			}
 
 			return *this;
+		}
+		OPER12& operator&=(const XCHAR* str)
+		{
+			return append(str);
+		}
+		OPER12& operator&=(const std::wstring& str)
+		{
+			return append(str.data(), str.length());
 		}
 
 		/*

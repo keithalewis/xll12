@@ -213,11 +213,19 @@ namespace xll {
 
 			return *this;
 		}
+		int isThreadsafe()
+		{
+			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_THREAD_SAFE)).isNum();
+		}
 		Args& Uncalced()
 		{
 			args[ARG::TypeText] &= XLL_UNCALCED;
 
 			return *this;
+		}
+		int isUncalced()
+		{
+			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_UNCALCED)).isNum();
 		}
 		Args& Volatile()
 		{
@@ -225,6 +233,11 @@ namespace xll {
 
 			return *this;
 		}
+		int isVolatile()
+		{
+			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_VOLATILE)).isNum();
+		}
+
 		/// Convenience function for number types.
 		Args& Num(xcstr text, xcstr helpText = nullptr)
 		{
