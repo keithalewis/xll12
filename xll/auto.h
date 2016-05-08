@@ -39,7 +39,7 @@ namespace xll {
 		}
 		static int Call(void)
 		{
-			return std::all_of(begin(macros()), end(macros()), [](const macro& m) { return m(); });
+			return all_of(begin(macros()), end(macros()), [](const macro& m) { return m(); });
 		}
 	private:
 		static std::vector<macro>& macros(void)

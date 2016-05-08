@@ -137,6 +137,12 @@ void test_str()
 	const XCHAR* null = 0;
 	OPER12 Null(null);
 	ensure (Null.xltype == xltypeMissing);
+
+	OPER12 o2;
+	o2 &= L"foo";
+	ensure (o2 == L"foo");
+	o2 &= L"bar";
+	ensure (o2 == L"foobar");
 }
 void test_bool()
 {

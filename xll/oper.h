@@ -312,6 +312,7 @@ namespace xll {
 
 			return *this;
 		}
+
 		/*
 		bool operator==(const XCHAR* str) const
 		{
