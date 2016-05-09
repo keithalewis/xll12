@@ -298,11 +298,10 @@ namespace xll {
 		OPER12& operator&=(const XCHAR* str)
 		{
 			if (xltype == xltypeStr) {
-				size_t origLen = val.str[0];
-				size_t len = wcslen(str);			
-				reallocate_str(origLen + len);
-				XCHAR* end = val.str + 1 + origLen;
-				wmemcpy(end, str, len);
+				size_t len = wcslen(str);
+				size_t end = 1 + val.str[0];
+				reallocate_str(val.str[0] + len);
+				wmemcpy(val.str + end, str, len);
 			}
 			else if (xltype == xltypeNil || xltype == xltypeMissing) { /// xltype == OPER12().xltype
 				operator=(str);
