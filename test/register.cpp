@@ -2,8 +2,9 @@
 #include "../xll/xll.h"
 
 using namespace xll;
+/*
 Auto<Open> xao_foo2_([]{
-	return Register(Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num")).isNum();
+	return Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num").Register().isNum();
 	// #VALUE! since FOO2 is the name of a cell
 	//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
 });
@@ -13,7 +14,7 @@ double WINAPI foo2(double x)
 
 	return 2*x;
 }
-/*
+*/
 AddIn xai_foo3(
 Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
 	.Arg(XLL_DOUBLE, L"Num")
@@ -26,9 +27,7 @@ double WINAPI foo3(double x)
 
 	return 3*x;
 }
-*/
-
-
+/*
 Auto<Open> xao_alert([]() { return Register(Args(L"?xll_alert", L"XLL.ALERT")).isNum();});
 int WINAPI xll_alert()
 {
@@ -40,7 +39,7 @@ int WINAPI xll_alert()
 	return 1;
 }
 //On<Doubleclick> xlodc(0, L"XLL.ALERT");
-
+*/
 XCHAR* funcdname[64];
 
 #define L_(x) L ## x

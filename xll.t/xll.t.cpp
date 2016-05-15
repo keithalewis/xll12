@@ -247,7 +247,7 @@ void test_handle()
 
 void test_arity()
 {
-	Args args;
+	Args args(XLL_DOUBLE, L"?proc", L"Proc");
 	ensure (args.Arity() == 0);
 	args.Num(L"x", L"is an x");
 	ensure (args.Arity() == 1);
