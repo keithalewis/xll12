@@ -10,6 +10,7 @@
 // Module handle from DllMain
 extern HMODULE xll_hModule;
 
+#include "fp.h"
 #include "error.h"
 #include "on.h"
 #include "addin.h"

@@ -259,6 +259,18 @@ void test_arity()
 	ensure (args.Arity() == 2);
 }
 
+void test_fp()
+{
+	xll::FP12 f0;
+	ensure (f0.is_empty());
+	f0.resize(2,3);
+	ensure (f0.size() == 6);
+	ensure (f0.rows() == 2);
+	ensure (f0.columns() == 3);
+	f0(1,2) = 3;
+	ensure (f0[5] == 3);
+}
+
 int main()
 {
 	dre.seed(static_cast<unsigned>(::time(0)));
@@ -272,6 +284,7 @@ int main()
 	test_multi();
 	test_handle();
 	test_arity();
+	test_fp();
 
 	return 0;
 }

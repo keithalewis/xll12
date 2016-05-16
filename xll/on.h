@@ -45,12 +45,10 @@ namespace xll {
 		On(xcstr text, xcstr macro)
 		{
 			Auto<Open> xao([text, macro]() {
-				return Excel(Key::On, OPER12(text), OPER12(macro))
-					.type() == xltypeNum;
+				return Excel(Key::On, OPER12(text), OPER12(macro)) == true;
 			});
 			Auto<Close> xac([text]() {
-				return Excel(Key::On, OPER12(text))
-					.type() == xltypeNum;
+				return Excel(Key::On, OPER12(text)) == true;
 			});
 		}
 		On(xcstr text, xcstr macro, bool activate)
@@ -58,28 +56,22 @@ namespace xll {
 			ensure (Key::On == xlcOnSheet);
 
 			Auto<Open> xao([text, macro, activate]() {
-				return Excel(Key::On, OPER12(text), OPER12(macro), OPER12(activate))
-					.type() == xltypeNum;
+				return Excel(Key::On, OPER12(text), OPER12(macro), OPER12(activate)) == true;
 			});
 			Auto<Close> xac([text]() {
-				return Excel(Key::On, OPER12(text))
-					.type() == xltypeNum;
+				return Excel(Key::On, OPER12(text)) == true;
 			});
 		}
 		On(const OPER12& time, xcstr macro, 
 			const OPER12& tolerance = OPER12{}, bool insert = true)
 		{
-			OPER12 x(5,1);
-
 			ensure (Key::On == xlcOnTime);
 
 			Auto<Open> xao([time, macro, tolerance, insert]() {
-				return Excel(Key::On, OPER12(time), OPER12(macro), OPER12(tolerance), OPER12(insert))
-					.type() == xltypeNum;
+				return Excel(Key::On, OPER12(time), OPER12(macro), OPER12(tolerance), OPER12(insert)) == true;
 			});
 			Auto<Close> xac([]() {
-				return Excel(Key::On)
-					.type() == xltypeNum;
+				return Excel(Key::On) == true;
 			});
 		}
 	};

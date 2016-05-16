@@ -201,7 +201,7 @@ namespace xll {
 			Type &= type;
 			
 			OPER12& Text = args[ARG::ArgumentText];
-			if (Arity() > 0)
+			if (Arity() > 1)
 				Text &= L", ";
 			Text &= text;
 			
