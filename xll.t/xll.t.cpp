@@ -1,6 +1,7 @@
 // xll.t.cpp - Console testing program for xll12
 #include "../xll/xll.h"
 #include <ctime>
+#include <numeric>
 #include <random>
 
 //[module(name="xll12")];
@@ -261,14 +262,76 @@ void test_arity()
 
 void test_fp()
 {
-	xll::FP12 f0;
-	ensure (f0.is_empty());
-	f0.resize(2,3);
-	ensure (f0.size() == 6);
-	ensure (f0.rows() == 2);
-	ensure (f0.columns() == 3);
-	f0(1,2) = 3;
-	ensure (f0[5] == 3);
+	xll::FP12 a;
+	ensure (a.is_empty());
+	ensure (a[0] != a[0]);
+	a.resize(2,3);
+	ensure (a.size() == 6);
+	ensure (a.rows() == 2);
+	ensure (a.columns() == 3);
+	a(1,2) = 3;
+	ensure (a[5] == 3);
+
+	std::iota(begin(a), end(a), 0);
+	ensure (a[0] == 0);
+	ensure (a[5] == 5);
+	ensure (a(0,0) == 0);
+	ensure (a(1,2) == 5);
+	ensure (a.index(-1, -1) == 5);
+	ensure (a.index(-2, -6) == 0);
+
+	xll::FP12 a_(a);
+	ensure (a_ == a);
+	xll::FP12 _a;
+	_a = a;
+	ensure (_a == a);
+
+	xll::FP12 A_(*a.get());
+	ensure (A_ == a);
+	xll::FP12 _A;
+	_A = *a.get();
+	ensure (_A == a);
+
+	xll::FP12 a2;
+	a2.push_back(1.23);
+	ensure (a2.rows() == 1);
+	ensure (a2.columns() == 1);
+	ensure (a2[0] == 1.23);
+	a2.push_back(4.56);
+	ensure (a2.rows() == 1);
+	ensure (a2.columns() == 2);
+	ensure (a2[1] = 4.56);
+	ensure (a2(0,1) == 4.56);
+
+	a2.push_back({7, 8});
+	ensure (a2.rows() == 1);
+	ensure (a2.columns() == 4);
+	ensure (a2[2] == 7);
+	ensure (a2[3] == 8);
+
+	a2.resize(1, 2);
+	ensure (a2.rows() == 1);
+	ensure (a2.columns() == 2);
+	ensure (a2[0] = 1.23);
+	ensure (a2[1] = 4.56);
+	ensure (a2(0,1) == 4.56);
+	a2.push_down({7,8});
+	ensure (a2.rows() == 2);
+	ensure (a2.columns() == 2);
+	ensure (a2(1,0) == 7);
+	ensure (a2(1,1) == 8);
+
+	xll::FP12 a3{1,2};
+	ensure (a3.rows() == 1);
+	ensure (a3.columns() == 2);
+
+	xll::FP12 a4{{0},{1,2}};
+	ensure (a4.rows() == 2);
+	ensure (a4.columns() == 2);
+	ensure (a4(0,0) == 0);
+//	ensure (a4(0,1) == 0); // uninitialized
+	ensure (a4(1,0) == 1);
+	ensure (a4(1,1) == 2);
 }
 
 int main()
