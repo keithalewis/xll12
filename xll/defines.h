@@ -34,7 +34,7 @@
 #define XLL_CSTRING_ L"F%" // reference to a null terminated unicode string
 #define XLL_PSTRING_ L"G%" // reference to a byte counted unicode string
 #define XLL_USHORT   L"H"  // unsigned 2 byte int
-#define XLL_WORD     L"J"  // signed 4 byte int
+#define XLL_WORD     L"H"  // unsigned 2 byte int
 #define XLL_SHORT    L"I"  // signed 2 byte int
 #define XLL_LONG     L"J"  // signed 4 byte int
 #define XLL_FP       L"K%" // pointer to struct FP
@@ -50,7 +50,7 @@
 #define XLL_CLUSTER_SAFE L"&"	// declares function to be cluster safe
 #define XLL_ASYNCHRONOUS L"X"	// declares function to be asynchronous
 #define XLL_VOID     L">"	    // return type to use for asynchronous functions
-
+				
 #define XLL_HANDLE XLL_DOUBLE
 
 #ifdef XLL_EXPORTS

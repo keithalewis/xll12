@@ -20,6 +20,21 @@ enum class xlerr {
 	GettingData = xlerrGettingData
 };
 
+enum class xltype {
+	Num = xltypeNum,        // IEEE 64-bit floating point
+	Str = xltypeStr,        // Counted string
+	Bool = xltypeBool,      // Boolean value
+	Ref = xltypeRef,        // Reference to multiple ranges
+	Err = xltypeErr,        // Excel error type
+	Flow = xltypeFlow,      // not used
+	Multi = xltypeMulti,    // A range of OPERs
+	Missing = xltypeMissing,// Argument not specified
+	Nil = xltypeNil,        // Empty data type
+	SRef = xltypeSRef,      // Single reference to a range
+	Int = xltypeInt,        // Integer type that never occurs
+	BigData = xltypeBigData,// Binary data
+};
+
 inline bool operator==(const XLREF12& r, const XLREF12& s)
 {
 	return r.colFirst == s.colFirst
@@ -41,16 +56,18 @@ namespace xll {
 	/// <summary>
 	/// Wrapper for XLREF12 class
 	/// </summary>
+	/// The <c>XLREF12</c> class represents a reference to a two dimensional
+	/// range of cells.
 	/// <remarks>
-	/// The constructor uses <c>height</c> and <c>width</c> instead of <c>rw/colFirst/Last</c>
+	/// The constructor uses <c>height</c> and <c>width</c> instead of <c>rw/colLast</c>
 	/// </remarks>
 	class REF12 : public XLREF12 {
 	public:
-		// default is A1
+		/// Construct a reference to atwo dimensional range.
 		REF12(RW rw = 0, COL col = 0, RW height = 1, COL width = 1)
 			: XLREF12{rw, rw + height - 1, col, col + width - 1}
 		{ }
-		// translate by rw, col
+		/// Translate a reference by rw, col
 		REF12& move(RW rw, COL col = 0)
 		{
 			rwFirst  += rw;
@@ -65,18 +82,23 @@ namespace xll {
 		REF12& left(COL col = 1) { return move(0, -col); }
 		REF12& right(COL col = 1) { return move(0, col); }
 	};
+	/// Return a reference translated by <c>rw</c> and <c>col</c>.
 	inline REF12 move(REF12 r, RW rw = 0, COL col = 0)
 	{
 		return r.move(rw, col);
 	}
 		
-	/// 
+	/// <summary>
+	/// Value type that represents an Excel cell or range.
+	/// </summary>
 	struct OPER12 : public XLOPER12 
 	{
 		friend void swap(OPER12& a, OPER12& b)
 		{
-			std::swap(a.xltype, b.xltype);
-			std::swap(a.val, b.val);
+			using std::swap;
+
+			swap(a.xltype, b.xltype);
+			swap(a.val, b.val);
 		}
 
 		// Strip out if xlFree or xlAutoFree is involved.
@@ -85,9 +107,9 @@ namespace xll {
 			return xltype&~(xlbitXLFree|xlbitDLLFree);
 		}
 
-		OPER12()
+		OPER12(::xltype type = xltype::Missing)
 		{
-			xltype = xltypeMissing;
+			xltype = static_cast<DWORD>(type);
 		}
 		OPER12(const OPER12& o)
 		{
@@ -113,7 +135,7 @@ namespace xll {
 			xltype = o.xltype;
 			val = o.val;
 
-			o.xltype = xltypeMissing;
+			o.xltype = xltypeNil;
 		}
 		OPER12& operator=(OPER12 o)
 		{
@@ -257,11 +279,19 @@ namespace xll {
 		// append
 		OPER12& operator&=(const XCHAR* str)
 		{
-			size_t origLen = val.str[0];
-			size_t len = wcslen(str);			
-			reallocate_str(len);
-			XCHAR* end = val.str + 1 + origLen;
-			wmemcpy(end, str, len);
+			if (xltype == xltypeStr) {
+				size_t origLen = val.str[0];
+				size_t len = wcslen(str);			
+				reallocate_str(len);
+				XCHAR* end = val.str + 1 + origLen;
+				wmemcpy(end, str, len);
+			}
+			else if (xltype == xltypeNil || xltype == xltypeMissing) {
+				operator=(str);
+			}
+			else {
+				throw std::runtime_error("OPER12::operator&=: this must be a string, missing, or nil");
+			}
 
 			return *this;
 		}
@@ -456,22 +486,19 @@ namespace xll {
 		{
 			ensure (len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::malloc((1 + len)*sizeof(XCHAR)));
-			ensure (val.str);
-			if (val.str) {
+			ensure (val.str != nullptr);
+			if (val.str)
 				val.str[0] = static_cast<XCHAR>(len);
-				xltype = xltypeStr;
-			}
+			xltype = xltypeStr;
 		}
 		void reallocate_str(size_t len)
 		{
 			ensure (xltype == xltypeStr);
-			len += val.str[0];
 			ensure (len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::realloc(val.str, (1 + len)*sizeof(XCHAR)));
 			ensure (val.str);
-			if (val.str) {
+			if (val.str)
 				val.str[0] = static_cast<XCHAR>(len);
-			}
 		}
 		void copy_str(const XCHAR* str)
 		{

@@ -2,13 +2,52 @@
 #include "../xll/xll.h"
 
 using namespace xll;
+Auto<Open> xao_foo2_([&]{
+	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+	// #VALUE! since FOO2 is the name of a cell
+	//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
+	return 1;
+});
+double WINAPI foo2(double x)
+{
+#pragma XLLEXPORT
+
+	return 2*x;
+}
+/*
+AddIn xai_foo3(Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
+	.Arg(XLL_DOUBLE, L"Num")
+	.Category(L"MyCategory")
+	.FunctionHelp(L"Call foo3")
+);
+double WINAPI foo3(double x)
+{
+#pragma XLLEXPORT
+
+	return 3*x;
+}
+*/
+
+
+Auto<Open> xao_alert([]() { return Excelv(xlfRegister, Args(L"?xll_alert", L"XLL.ALERT")).type() == xltypeNum;});
+int WINAPI xll_alert()
+{
+#pragma XLLEXPORT
+
+	OPER12 o;
+	o = XLC(Alert, OPER12(L"Hi"));
+	
+	return 1;
+}
+//On<Doubleclick> xlodc(0, L"XLL.ALERT");
 
 XCHAR* funcdname[64];
 
 #define L_(x) L ## x
 
 //#define FOO Auto<Open> xao_foo ## __COUNTER__ ([](){Excelv(xlfRegister,Arguments(L"?foo"
-
+#if 0
 template<class T>
 struct xll_traits {
 	static const XCHAR* type();
@@ -43,3 +82,4 @@ BOOL WINAPI xll_foo2(double,double)
 #pragma XLLEXPORT
 	return TRUE;
 }
+#endif

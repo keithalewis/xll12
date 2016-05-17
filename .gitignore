@@ -3,7 +3,7 @@
 
 # User-specific files
 *.suo
-*.user
+#*.user
 *.userosscache
 *.sln.docstates
 
@@ -211,3 +211,42 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+*.json
+*.htm
+*.png
+*.gif
+/doc/Help/xll12.chm
+/doc/Help/WebTOC.xml
+/doc/Help/WebKI.xml
+/doc/Help/Web.Config
+/doc/Help/toc/roottoc.xml
+/doc/Help/toc/33c94631-5dc8-4fac-bd60-40ac43616b90.xml
+/doc/Help/toc/2caaad8a-aada-4863-b318-4a77177320a6.xml
+/doc/Help/styles/branding.css
+/doc/Help/styles/branding-zh-TW.css
+/doc/Help/styles/branding-zh-CN.css
+/doc/Help/styles/branding-Website.css
+/doc/Help/styles/branding-tr-TR.css
+/doc/Help/styles/branding-ru-RU.css
+/doc/Help/styles/branding-pt-BR.css
+/doc/Help/styles/branding-pl-PL.css
+/doc/Help/styles/branding-ko-KR.css
+/doc/Help/styles/branding-ja-JP.css
+/doc/Help/styles/branding-it-IT.css
+/doc/Help/styles/branding-HelpViewer.css
+/doc/Help/styles/branding-Help1.css
+/doc/Help/styles/branding-fr-FR.css
+/doc/Help/styles/branding-es-ES.css
+/doc/Help/styles/branding-en-US.css
+/doc/Help/styles/branding-de-DE.css
+/doc/Help/styles/branding-cs-CZ.css
+/doc/Help/SearchHelp.php
+/doc/Help/SearchHelp.inc.php
+/doc/Help/SearchHelp.aspx
+/doc/Help/search.html
+/doc/Help/scripts/jquery-1.11.0.min.js
+/doc/Help/scripts/branding.js
+/doc/Help/scripts/branding-Website.js
+/doc/Help/index.html
+*.db
+*.ico
