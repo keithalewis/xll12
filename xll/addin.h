@@ -7,14 +7,14 @@ namespace xll {
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
 	public:
+		/// Register and Unregister an add-in when Excel calls xlAutoOpen and xlAutoClose.
 		AddIn(const Args& args)
 		{
-			Auto<Open> ao([&]() { return xltypeNum == Excelv(xlfRegister, args).type(); });
-			Auto<Close> ac([&]() {
-				return xltypeNum == Excel(xlfUnregister,	
-					// The RegisterId of the function.
-					Excelv(xlfEvaluate, 
-						Excel(xlfConcatenate, OPER12(L"="), args.FunctionText()))); 
+			Auto<Open> ao([args]() { 
+				return args.Register().isNum();
+			});
+			Auto<Close> ac([args]() {
+				return Excel(xlfUnregister, args.RegisterId()) == true;
 			});
 		}
 	};

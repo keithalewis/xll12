@@ -107,6 +107,16 @@ namespace xll {
 			return xltype&~(xlbitXLFree|xlbitDLLFree);
 		}
 
+		int isMissing() const
+		{
+			return type() == xltypeMissing ? TRUE : FALSE;
+		}
+		int isNil() const
+		{
+			return type() == xltypeNil ? TRUE : FALSE;
+		}
+
+
 		OPER12(::xltype type = xltype::Missing)
 		{
 			xltype = static_cast<DWORD>(type);
@@ -246,9 +256,18 @@ namespace xll {
 
 		operator double() const
 		{
-			ensure (type() == xltypeNum || type() == xltypeInt);
+			if (type() == xltypeNum)
+				return val.num;
+			if (type() == xltypeInt)
+				return val.w;
+			if (type() == xltypeBool)
+				return val.xbool;
 
-			return type() == xltypeNum ? val.num : val.w;
+			throw std::runtime_error("OPER12::operator double() only used for num, int, and bool");
+		}
+		int isNum() const
+		{
+			return type() == xltypeNum ? TRUE : FALSE;
 		}
 
 		// Str
@@ -270,31 +289,47 @@ namespace xll {
 				copy_str(str);
 			}
 		}
+		OPER12(const std::wstring& str)
+			: OPER12(str.data(), str.length())
+		{ }
+		int isStr() const
+		{
+			return type() == xltypeStr ? TRUE : FALSE;
+		}
 		/*
 		OPER12& operator=(const XCHAR* str)
 		{
 			return operator=(OPER12(str));
 		}
 		*/
-		// append
-		OPER12& operator&=(const XCHAR* str)
+		///  Append a string
+		OPER12& append(const XCHAR* str, size_t len = 0)
 		{
 			if (xltype == xltypeStr) {
-				size_t origLen = val.str[0];
-				size_t len = wcslen(str);			
-				reallocate_str(len);
-				XCHAR* end = val.str + 1 + origLen;
-				wmemcpy(end, str, len);
+				if (!len)
+					len = wcslen(str);
+				size_t end = 1 + val.str[0];
+				reallocate_str(val.str[0] + len);
+				wmemcpy(val.str + end, str, len);
 			}
-			else if (xltype == xltypeNil || xltype == xltypeMissing) {
+			else if (xltype == xltypeNil || xltype == xltypeMissing) { /// xltype == OPER12().xltype
 				operator=(str);
 			}
 			else {
-				throw std::runtime_error("OPER12::operator&=: this must be a string, missing, or nil");
+				throw std::runtime_error("OPER12::operator&=: must be a string or default");
 			}
 
 			return *this;
 		}
+		OPER12& operator&=(const XCHAR* str)
+		{
+			return append(str);
+		}
+		OPER12& operator&=(const std::wstring& str)
+		{
+			return append(str.data(), str.length());
+		}
+
 		/*
 		bool operator==(const XCHAR* str) const
 		{
@@ -313,6 +348,10 @@ namespace xll {
 			return operator=(OPER12(xbool));
 		}
 		*/
+		int isBool() const
+		{
+			return type() == xltypeBool ? TRUE : FALSE;
+		}
 
 		// Ref
 
@@ -321,6 +360,10 @@ namespace xll {
 		{
 			xltype = xltypeErr;
 			val.err = static_cast<int>(err);
+		}
+		int isErr() const
+		{
+			return type() == xltypeErr ? TRUE : FALSE;
 		}
 
 		// Multi
@@ -350,6 +393,11 @@ namespace xll {
 				++i;
 			}
 		}
+		int isMulti() const
+		{
+			return type() == xltypeMulti ? TRUE : FALSE;
+		}
+
 		RW rows() const
 		{
 			return type() == xltypeMulti ? val.array.rows : 1;
@@ -459,6 +507,10 @@ namespace xll {
 			xltype = xltypeSRef;
 			val.sref.ref = ref;
 		}
+		int isSRef() const
+		{
+			return type() == xltypeSRef ? TRUE : FALSE;
+		}
 
 		// Int
 		explicit OPER12(const int& w)
@@ -481,10 +533,15 @@ namespace xll {
 				|| type() == xltypeNum && val.num == w;
 		}
 		*/
+		int isInt() const
+		{
+			return type() == xltypeInt ? TRUE : FALSE;
+		}
+
 	private:
 		void allocate_str(size_t len)
 		{
-			ensure (len < std::numeric_limits<XCHAR>::max());
+			ensure (1 + len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::malloc((1 + len)*sizeof(XCHAR)));
 			ensure (val.str != nullptr);
 			if (val.str)
@@ -494,7 +551,7 @@ namespace xll {
 		void reallocate_str(size_t len)
 		{
 			ensure (xltype == xltypeStr);
-			ensure (len < std::numeric_limits<XCHAR>::max());
+			ensure (1 + len < std::numeric_limits<XCHAR>::max());
 			val.str = static_cast<XCHAR*>(::realloc(val.str, (1 + len)*sizeof(XCHAR)));
 			ensure (val.str);
 			if (val.str)
@@ -502,7 +559,7 @@ namespace xll {
 		}
 		void copy_str(const XCHAR* str)
 		{
-			wcsncpy(val.str + 1, str, val.str[0]);
+			wmemcpy(val.str + 1, str, val.str[0]);
 		}
 		void deallocate_str()
 		{

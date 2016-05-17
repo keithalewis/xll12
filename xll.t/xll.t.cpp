@@ -129,14 +129,40 @@ void test_str()
 	ensure (str == L"foobar");
 
 	OPER12 o;
-	o = L"foobaz";
-	ensure (o == L"foobaz");
-	o &= L"blah";
-	ensure (o == L"foobazblah");
+	o = L"foo";
+	ensure (o == L"foo");
+	ensure (o != L"bar");
+	o &= L"bar";
+	ensure (o.val.str[0] == 6);
+	ensure (o == L"foobar");
 
 	const XCHAR* null = 0;
 	OPER12 Null(null);
 	ensure (Null.xltype == xltypeMissing);
+	OPER12 Empty(L"");
+	ensure (Empty.xltype == xltypeStr);
+	ensure (Empty.val.str[0] == 0);
+	Empty &= L"a";
+	ensure (Empty.val.str[0] == 1);
+	ensure (Empty.val.str[1] == L'a');
+
+	OPER12 o2;
+	o2 = L"foo";
+	ensure (o2 == L"foo");
+	o2 &= L"bar";
+	ensure (o2 == L"foobar")
+	{
+		auto u = std::uniform_int_distribution<int>{1, std::numeric_limits<XCHAR>::max()/2};
+		for (int i = 0; i < 100; ++i) {
+			size_t len = u(dre);
+			std::wstring s3;
+			s3.resize(len);
+			std::generate_n(begin(s3), len, [&]() { return static_cast<XCHAR>(u(dre)); });
+			OPER12 o3(s3);
+			o3 &= s3;
+			ensure (o3.val.str[0] == 2*len);
+		}
+	}
 }
 void test_bool()
 {
@@ -145,6 +171,7 @@ void test_bool()
 	ensure (b.val.xbool);
 	ensure (b.val.xbool == 1);
 	ensure (b.val.xbool == TRUE);
+	ensure (b);
 }
 void test_multi()
 {
@@ -220,7 +247,7 @@ void test_handle()
 
 void test_arity()
 {
-	Args args;
+	Args args(XLL_DOUBLE, L"?proc", L"Proc");
 	ensure (args.Arity() == 0);
 	args.Num(L"x", L"is an x");
 	ensure (args.Arity() == 1);
@@ -230,6 +257,18 @@ void test_arity()
 	ensure (args.Arity() == 2);
 	args.Volatile();
 	ensure (args.Arity() == 2);
+}
+
+void test_fp()
+{
+	xll::FP12 f0;
+	ensure (f0.is_empty());
+	f0.resize(2,3);
+	ensure (f0.size() == 6);
+	ensure (f0.rows() == 2);
+	ensure (f0.columns() == 3);
+	f0(1,2) = 3;
+	ensure (f0[5] == 3);
 }
 
 int main()
@@ -245,6 +284,7 @@ int main()
 	test_multi();
 	test_handle();
 	test_arity();
+	test_fp();
 
 	return 0;
 }

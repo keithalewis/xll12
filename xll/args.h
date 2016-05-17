@@ -28,62 +28,70 @@ namespace xll {
 
 	using xcstr = const XCHAR*;
 
-	inline const OPER12& XlGetName()
-	{
-		static OPER12 hModule;
-		
-		if (hModule.xltype != xltypeStr) {
-			hModule = Excel(xlGetName);
-			/*
-			WCHAR name[2048];
-			DWORD size = 2048;
-			GetModuleFileNameW(xll_hModule, name, size);
-			hModule = OPER12(name);
-			*/
-		}
-
-		return hModule;
-	}
 	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
-		OPER12 args;
-		mutable int arity;
+		mutable OPER12 args;
 	public:
-		/// <summary>Number of function arguments</summary>
-		int Arity() const
+		/// Name of Excel add-in
+		static OPER12& XlGetName()
 		{
-			return arity;
+			static OPER12 hModule;
+
+			if (hModule.type() != xltypeStr) {
+				hModule = Excel(xlGetName);
+			}
+
+			return hModule;
 		}
 		/// <summary>Number of function arguments</summary>
 		/// Detect the number of arguments based on the text type of a function.
 		static int Arity(const OPER12& tt)
 		{
-			ensure (tt.type() == xltypeStr);
-			XCHAR* b = tt.val.str + 1;
-			XCHAR* e = b + tt.val.str[0];
-			int arity = static_cast<int>(std::count_if(b, e, 
-				[](const XCHAR& c) { return L'A' <= c && c <= L'U'; }
-			));
-			--arity; // don't count return value
-			
+			int arity = 0;
+
+			if (tt.type() == xltypeStr)
+			{
+				XCHAR* b = tt.val.str + 1;
+				XCHAR* e = b + tt.val.str[0];
+				arity = static_cast<int>(std::count_if(b, e, 
+					[](const XCHAR& c) { return L'A' <= c && c <= L'U'; }
+				));
+				--arity; // don't count return value
+			}
+
 			return arity;
+		}
+		/// <summary>Number of function arguments</summary>
+		int Arity() const
+		{
+			return Arity(args[ARG::TypeText]);
+		}
+		OPER12 RegisterId() const
+		{
+			return Excel(xlfEvaluate, Excel(xlfConcatenate, OPER12(L"="), args[ARG::FunctionText]));
 		}
 		/// For use as Excelv(xlfRegister, Args(....))
 		operator const OPER12&() const
 		{
 			return args;
 		}
+
 		/// Common default.
 		Args()
-			: arity(0), args(1, ARG::ArgumentHelp)
+			: args(1, ARG::ArgumentHelp)
 		{
 			std::fill(args.begin(), args.end(), OPER12(xltype::Nil));
 		}
+		Args(const Args&) = default;
+		Args& operator=(const Args&) = default;
+		~Args()
+		{ }
+
 		/// Macro
 		Args(xcstr Procedure, xcstr FunctionText)
 			: Args()
 		{
-			args[ARG::ModuleText] = XlGetName();
+			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(2);
@@ -92,13 +100,18 @@ namespace xll {
 		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
 			: Args()
 		{
-			args[ARG::ModuleText] = XlGetName();
+			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = TypeText;
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = MacroType;
+		}
 
-			arity = Arity(args[ARG::TypeText]);
+		Args& ModuleText(const OPER12& moduleText)
+		{
+			args[ARG::ModuleText] = moduleText;
+
+			return *this;
 		}
 
 		/// Set the name of the C/C++ function to be called.
@@ -188,13 +201,12 @@ namespace xll {
 			Type &= type;
 			
 			OPER12& Text = args[ARG::ArgumentText];
-			if (arity > 0)
+			if (Arity() > 1)
 				Text &= L", ";
 			Text &= text;
 			
-			++arity;
 			if (helpText && *helpText)
-				ArgumentHelp(arity, helpText);
+				ArgumentHelp(Arity(), helpText);
 
 			return *this;
 		}
@@ -205,11 +217,19 @@ namespace xll {
 
 			return *this;
 		}
+		int isThreadsafe()
+		{
+			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_THREAD_SAFE)).isNum();
+		}
 		Args& Uncalced()
 		{
 			args[ARG::TypeText] &= XLL_UNCALCED;
 
 			return *this;
+		}
+		int isUncalced()
+		{
+			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_UNCALCED)).isNum();
 		}
 		Args& Volatile()
 		{
@@ -217,12 +237,26 @@ namespace xll {
 
 			return *this;
 		}
+		int isVolatile()
+		{
+			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_VOLATILE)).isNum();
+		}
+
 		/// Convenience function for number types.
 		Args& Num(xcstr text, xcstr helpText = nullptr)
 		{
 			return Arg(XLL_DOUBLE, text, helpText);
 		}
 		// Str ...
+
+		/// Register an add-in function or macro
+		OPER12 Register() const // logically
+		{
+			if (args[ARG::ModuleText].type() != xltypeStr)
+				args[ARG::ModuleText] = XlGetName();
+
+			return Excelv(xlfRegister, args);
+		}
 	};
 
 	using Function = Args;
@@ -251,7 +285,7 @@ namespace xll {
 		xcstr ArgumentHelp9 = 0
 	)
 	{
-		OPER12 args(Excel(xlGetName));
+		OPER12 args(Args::XlGetName());
 		args.push_back(OPER12(Procedure));
 		args.push_back(OPER12(TypeText));
 		args.push_back(OPER12(FunctionText));
@@ -273,6 +307,7 @@ namespace xll {
 
 		return args;
 	}
+
 	/*
 	// Convert __FUNCDNAME__ to arguments for xlfRegister
 	inline Args Demangle(const XCHAR* F)

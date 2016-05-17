@@ -54,6 +54,9 @@
     <ClInclude Include="xll\addin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xll\fp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xll\XLCALL.CPP">

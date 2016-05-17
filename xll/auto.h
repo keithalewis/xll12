@@ -2,6 +2,7 @@
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include "defines.h"
+#include <algorithm>
 #include <functional>
 #include <vector>
 
@@ -38,12 +39,7 @@ namespace xll {
 		}
 		static int Call(void)
 		{
-			for (auto& m : macros()) {
-				if (!m())
-					return FALSE;
-			}
-
-			return TRUE;
+			return all_of(begin(macros()), end(macros()), [](const macro& m) { return m(); });
 		}
 	private:
 		static std::vector<macro>& macros(void)

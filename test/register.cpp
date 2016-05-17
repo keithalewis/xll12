@@ -2,11 +2,11 @@
 #include "../xll/xll.h"
 
 using namespace xll;
-Auto<Open> xao_foo2_([&]{
-	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+
+Auto<Open> xao_foo2_([]{
+	return Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num").Register().isNum();
 	// #VALUE! since FOO2 is the name of a cell
 	//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
-	return 1;
 });
 double WINAPI foo2(double x)
 {
@@ -14,8 +14,8 @@ double WINAPI foo2(double x)
 
 	return 2*x;
 }
-/*
-AddIn xai_foo3(Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num"));
+
+AddIn xai_foo3(
 Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
 	.Arg(XLL_DOUBLE, L"Num")
 	.Category(L"MyCategory")
@@ -27,10 +27,8 @@ double WINAPI foo3(double x)
 
 	return 3*x;
 }
-*/
 
-
-Auto<Open> xao_alert([]() { return Excelv(xlfRegister, Args(L"?xll_alert", L"XLL.ALERT")).type() == xltypeNum;});
+Auto<Open> xao_alert([]() { return Args(L"?xll_alert", L"XLL.ALERT").Register().isNum();});
 int WINAPI xll_alert()
 {
 #pragma XLLEXPORT
@@ -40,14 +38,25 @@ int WINAPI xll_alert()
 	
 	return 1;
 }
-//On<Doubleclick> xlodc(0, L"XLL.ALERT");
+On<Doubleclick> xlodc(L"", L"XLL.CALLER");
+AddIn xao_caller(Macro(L"?xll_caller", L"XLL.CALLER"));
+int WINAPI xll_caller()
+{
+#pragma XLLEXPORT
+	OPER12 caller = Excel(xlfCaller);
+	Excel(xlcAlert, Excel(xlfConcatenate, 
+		OPER12(L"You double clicked from: "),
+		Excel(xlfReftext, OPER12(caller), OPER12(true)))); // A1 style
 
+	return TRUE;
+}
+
+#if 0
 XCHAR* funcdname[64];
 
 #define L_(x) L ## x
 
 //#define FOO Auto<Open> xao_foo ## __COUNTER__ ([](){Excelv(xlfRegister,Arguments(L"?foo"
-#if 0
 template<class T>
 struct xll_traits {
 	static const XCHAR* type();
