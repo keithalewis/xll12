@@ -7,7 +7,7 @@
 #include <vector>
 
 // Export well known functions implemented by xll lib.
-//#pragma comment(linker, "/include:" XLL_DECORATE("DllMain", 12))
+#pragma comment(linker, "/include:" XLL_DECORATE("DllMain", 12))
 //#pragma comment(linker, "/export:" XLL_DECORATE("XLCallVer", 0))
 #pragma comment(linker, "/export:xlAutoOpen" XLL_X32("@0=xlAutoOpen"))
 #pragma comment(linker, "/export:xlAutoClose" XLL_X32("@0=xlAutoClose"))
