@@ -1,13 +1,9 @@
 // args.h - Arguments to register an Excel add-in
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
+#include <algorithm>
 #include "defines.h"
 #include "excel.h"
-#include <stdlib.h>
-#include <cuchar>
-#include <algorithm>
-#include <iterator>
-#include <map>
 
 namespace xll {
 
