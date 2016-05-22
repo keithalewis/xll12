@@ -182,6 +182,7 @@
     <ClInclude Include="xll\on.h" />
     <ClInclude Include="xll\oper.h" />
     <ClInclude Include="xll\args.h" />
+    <ClInclude Include="xll\test.h" />
     <ClInclude Include="xll\XLCALL.H" />
     <ClInclude Include="xll\xll.h" />
   </ItemGroup>

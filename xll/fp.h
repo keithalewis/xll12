@@ -399,3 +399,7 @@ inline auto begin(const xll::FP12& a) { return a.begin(); }
 inline auto begin(xll::FP12& a) { return a.begin(); }
 inline auto end(const xll::FP12& a) { return a.end(); }
 inline auto end(xll::FP12& a) { return a.end(); }
+inline auto index(const xll::FP12& a, INT32 i) { return a.index(i); }
+inline auto index(xll::FP12& a, INT32 i) { return a.index(i); }
+inline auto index(const xll::FP12& a, INT32 i, INT32 j) { return a.index(i, j); }
+inline auto index(xll::FP12& a, INT32 i, INT32 j) { return a.index(i, j); }
