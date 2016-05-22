@@ -38,16 +38,23 @@ int WINAPI xll_alert()
 	
 	return 1;
 }
-On<Doubleclick> xlodc(L"", L"XLL.CALLER");
+//On<Doubleclick> xlodc(L"", L"XLL.CALLER");
+On<Key> xlodc(ON_CTRL L"{F2}", L"XLL.CALLER");
 AddIn xao_caller(Macro(L"?xll_caller", L"XLL.CALLER"));
 int WINAPI xll_caller()
 {
 #pragma XLLEXPORT
-	OPER12 caller = Excel(xlfCaller);
-	Excel(xlcAlert, Excel(xlfConcatenate, 
-		OPER12(L"You double clicked from: "),
-		Excel(xlfReftext, OPER12(caller), OPER12(true)))); // A1 style
-
+	Excel(xlcAlert, OPER12(L"Hi"));
+	/*
+		Excel(xlfConcatenate, 
+			OPER12(L"You double clicked from: "),
+			Excel(xlfReftext, 
+				  Excel(xlfCaller), 
+				  OPER12(true) // A1 style
+			)
+		)
+	); 
+	*/
 	return TRUE;
 }
 
