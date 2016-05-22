@@ -2,6 +2,10 @@
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include "ensure.h"
+#define NOMINMAX
+#define VC_EXTRALEAN
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include "XLCALL.H"
 #include <malloc.h>
 #include <algorithm>
