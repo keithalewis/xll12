@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <initializer_list>
 #include <new>
+#include <numeric>
 #include <Windows.h>
 #include "XLCALL.H"
 #include "ensure.h"
@@ -35,20 +36,32 @@ namespace xll {
 	{
 		return is_empty(fp) ? 0 : fp.rows * fp.columns;
 	}
-	inline double
+	// cyclic index
+	inline INT32 cyclic(INT32 i, INT32 n)
+	{
+		i = i % n;
+
+		return i >= 0 ? i : i + n;
+	}
+	inline double&
+	index(_FP12& fp, INT32 i)
+	{
+		return fp.array[cyclic(i, size(fp))];
+	}
+	inline const double&
 	index(const _FP12& fp, INT32 i)
 	{
-		return fp.array[i];
+		return fp.array[cyclic(i, size(fp))];
 	}
 	inline double&
 	index(_FP12& fp, RW i, COL j)
 	{
-		return fp.array[i*fp.columns + j];
+		return fp.array[cyclic(i, fp.rows)*fp.columns + cyclic(j, fp.columns)];
 	}
-	inline double
+	inline const double&
 	index(const _FP12& fp, RW i, COL j)
 	{
-		return index(fp, i*fp.columns + j);
+		return fp.array[cyclic(i, fp.rows)*fp.columns + cyclic(j, fp.columns)];
 	}
 	inline double*
 	begin(_FP12& fp)
@@ -99,8 +112,17 @@ namespace xll {
 		FP12(std::initializer_list<double> a)
 			: buf(0)
 		{
-			realloc(static_cast<INT32>(a.size()), 1);
+			realloc(1, a.size());
 			copy(a.begin());
+		}
+		FP12(std::initializer_list<std::initializer_list<double>> a)
+			: FP12()
+		{
+			for (const auto& r : a) {
+				if (!is_empty() && columns() < static_cast<INT32>(r.size()))
+					resize(rows(), r.size());
+				push_down(r.begin(), r.end());
+			}
 		}
 		FP12& operator=(const FP12& x)
 		{
@@ -140,16 +162,6 @@ namespace xll {
 		{
 			return !operator==(x);
 		}
-
-/*		FP12& set(INT32 r, INT32 c, const double* pa)
-		{
-			realloc(r, c);
-			copy(pa);
-
-			return *this;
-		}
-*/	private:
-	public:
 		_FP12* get(void)
 		{
 			return pf;
@@ -184,7 +196,7 @@ namespace xll {
 		{
 			realloc(r, c);
 		}
-		double operator[](INT32 i) const
+		const double& operator[](INT32 i) const
 		{
 			return pf->array[i];
 		}
@@ -192,13 +204,30 @@ namespace xll {
 		{
 			return pf->array[i];
 		}
-		double operator()(RW i, COL j) const
+		const double& operator()(RW i, COL j) const
 		{
-			return index(*pf, i, j);
+			return xll::index(*pf, i, j);
 		}
 		double& operator()(RW i, COL j)
 		{
-			return index(*pf, i, j);
+			return xll::index(*pf, i, j);
+		}
+		// cyclic index
+		const double& index(INT32 i) const
+		{
+			return xll::index(*pf, i);
+		}
+		double& index(INT32 i)
+		{
+			return xll::index(*pf, i);
+		}
+		const double& index(RW i, COL j) const
+		{
+			return xll::index(*pf, i, j);
+		}
+		double& index(RW i, COL j)
+		{
+			return xll::index(*pf, i, j);
 		}
 
 		double* begin()
@@ -222,36 +251,58 @@ namespace xll {
 		{
 			return push_back(&t, &t + 1);
 		}
+		// favor columns
 		template<class I>
-		FP12& push_back(I b, I e, bool stack = false)
+		FP12& push_back(I b, I e)
 		{
 			INT32 n = static_cast<INT32>(std::distance(b, e));
 
 			if (is_empty()) {
-				reshape(1, n);
-			}
-			else if (stack) {
-				ensure (columns() == 1 || columns() == n);
-
-				if (columns() == 1)
-					reshape(rows() + n, 1);
-				else
-					reshape(rows() + 1, n);
-			}
-			else if (columns() == 1) { // stack
-				reshape(size() + n, 1);
+				resize(1, n);
 			}
 			else if (rows() == 1) {
-				reshape(1, size() + n);
+				resize(1, columns() + n);
 			}
-			else {
+			else if (columns() == 1) {
+				resize(rows() + n, 1);
+			}
+			else  {
 				ensure (columns() == n);
-				reshape(rows() + 1, columns());
+
+				resize(rows() + 1, n);
 			}
 
 			std::copy(b, e, end() - n);
 
 			return *this;
+		}
+		FP12& push_back(std::initializer_list<double> a)
+		{
+			return push_back(a.begin(), a.end());
+		}
+		template<class I>
+		FP12& push_down(I b, I e)
+		{
+			INT32 n = static_cast<INT32>(std::distance(b, e));
+
+			if (is_empty()) {
+				resize(n, 1);
+			}
+			else if (columns() == 1) {
+				resize(rows() + n, 1);
+			}
+			else {
+				ensure (columns() == n);
+				resize(rows() + 1, n);
+			}
+
+			std::copy(b, e, end() - n);
+
+			return *this;
+		}
+		FP12& push_down(std::initializer_list<double> a)
+		{
+			return push_down(a.begin(), a.end());
 		}
 
 		// buffer n rows
@@ -318,12 +369,9 @@ namespace xll {
 		void realloc(RW r, COL c)
 		{
 			if (!buf || size() != r*c) {
-				void* p = ::realloc(buf, 2*sizeof(_FP12) + r*c*sizeof(double));
+				void* p = ::realloc(buf, sizeof(_FP12) + r*c*sizeof(double));
 				ensure (p != 0);
-				if (p == 0)
-					::free(buf);
-				else
-					buf = (char*)p;
+				buf = (char*)p;
 				pf = reinterpret_cast<_FP12*>(new (buf) _FP12);
 			}
 //			memset(buf, 0, sizeof(_FP12) + r*c*sizeof(double));
@@ -347,3 +395,11 @@ namespace xll {
 
 } // namespace xll
 
+inline auto begin(const xll::FP12& a) { return a.begin(); }
+inline auto begin(xll::FP12& a) { return a.begin(); }
+inline auto end(const xll::FP12& a) { return a.end(); }
+inline auto end(xll::FP12& a) { return a.end(); }
+inline auto index(const xll::FP12& a, INT32 i) { return a.index(i); }
+inline auto index(xll::FP12& a, INT32 i) { return a.index(i); }
+inline auto index(const xll::FP12& a, INT32 i, INT32 j) { return a.index(i, j); }
+inline auto index(xll::FP12& a, INT32 i, INT32 j) { return a.index(i, j); }

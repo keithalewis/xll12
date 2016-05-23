@@ -1,13 +1,13 @@
 // auto.h - export xlAutoXXX functions
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
-#include "defines.h"
 #include <algorithm>
 #include <functional>
 #include <vector>
+#include "defines.h"
 
 // Export well known functions implemented by xll lib.
-//#pragma comment(linker, "/include:" XLL_DECORATE("DllMain", 12))
+#pragma comment(linker, "/include:" XLL_DECORATE("DllMain", 12))
 //#pragma comment(linker, "/export:" XLL_DECORATE("XLCallVer", 0))
 #pragma comment(linker, "/export:xlAutoOpen" XLL_X32("@0=xlAutoOpen"))
 #pragma comment(linker, "/export:xlAutoClose" XLL_X32("@0=xlAutoClose"))

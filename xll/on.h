@@ -5,10 +5,50 @@
 #include "excel.h"
 
 // used with On<Key>
-#define ON_SHIFT   _T("+")
-#define ON_CTRL    _T("^")
-#define ON_ALT     _T("%")
-#define ON_COMMAND _T("*")
+#define ON_SHIFT       L"+"
+#define ON_CTRL        L"^"
+#define ON_ALT         L"%"
+#define ON_COMMAND     L"*"
+#define ON_ENTER       L"~"
+#define ON_BACKSPACE   L"{BACKSPACE}" 
+#define ON_BS          L"{BS}" 
+#define ON_BREAK       L"{BREAK}" 
+#define ON_CAPS_LOCK   L"{CAPSLOCK}" 
+#define ON_CLEAR       L"{CLEAR}" 
+#define ON_DELETE      L"{DELETE}" 
+#define ON_DEL         L"{DEL}" 
+#define ON_DOWN_ARROW  L"{DOWN}" 
+#define ON_END         L"{END}" 
+#define ON_ENTER_NUM   L"{ENTER}" 
+#define ON_ESCAPE      L"{ESCAPE}" 
+#define ON_ESC         L"{ESC}" 
+#define ON_F1          L"{F1}" 
+#define ON_F2          L"{F2}" 
+#define ON_F3          L"{F3}" 
+#define ON_F4          L"{F4}" 
+#define ON_F5          L"{F5}" 
+#define ON_F6          L"{F6}" 
+#define ON_F7          L"{F7}" 
+#define ON_F8          L"{F8}" 
+#define ON_F9          L"{F9}" 
+#define ON_F10         L"{F10}" 
+#define ON_F11         L"{F11}" 
+#define ON_F12         L"{F12}" 
+#define ON_F13         L"{F13}" 
+#define ON_F14         L"{F14}" 
+#define ON_F15         L"{F15}" 
+#define ON_HELP        L"{HELP}" 
+#define ON_HOME        L"{HOME}" 
+#define ON_INSERT      L"{INSERT}" 
+#define ON_LEFT_ARROW  L"{LEFT}" 
+#define ON_NUM_LOCK    L"{NUMLOCK}" 
+#define ON_PAGE_DOWN   L"{PGDN}" 
+#define ON_PAGE_UP     L"{PGUP}" 
+#define ON_RETURN      L"{RETURN}" 
+#define ON_RIGHT_ARROW L"{RIGHT}" 
+#define ON_SCROLL_LOCK L"{SCROLLLOCK}" 
+#define ON_TAB         L"{TAB}" 
+#define ON_UP_ARROW    L"{UP}" 
 
 namespace xll {
 
@@ -62,8 +102,7 @@ namespace xll {
 				return Excel(Key::On, OPER12(text)) == true;
 			});
 		}
-		On(const OPER12& time, xcstr macro, 
-			const OPER12& tolerance = OPER12{}, bool insert = true)
+		On(const OPER12& time, xcstr macro,  const OPER12& tolerance, bool insert)
 		{
 			ensure (Key::On == xlcOnTime);
 

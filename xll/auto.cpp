@@ -1,8 +1,12 @@
 // auto.cpp - Implement well known Excel interfaces.
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #include "ensure.h"
-#include "auto.h"
+#define NOMINMAX
+#define VC_EXTRALEAN
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include "XLCALL.H"
+#include "auto.h"
 
 using namespace xll;
 
