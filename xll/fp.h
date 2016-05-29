@@ -112,7 +112,7 @@ namespace xll {
 		FP12(std::initializer_list<double> a)
 			: buf(0)
 		{
-			realloc(1, a.size());
+			realloc(1, static_cast<COL>(a.size()));
 			copy(a.begin());
 		}
 		FP12(std::initializer_list<std::initializer_list<double>> a)
@@ -120,7 +120,7 @@ namespace xll {
 		{
 			for (const auto& r : a) {
 				if (!is_empty() && columns() < static_cast<INT32>(r.size()))
-					resize(rows(), r.size());
+					resize(rows(), static_cast<COL>(r.size()));
 				push_down(r.begin(), r.end());
 			}
 		}
