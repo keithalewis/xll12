@@ -58,10 +58,18 @@ int WINAPI xll_caller()
 	*/
 	return TRUE;
 }
-
-AddIn xai_rand(Function(XLL_DOUBLE, L"?xll_rand", L"XLL.RAND").Volatile());
-
 On<Recalc> xor(L"", L"XLL.CALLER");
+
+#include <random>
+AddIn xai_rand(Function(XLL_DOUBLE, L"?xll_rand", L"XLL.RAND").Volatile());
+double WINAPI xll_rand(void)
+{
+#pragma XLLEXPORT
+	static std::default_random_engine dre;
+	static std::uniform_real_distribution<double> u(0,1);
+
+	return u(dre);
+}
 
 #if 0
 XCHAR* funcdname[64];
