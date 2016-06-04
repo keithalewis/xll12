@@ -14,3 +14,4 @@ LONG WINAPI xll_modulo(LONG x, LONG y)
 #pragma XLLEXPORT
 	return x%y;
 }
+

@@ -40,6 +40,7 @@ int WINAPI xll_alert()
 }
 //On<Doubleclick> xlodc(L"", L"XLL.CALLER");
 On<Key> xlodc(ON_CTRL L"{F2}", L"XLL.CALLER");
+
 AddIn xao_caller(Macro(L"?xll_caller", L"XLL.CALLER"));
 int WINAPI xll_caller()
 {
@@ -56,6 +57,18 @@ int WINAPI xll_caller()
 	); 
 	*/
 	return TRUE;
+}
+On<Recalc> xor(L"", L"XLL.CALLER");
+
+#include <random>
+AddIn xai_rand(Function(XLL_DOUBLE, L"?xll_rand", L"XLL.RAND").Volatile());
+double WINAPI xll_rand(void)
+{
+#pragma XLLEXPORT
+	static std::default_random_engine dre;
+	static std::uniform_real_distribution<double> u(0,1);
+
+	return u(dre);
 }
 
 #if 0

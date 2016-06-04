@@ -1,4 +1,5 @@
 // addin.h - convenience wrapper for Excel add-ins
+// Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include "auto.h"
 #include "args.h"
