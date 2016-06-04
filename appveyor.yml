@@ -7,8 +7,8 @@ configuration:
 - Release
 - Debug
 platform:
+- Win32
 - x64
-- x86
 build:
   project: xll12.sln
   parallel: true
