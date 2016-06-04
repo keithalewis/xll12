@@ -3,6 +3,36 @@
 
 using namespace xll;
 
+#include <functional>
+#include <xstring>
+
+typedef std::basic_string<XCHAR, std::char_traits<XCHAR>, std::allocator<XCHAR> > StrTy;
+
+template<typename T> struct MapType { operator xcstr(); };
+template<> struct MapType<double> { operator xcstr() { return XLL_DOUBLE; } };
+
+
+StrTy excelName(xcstr name) {
+	// sample name modifier
+	// L"FOO2_"
+	// #VALUE! since FOO2 is the name of a cell
+	using namespace std;
+	
+	StrTy str(name);
+	return str + StrTy(L"_v2");
+}
+
+template<typename R, typename... Arg>
+Args autoReg(R(*f)(Arg...), xcstr name) {
+	using namespace std;
+	function<R(Arg...)> foo{ f };
+	auto appName = excelName(name);
+	Args args(MapType<R>(), (StrTy(L"?") + name).c_str(), appName.c_str());
+	args.Arg(MapType<Arg>()..., L"");
+	return args;
+}
+
+
 Auto<Open> xao_foo2_([]{
 	return Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num").Register().isNum();
 	// #VALUE! since FOO2 is the name of a cell
@@ -14,6 +44,10 @@ double WINAPI foo2(double x)
 
 	return 2*x;
 }
+Auto<Open> xao_foo2_v2_([] {	
+	return autoReg(&foo2, L"foo2").Register().isNum();
+});
+
 
 AddIn xai_foo3(
 Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
