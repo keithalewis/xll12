@@ -11,7 +11,6 @@ typedef std::basic_string<XCHAR, std::char_traits<XCHAR>, std::allocator<XCHAR> 
 template<typename T> struct MapType { operator xcstr(); };
 template<> struct MapType<double> { operator xcstr() { return XLL_DOUBLE; } };
 
-
 StrTy excelName(xcstr name) {
 	// sample name modifier
 	// L"FOO2_"
@@ -23,15 +22,13 @@ StrTy excelName(xcstr name) {
 }
 
 template<typename R, typename... Arg>
-Args autoReg(R(*f)(Arg...), xcstr name) {
+Args autoReg(R(*)(Arg...), xcstr name, xcstr argNames...) {
 	using namespace std;
-	function<R(Arg...)> foo{ f };
 	auto appName = excelName(name);
 	Args args(MapType<R>(), (StrTy(L"?") + name).c_str(), appName.c_str());
-	args.Arg(MapType<Arg>()..., L"");
+	args.Arg(MapType<Arg>()..., argNames);
 	return args;
 }
-
 
 Auto<Open> xao_foo2_([]{
 	return Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num").Register().isNum();
@@ -45,7 +42,7 @@ double WINAPI foo2(double x)
 	return 2*x;
 }
 Auto<Open> xao_foo2_v2_([] {	
-	return autoReg(&foo2, L"foo2").Register().isNum();
+	return autoReg(&foo2, L"foo2", L"Num").Register().isNum();
 });
 
 
