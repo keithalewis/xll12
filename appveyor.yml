@@ -10,18 +10,18 @@ platform:
 - x64
 - x86
 build:
-  project: xll12.sln
+  project: vs2015_build/xll12.sln
   parallel: true
   verbosity: minimal
 test:
-  assemblies: build\bin\$(platform)\$(configuration)\xll.t.exe
+  assemblies: vs2015_build\bin\$(platform)\$(configuration)\xll.t.exe
 artifacts:
 - path: '**/xll12*.lib'
   name: main_lib
 notifications:
 - provider: Email
   to:
-  - kal@kalx.net
+  - candy.chiu.ad@gmail.com
   on_build_success: false
   on_build_failure: true
   on_build_status_changed: false

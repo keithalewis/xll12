@@ -3,7 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   
   <PropertyGroup Label="UserMacros">
-    <ProjectVersion>1_0</ProjectVersion>
+    <ProjectVersion>$(APPVEYOR_BUILD_VERSION)</ProjectVersion>
   </PropertyGroup>
   
   <!-- debug or release -->
