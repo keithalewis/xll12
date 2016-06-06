@@ -22,7 +22,7 @@ StrTy excelName(xcstr name) {
 }
 
 template<typename R, typename... Arg>
-Args autoReg(R(*)(Arg...), xcstr name, xcstr argNames...) {
+Args autoReg(R(WINAPI *)(Arg...), xcstr name, xcstr argNames...) {
 	using namespace std;
 	auto appName = excelName(name);
 	Args args(MapType<R>(), (StrTy(L"?") + name).c_str(), appName.c_str());
