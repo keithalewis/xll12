@@ -112,7 +112,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/J %(AdditionalOptions)</AdditionalOptions>
       <EnablePREfast>false</EnablePREfast>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
@@ -133,7 +133,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/J %(AdditionalOptions)</AdditionalOptions>
       <EnablePREfast>true</EnablePREfast>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
