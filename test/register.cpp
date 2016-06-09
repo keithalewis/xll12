@@ -3,29 +3,68 @@
 
 using namespace xll;
 
-Auto<Open> xao_foo2_([]{
-	return Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num").Register().isNum();
-	// #VALUE! since FOO2 is the name of a cell
-	//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
-});
-double WINAPI foo2(double x)
-{
-#pragma XLLEXPORT
+#include <functional>
+#include <xstring>
 
-	return 2*x;
+typedef std::basic_string<XCHAR, std::char_traits<XCHAR>, std::allocator<XCHAR> > StrTy;
+
+template<typename T> struct MapType { operator xcstr(); };
+template<> struct MapType<double> { operator xcstr() { return XLL_DOUBLE; } };
+
+StrTy excelName(xcstr name) {
+	// sample name modifier
+	// L"FOO2_"
+	// #VALUE! since FOO2 is the name of a cell
+	using namespace std;
+	
+	StrTy str(name);
+	return str + StrTy(L"_v2");
 }
 
-AddIn xai_foo3(
-Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
-	.Arg(XLL_DOUBLE, L"Num")
-	.Category(L"MyCategory")
-	.FunctionHelp(L"Call foo3")
-);
+template<typename R, typename... Arg>
+Args autoReg(R(WINAPI *)(Arg...), xcstr name, xcstr argNames...) {
+	using namespace std;
+	auto appName = excelName(name);
+	Args args(MapType<R>(), (StrTy(L"?") + name).c_str(), appName.c_str());
+	args.Arg(MapType<Arg>()..., argNames);
+	return args;
+}
+
+template<typename R>
+Args autoReg(R(WINAPI *)(), xcstr name) {
+	using namespace std;
+	auto appName = excelName(name);
+	Args args(MapType<R>(), (StrTy(L"?") + name).c_str(), appName.c_str());
+	return args;
+}
+
+// 
+#define ON(EVT, F, ...)						\
+Auto<EVT> xao_##F##_v2_([] {				\
+	return autoReg(&F, L#F, __VA_ARGS__).Register().isNum();	\
+});											\
+//
+
 double WINAPI foo3(double x)
 {
 #pragma XLLEXPORT
 
-	return 3*x;
+	return 3 * x;
+}
+ON(Open, foo3, L"Num");
+
+//
+#define ON2(EVT, R, F, ARGS, ...)			\
+    R WINAPI F ARGS;						\
+	Auto<EVT> xao_##F##_v2_([] {			\
+		return autoReg(&F, L#F, __VA_ARGS__).Register().isNum();	\
+	});										\
+    R WINAPI F ARGS
+
+ON2(Open, double, foo2, (double x), L"Num") {
+#pragma XLLEXPORT
+
+	return 2 * x;
 }
 
 Auto<Open> xao_alert([]() { return Args(L"?xll_alert", L"XLL.ALERT").Register().isNum();});
@@ -61,15 +100,26 @@ int WINAPI xll_caller()
 On<Recalc> xor(L"", L"XLL.CALLER");
 
 #include <random>
-AddIn xai_rand(Function(XLL_DOUBLE, L"?xll_rand", L"XLL.RAND").Volatile());
-double WINAPI xll_rand(void)
-{
+//
+#define ON3(EVT, OPT, R, F, ARGS, ...)			\
+    R WINAPI F ARGS;						\
+	Auto<EVT> xao_##F##_v2_([] {			\
+		return autoReg(&F, L#F, __VA_ARGS__)	\
+			.##OPT##.Register().isNum();	\
+	});										\
+    R WINAPI F ARGS
+
+ON3(Open, 
+	Volatile(),
+	double, xll_rand, (void)) {
+
 #pragma XLLEXPORT
 	static std::default_random_engine dre;
 	static std::uniform_real_distribution<double> u(0,1);
 
 	return u(dre);
 }
+
 
 #if 0
 XCHAR* funcdname[64];
