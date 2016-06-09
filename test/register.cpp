@@ -30,33 +30,33 @@ Args autoReg(R(WINAPI *)(Arg...), xcstr name, xcstr argNames...) {
 	return args;
 }
 
-Auto<Open> xao_foo2_([]{
-	return Args(XLL_DOUBLE, L"?foo2", L"FOO2_").Arg(XLL_DOUBLE, L"Num").Register().isNum();
-	// #VALUE! since FOO2 is the name of a cell
-	//	Excelv(xlfRegister, Args(XLL_DOUBLE, L"?foo2", L"FOO2").Arg(XLL_DOUBLE, L"Num"));
-});
-double WINAPI foo2(double x)
-{
-#pragma XLLEXPORT
+// 
+#define ON(EVT, F, ...)						\
+Auto<EVT> xao_##F##_v2_([] {				\
+	return autoReg(&F, L#F, __VA_ARGS__).Register().isNum();	\
+});											\
+//
 
-	return 2*x;
-}
-Auto<Open> xao_foo2_v2_([] {	
-	return autoReg(&foo2, L"foo2", L"Num").Register().isNum();
-});
-
-
-AddIn xai_foo3(
-Function(XLL_DOUBLE, L"?foo3", L"FOO3_")
-	.Arg(XLL_DOUBLE, L"Num")
-	.Category(L"MyCategory")
-	.FunctionHelp(L"Call foo3")
-);
 double WINAPI foo3(double x)
 {
 #pragma XLLEXPORT
 
-	return 3*x;
+	return 3 * x;
+}
+ON(Open, foo3, L"Num");
+
+
+#define ON2(EVT, R, F, ARGS, ...)			\
+    R WINAPI F ARGS;						\
+	Auto<EVT> xao_##F##_v2_([] {			\
+		return autoReg(&F, L#F, __VA_ARGS__).Register().isNum();	\
+	});										\
+    R WINAPI F ARGS
+
+ON2(Open, double, foo2, (double x), L"Num") {
+#pragma XLLEXPORT
+
+	return 2 * x;
 }
 
 Auto<Open> xao_alert([]() { return Args(L"?xll_alert", L"XLL.ALERT").Register().isNum();});
