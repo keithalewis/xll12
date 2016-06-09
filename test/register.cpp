@@ -30,6 +30,14 @@ Args autoReg(R(WINAPI *)(Arg...), xcstr name, xcstr argNames...) {
 	return args;
 }
 
+template<typename R>
+Args autoReg(R(WINAPI *)(), xcstr name) {
+	using namespace std;
+	auto appName = excelName(name);
+	Args args(MapType<R>(), (StrTy(L"?") + name).c_str(), appName.c_str());
+	return args;
+}
+
 // 
 #define ON(EVT, F, ...)						\
 Auto<EVT> xao_##F##_v2_([] {				\
@@ -45,7 +53,7 @@ double WINAPI foo3(double x)
 }
 ON(Open, foo3, L"Num");
 
-
+//
 #define ON2(EVT, R, F, ARGS, ...)			\
     R WINAPI F ARGS;						\
 	Auto<EVT> xao_##F##_v2_([] {			\
@@ -92,15 +100,26 @@ int WINAPI xll_caller()
 On<Recalc> xor(L"", L"XLL.CALLER");
 
 #include <random>
-AddIn xai_rand(Function(XLL_DOUBLE, L"?xll_rand", L"XLL.RAND").Volatile());
-double WINAPI xll_rand(void)
-{
+//
+#define ON3(EVT, OPT, R, F, ARGS, ...)			\
+    R WINAPI F ARGS;						\
+	Auto<EVT> xao_##F##_v2_([] {			\
+		return autoReg(&F, L#F, __VA_ARGS__)	\
+			.##OPT##.Register().isNum();	\
+	});										\
+    R WINAPI F ARGS
+
+ON3(Open, 
+	Volatile(),
+	double, xll_rand, (void)) {
+
 #pragma XLLEXPORT
 	static std::default_random_engine dre;
 	static std::uniform_real_distribution<double> u(0,1);
 
 	return u(dre);
 }
+
 
 #if 0
 XCHAR* funcdname[64];
