@@ -60,6 +60,9 @@
     <ClInclude Include="xll\test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xll\command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xll\XLCALL.CPP">
