@@ -303,6 +303,13 @@ namespace xll {
 
 		return args;
 	}
+	/*
+	template<class R, class... Args>
+	Args AutoRegister(R(*)(Args...), xcstr Procedure, xcstr FunctionText)
+	{
+
+	}
+	*/
 
 	/*
 	// Convert __FUNCDNAME__ to arguments for xlfRegister
