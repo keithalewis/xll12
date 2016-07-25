@@ -1,52 +1,97 @@
 // handle.h - Handles to C++ objects
 #pragma once
+//#include <memory>
+#include <set>
+#include <windows.h>
+#include "XLCALL.H"
 
 using HANDLEX = double;
 
 namespace xll {
 
-	template<class T>
-	inline HANDLEX p2h(T* _p)
-	{
-		union {
-			T* p;
-			HANDLEX h;
-			int32_t i[2];
-		};
-		p = _p;
-#ifdef _M_X64 
-		std::swap(i[0],i[1]);
-#endif
+	class handlex {
+		HANDLEX h_;
+	public:
+		handlex()
+			: h_(std::numeric_limits<double>::quiet_NaN())
+		{ }
+		operator HANDLEX()
+		{
+			return h_;
+		}
+		HANDLEX operator=(HANDLEX h)
+		{
+			return h_ = h;
+		}
+	};
 
-		return h;
-	}
-	template<class T>
-	inline T* h2p(HANDLEX _h)
-	{
-		union {
-			T* p;
-			HANDLEX h;
-			int32_t i[2];
-		};
-		h = _h;
-#ifdef _M_X64 
-		std::swap(i[0],i[1]);
-#endif
-
-		return p;
-	}
-
-	// Pointers to objects encoded as doubles
+	// Pointers to objects encoded as doubles.
+	// Assumes high 32 bits are constant.
 	template<class T>
 	class handle {
-		const T* p;
+		static std::set<T*>& handles()
+		{
+			static std::set<T*> handles_;
+
+			return handles_;
+		}
+		struct XLOPER12 : public ::XLOPER12
+		{
+			XLOPER12()
+			{
+				this->xltype = xltypeNil;
+			}
+			XLOPER12(const XLOPER12&) = delete;
+			XLOPER12& operator=(const XLOPER12&) = delete;
+			~XLOPER12()
+			{
+				Excel12(xlFree, 0, 1, this);
+			}
+		};
+		static bool insert(T* p)
+		{
+			XLOPER12 caller, coerce;
+			Excel12(xlfCaller, &caller, 0);
+			Excel12(xlCoerce, &coerce, 1, &caller);
+			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
+			{
+				handle h(coerce.val.num);
+				auto i = handles().find(h.ptr());
+				if (i != handles().end())
+					delete *i;
+			}
+			return handles().insert(p).second;
+		}
+		static int32_t& i1()
+		{
+			static int32_t i1_;
+			
+			return i1_; // high order bits
+		}
+		T* pt;
 	public:
-		handle(const T* p)
-			: p(p)
-		{ }
+		handle(T* pt)
+			: pt(pt)
+		{
+			union {
+				T* p;
+				int32_t i[2];
+			};
+
+			p = pt;
+			i1() = i[1];
+			insert(pt);
+		}
 		handle(HANDLEX h)
 		{
-			p = h2p<T>(h);
+			union {
+				T* p;
+				int32_t i[2];
+			};
+
+			i[0] = static_cast<int32_t>(h);
+			i[1] = i1();
+			pt = p;
 		}
 		handle(const handle&) = delete;
 		handle& operator=(const handle&) = delete;
@@ -54,8 +99,39 @@ namespace xll {
 		{ }
 		HANDLEX get() const
 		{
-			return p2h<T>(p);
+			union {
+				T* p;
+				int32_t i[2];
+			};
+
+			p = pt;
+			
+			return i[0];
 		}
-	};
+		operator HANDLEX()
+		{
+			return get();
+		}
+		T& operator*()
+		{
+			return *pt;
+		}
+		T* operator->()
+		{
+			return pt;
+		}
+		T* ptr()
+		{
+			return pt;
+		}
+		/*		operator T*()
+		{
+			return ptr();
+		}
+		const operator T*() const
+		{
+			return ptr();
+		}
+*/	};
 
 } // xll namespace

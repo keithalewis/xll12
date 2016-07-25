@@ -58,7 +58,7 @@ int WINAPI xll_caller()
 	*/
 	return TRUE;
 }
-On<Recalc> xor(L"", L"XLL.CALLER");
+//On<Recalc> xor(L"", L"XLL.CALLER");
 
 #include <random>
 AddIn xai_rand(Function(XLL_DOUBLE, L"?xll_rand", L"XLL.RAND").Volatile());

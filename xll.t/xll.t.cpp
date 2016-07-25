@@ -241,9 +241,11 @@ void test_multi()
 }
 void test_handle()
 {
-	std::unique_ptr<int> pi{new int()};
-	HANDLEX h = p2h<int>(pi.get());
-	ensure (pi.get() == h2p<int>(h));
+	auto pi = new std::vector<int>();
+	handle<std::vector<int>> h(pi);
+	auto pi2 = h.ptr();
+	ensure (pi == pi2);
+	delete pi;
 }
 
 void test_arity()
