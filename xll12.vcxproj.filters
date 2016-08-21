@@ -103,5 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="xll12.bat" />
+    <None Include="LICENSE.md" />
   </ItemGroup>
 </Project>
