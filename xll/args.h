@@ -251,7 +251,15 @@ namespace xll {
 			if (args[ARG::ModuleText].type() != xltypeStr)
 				args[ARG::ModuleText] = XlGetName();
 
-			return Excelv(xlfRegister, args);
+			OPER12 oResult = Excelv(xlfRegister, args);
+			if (oResult.isErr()) {
+				OPER12 oError(L"Failed to register: ");
+				oError = Excel(xlfConcatenate, oError, args[ARG::FunctionText]);
+				oError = Excel(xlfConcatenate, oError, OPER12(L"\nDid you forget to XLLEXPORT?"));
+				Excel(xlcAlert, oError);
+			}
+
+			return oResult;
 		}
 	};
 

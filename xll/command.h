@@ -48,6 +48,7 @@ struct Command : public OPER12 {
 	using xcstr = const XCHAR*;
 	/// command ref item
 	struct Item : public OPER12 {
+		using OPER12::operator[];
 		Item(xcstr name, xcstr macro, xcstr text = 0)
 			: OPER12(1,5)
 		{

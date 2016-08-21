@@ -63,6 +63,12 @@
     <ClInclude Include="xll\command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xll\ref.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xll\XLCALL.CPP">
@@ -81,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="xll\dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xlladdins\xlladdins.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

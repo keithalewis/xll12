@@ -12,7 +12,7 @@ namespace xll {
 
 		int ret = ::Excel12(xlf, &o, sizeof...(args), &args...);
 		ensure (ret == xlretSuccess);
-		if (o.xltype&(xltypeStr|xltypeMulti))
+		if (!o.isScalar())
 			o.xltype |= xlbitXLFree;
 
 		return o;
@@ -22,13 +22,13 @@ namespace xll {
 	{
 		OPER12 o;
 		LPXLOPER12 pargs[256]; // just like XLCALL.CPP
-		ensure (o.size() < 256);
+		ensure (args.size() < 256);
 		for (int i = 0; i < args.size(); ++i) {
 			pargs[i] = (LPXLOPER12)&args[i];
 		}
 		int ret = ::Excel12v(xlf, &o, static_cast<int>(args.size()), pargs);
 		ensure (ret == xlretSuccess);
-		if (o.xltype&(xltypeStr|xltypeMulti))
+		if (!o.isScalar())
 			o.xltype |= xlbitXLFree;
 
 		return o;
@@ -36,6 +36,7 @@ namespace xll {
 
 } // namespace xll
 
+// Just like Excel
 inline xll::OPER12 operator&(const xll::OPER12& a, const xll::OPER12& b)
 {
 	return xll::Excel(xlfConcatenate, a, b);

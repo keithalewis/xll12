@@ -250,3 +250,4 @@ ModelManifest.xml
 /doc/Help/index.html
 *.db
 *.ico
+/resource.h

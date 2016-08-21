@@ -73,21 +73,25 @@
     <LinkIncremental>true</LinkIncremental>
     <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IncludePath>../xll12;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <IncludePath>../xll12;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <IncludePath>../xll12;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <IncludePath>../xll12;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -171,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="xll\addin.h" />
     <ClInclude Include="xll\auto.h" />
     <ClInclude Include="xll\command.h" />
@@ -183,11 +188,13 @@
     <ClInclude Include="xll\on.h" />
     <ClInclude Include="xll\oper.h" />
     <ClInclude Include="xll\args.h" />
+    <ClInclude Include="xll\ref.h" />
     <ClInclude Include="xll\test.h" />
     <ClInclude Include="xll\XLCALL.H" />
     <ClInclude Include="xll\xll.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\xlladdins\xlladdins.cpp" />
     <ClCompile Include="xll\auto.cpp" />
     <ClCompile Include="xll\debug.cpp" />
     <ClCompile Include="xll\dllmain.cpp" />
