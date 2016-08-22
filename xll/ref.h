@@ -1,4 +1,5 @@
 // ref.h - XLREF12 wrapper
+// Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include <Windows.h>
 #include "XLCALL.H"
@@ -55,5 +56,8 @@ namespace xll {
 	{
 		return r.move(rw, col);
 	}
+
+	// No support for Excel 2003 and earlier.
+	using REF = REF12;
 
 } // xll

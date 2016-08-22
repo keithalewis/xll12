@@ -587,6 +587,9 @@ namespace xll {
 		}
 	};
 
+	// No support for Excel 2003 and earlier.
+	using OPER = OPER12;
+
 } // xll
 
 /*
