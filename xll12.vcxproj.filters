@@ -89,9 +89,6 @@
     <ClCompile Include="xll\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\xlladdins\xlladdins.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Visualizers\oper.natvis">
