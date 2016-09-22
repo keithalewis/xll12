@@ -93,14 +93,22 @@ namespace xll {
 			args[ARG::MacroType] = OPER12(2);
 		}
 		/// Function
-		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
+		Args(xcstr TypeText, xcstr Procedure, 
+			xcstr FunctionText, xcstr ArgumentText = 0,
+			xcstr Category = 0, xcstr FunctionHelp = 0)
 			: Args()
 		{
 			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = TypeText;
 			args[ARG::FunctionText] = FunctionText;
-			args[ARG::MacroType] = MacroType;
+			args[ARG::MacroType] = OPER12(1);
+			if (ArgumentText)
+				args[ARG::ArgumentText] = ArgumentText;
+			if (Category)
+				args[ARG::Category] = Category;
+			if (FunctionHelp)
+				args[ARG::FunctionHelp] = FunctionHelp;
 		}
 
 		Args& ModuleText(const OPER12& moduleText)
@@ -244,6 +252,14 @@ namespace xll {
 			return Arg(XLL_DOUBLE, text, helpText);
 		}
 		// Str ...
+
+		Args& Documentation(xcstr doc = L"")
+		{
+			//!!!Store to generate documentation
+			doc = doc;
+
+			return *this;
+		}
 
 		/// Register an add-in function or macro
 		OPER12 Register() const // logically
