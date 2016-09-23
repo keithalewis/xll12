@@ -15,5 +15,6 @@ extern HMODULE xll_hModule;
 #include "on.h"
 #include "addin.h"
 #include "handle.h"
+#include "test.h"
 
 extern HMODULE xll_Instance;

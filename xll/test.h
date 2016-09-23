@@ -5,8 +5,6 @@
 #define TEST_BEGIN(name) \
 xll::Auto<Open> xao_test_ ## name([]() { try {
 
-// add void(*)(void) functions that throw here...
-
 #define TEST_END \
 } catch (const std::exception& ex) { \
 	MessageBoxA(0, ex.what(), "Error", MB_OK); return FALSE; } \
