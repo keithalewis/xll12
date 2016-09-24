@@ -33,7 +33,7 @@ TEST_END
 //TEST_BEGIN(black_put)
 
 //!!! Write a test for xll_black_put using formula (27) of 
-// http://kalx.net/BlaSch1973.pdf with values
+// http://kalx.net/BlaSch1973.pdf for the values
 // f = x = 100, s = v = 0.2, k = c = 100, t = t* = 0.25, and r = 0.  
 
 //TEST_END
