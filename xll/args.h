@@ -278,9 +278,16 @@ namespace xll {
 			return oResult;
 		}
 	};
-
+	// semantic alias
 	using Function = Args;
 	using Macro = Args;
+	// backwards compatibility
+	using ArgsX = Args;
+	using FunctionX = Args;
+	using MacroX = Args;
+	using Args12 = Args;
+	using Function12 = Args;
+	using Macro12 = Args;
 
 	/// Array appropriate for xlfRegister.
 	/// Use like <c>Excelv(xlfRegister, Arguments(...))</c>

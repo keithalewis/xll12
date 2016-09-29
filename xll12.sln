@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vsix", "vsix\vsix.vcxproj", "{033305C2-5009-40CA-9F9C-0B6F3B24BA01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -44,6 +46,14 @@ Global
 		{0F8544CC-36F5-4079-9E6F-10E0C2723221}.Release|x64.Build.0 = Debug|Win32
 		{0F8544CC-36F5-4079-9E6F-10E0C2723221}.Release|x86.ActiveCfg = Release|Win32
 		{0F8544CC-36F5-4079-9E6F-10E0C2723221}.Release|x86.Build.0 = Release|Win32
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Debug|x64.ActiveCfg = Debug|x64
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Debug|x64.Build.0 = Debug|x64
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Debug|x86.ActiveCfg = Debug|Win32
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Debug|x86.Build.0 = Debug|Win32
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Release|x64.ActiveCfg = Release|x64
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Release|x64.Build.0 = Release|x64
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Release|x86.ActiveCfg = Release|Win32
+		{033305C2-5009-40CA-9F9C-0B6F3B24BA01}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

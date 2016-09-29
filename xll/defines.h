@@ -63,13 +63,13 @@
 #define XL_(fn, ...) xll::Excel(xl ##fn, __VA_ARGS__)
 
 // Excel function called name that returns value
-#define XLL_ENUM(value, name, cat, desc) static xll::AddIn12 xai_##name##12(   \
-	XLL_DECORATE12(L"xll_" L#name L"12", 0), XLL_LPOPER12, L#name, L"", L#cat, L#desc); \
-	extern "C" __declspec(dllexport) LPOPER12 WINAPI xll_##name##12(void)      \
-	{ static OPER12 o(value); return &o; }
+#define XLL_ENUM(value, name, cat, desc) static xll::AddIn xai_##name##12(   \
+	XLL_DECORATE(L"xll_" L#name L"12", 0), XLL_LPOPER, L#name, L"", L#cat, L#desc); \
+	extern "C" __declspec(dllexport) LPXLOPER12 WINAPI xll_##name##12(void)      \
+	{ static OPER12 o(value); return static_cast<LPXLOPER12>(&o); }
 
-#define XLL_ENUM_DOC(value, name, cat, desc, doc) static xll::AddIn12 xai_##name##12(   \
-	Function12(XLL_LPOPER12, XLL_DECORATE12(L"xll_" L#name L"12", 0), L#name) \
-	.Category(cat).FunctionHelp(desc).Documentation(doc)); \
-	extern "C" __declspec(dllexport) LPOPER12 WINAPI xll_##name##12(void)      \
-	{ static OPER12 o(value); return &o; }
+#define XLL_ENUM_DOC(value, name, cat, desc, doc) static xll::AddIn xai_##name##12(   \
+	Function12(XLL_LPOPER, XLL_DECORATE(L"xll_" L#name L"12", 0), L#name) \
+	.Category(L#cat).FunctionHelp(L#desc).Documentation(L#doc)); \
+	extern "C" __declspec(dllexport) LPXLOPER12 WINAPI xll_##name##12_doc(void)      \
+	{ static OPER12 o(value); return static_cast<LPXLOPER12>(&o); }

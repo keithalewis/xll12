@@ -19,7 +19,8 @@ namespace xll {
 			});
 		}
 	};
-
+	using AddIn12 = AddIn;
+	using AddInX = AddIn;
 } // xll namespace
 
 
