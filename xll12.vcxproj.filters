@@ -63,6 +63,12 @@
     <ClInclude Include="xll\command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xll\ref.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xll\XLCALL.CPP">
@@ -94,5 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="xll12.bat" />
+    <None Include="LICENSE.md" />
   </ItemGroup>
 </Project>

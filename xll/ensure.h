@@ -11,6 +11,7 @@
 #include <limits>
 #include <stdexcept>
 
+// Define NENSURE to turn off ensure.
 #ifdef NENSURE
 #define ensure(x)
 #endif
@@ -28,21 +29,9 @@
 #define ENSURE_LINE "\nline: " ENSURE_STRZ_(__LINE__)
 #define ENSURE_SPOT ENSURE_FILE ENSURE_LINE ENSURE_FUNC
 
-#ifdef _DEBUG
-#ifdef _WIN32 // defined for 64 bit Windows also
-#define ensure(e) if (!(e)) { DebugBreak(); }
-#else // gcc
-#define ensure(e) if (!(e)) { __builtin_trap(); }
-#endif
-
-#define DEBUG_(e) e
-#else // Release
 #define ensure(e) if (!(e)) \
 		throw std::runtime_error(ENSURE_SPOT "\nensure: \"" #e "\" failed"); \
 		else (void)0;
-
-#define DEBUG_(e)
-#endif
 
 #endif // ensure
 

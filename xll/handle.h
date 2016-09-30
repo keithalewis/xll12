@@ -1,4 +1,5 @@
 // handle.h - Handles to C++ objects
+// Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 //#include <memory>
 #include <set>
@@ -9,6 +10,7 @@ using HANDLEX = double;
 
 namespace xll {
 
+	// HANDLEX that defaults to NaN
 	class handlex {
 		HANDLEX h_;
 	public:
@@ -34,6 +36,11 @@ namespace xll {
 			static std::set<T*> handles_;
 
 			return handles_;
+		}
+		static void gc()
+		{
+			for (auto& h : handles())
+				delete h;
 		}
 		struct XLOPER12 : public ::XLOPER12
 		{
@@ -64,7 +71,7 @@ namespace xll {
 		}
 		static int32_t& i1()
 		{
-			static int32_t i1_;
+			static int32_t i1_ = 0;
 			
 			return i1_; // high order bits
 		}
@@ -78,6 +85,9 @@ namespace xll {
 				int32_t i[2];
 			};
 
+#ifdef _DEBUG
+			ensure (i1() == 0 || i1() == i[1]);
+#endif
 			p = pt;
 			i1() = i[1];
 			insert(pt);

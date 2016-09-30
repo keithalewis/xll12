@@ -93,14 +93,22 @@ namespace xll {
 			args[ARG::MacroType] = OPER12(2);
 		}
 		/// Function
-		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText, int MacroType = 1)
+		Args(xcstr TypeText, xcstr Procedure, 
+			xcstr FunctionText, xcstr ArgumentText = 0,
+			xcstr Category = 0, xcstr FunctionHelp = 0)
 			: Args()
 		{
 			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = TypeText;
 			args[ARG::FunctionText] = FunctionText;
-			args[ARG::MacroType] = MacroType;
+			args[ARG::MacroType] = OPER12(1);
+			if (ArgumentText)
+				args[ARG::ArgumentText] = ArgumentText;
+			if (Category)
+				args[ARG::Category] = Category;
+			if (FunctionHelp)
+				args[ARG::FunctionHelp] = FunctionHelp;
 		}
 
 		Args& ModuleText(const OPER12& moduleText)
@@ -245,18 +253,41 @@ namespace xll {
 		}
 		// Str ...
 
+		Args& Documentation(xcstr doc = L"")
+		{
+			//!!!Store to generate documentation
+			doc = doc;
+
+			return *this;
+		}
+
 		/// Register an add-in function or macro
 		OPER12 Register() const // logically
 		{
 			if (args[ARG::ModuleText].type() != xltypeStr)
 				args[ARG::ModuleText] = XlGetName();
 
-			return Excelv(xlfRegister, args);
+			OPER12 oResult = Excelv(xlfRegister, args);
+			if (oResult.isErr()) {
+				OPER12 oError(L"Failed to register: ");
+				oError = Excel(xlfConcatenate, oError, args[ARG::FunctionText]);
+				oError = Excel(xlfConcatenate, oError, OPER12(L"\nDid you forget to XLLEXPORT?"));
+				Excel(xlcAlert, oError);
+			}
+
+			return oResult;
 		}
 	};
-
+	// semantic alias
 	using Function = Args;
 	using Macro = Args;
+	// backwards compatibility
+	using ArgsX = Args;
+	using FunctionX = Args;
+	using MacroX = Args;
+	using Args12 = Args;
+	using Function12 = Args;
+	using Macro12 = Args;
 
 	/// Array appropriate for xlfRegister.
 	/// Use like <c>Excelv(xlfRegister, Arguments(...))</c>

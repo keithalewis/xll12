@@ -7,6 +7,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include "XLCALL.H"
+#include "ref.h"
 #include <malloc.h>
 #include <algorithm>
 #include <initializer_list>
@@ -39,59 +40,8 @@ enum class xltype {
 	BigData = xltypeBigData,// Binary data
 };
 
-inline bool operator==(const XLREF12& r, const XLREF12& s)
-{
-	return r.colFirst == s.colFirst
-		&& r.colLast == s.colLast
-		&& r.rwFirst == s.rwFirst
-		&& r.rwLast == s.rwLast;
-}
-// strict weak ordering
-inline bool operator<(const XLREF12& r, const XLREF12& s)
-{
-	return r.colFirst < s.colFirst
-		|| r.colFirst == s.colFirst && r.colLast < s.colLast
-		|| r.colFirst == s.colFirst && r.colLast == s.colLast && r.rwFirst > s.rwFirst
-		|| r.colFirst == s.colFirst && r.colLast == s.colLast && r.rwFirst == s.rwFirst && r.rwLast < s.rwLast;
-}
-
 namespace xll {
 
-	/// <summary>
-	/// Wrapper for XLREF12 class
-	/// </summary>
-	/// The <c>XLREF12</c> class represents a reference to a two dimensional
-	/// range of cells.
-	/// <remarks>
-	/// The constructor uses <c>height</c> and <c>width</c> instead of <c>rw/colLast</c>
-	/// </remarks>
-	class REF12 : public XLREF12 {
-	public:
-		/// Construct a reference to atwo dimensional range.
-		REF12(RW rw = 0, COL col = 0, RW height = 1, COL width = 1)
-			: XLREF12{rw, rw + height - 1, col, col + width - 1}
-		{ }
-		/// Translate a reference by rw, col
-		REF12& move(RW rw, COL col = 0)
-		{
-			rwFirst  += rw;
-			rwLast   += rw;
-			colFirst += col;
-			colLast  += col;
-
-			return *this;
-		}
-		REF12& up(RW rw = 1) { return move(-rw, 0); }
-		REF12& down(RW rw = 1) { return move(rw, 0); }
-		REF12& left(COL col = 1) { return move(0, -col); }
-		REF12& right(COL col = 1) { return move(0, col); }
-	};
-	/// Return a reference translated by <c>rw</c> and <c>col</c>.
-	inline REF12 move(REF12 r, RW rw = 0, COL col = 0)
-	{
-		return r.move(rw, col);
-	}
-		
 	/// <summary>
 	/// Value type that represents an Excel cell or range.
 	/// </summary>
@@ -111,6 +61,11 @@ namespace xll {
 			return xltype&~(xlbitXLFree|xlbitDLLFree);
 		}
 
+		int isScalar() const
+		{
+			return xltype&(xltypeNum|xltypeBool|xltypeErr|xltypeSRef|xltypeInt|xltypeNil|xltypeMissing);
+		}
+
 		int isMissing() const
 		{
 			return type() == xltypeMissing ? TRUE : FALSE;
@@ -119,7 +74,6 @@ namespace xll {
 		{
 			return type() == xltypeNil ? TRUE : FALSE;
 		}
-
 
 		OPER12(::xltype type = xltype::Missing)
 		{
@@ -177,6 +131,7 @@ namespace xll {
 		bool operator==(const OPER12& o) const
 		{
 			if (type() != o.type()) {
+				// permit int/double comparison
 				if (type() == xltypeNum && o.type() == xltypeInt)
 					return val.num == o.val.w;
 				if (type() == xltypeInt && o.type() == xltypeNum)
@@ -333,7 +288,12 @@ namespace xll {
 		{
 			return append(str.data(), str.length());
 		}
-
+		/*
+		OPER12& operator&=(const OPER12& o)
+		{
+			return *this = Excel(xlfConcatenate, *this, o);
+		}
+		*/
 		/*
 		bool operator==(const XCHAR* str) const
 		{
@@ -358,7 +318,10 @@ namespace xll {
 		}
 
 		// Ref
-
+		/*
+		explicit OPER12(const XLMREF12& ref)
+		{ }
+		*/
 		// Err
 		explicit OPER12(const xlerr& err)
 		{
@@ -623,6 +586,9 @@ namespace xll {
 			::free(val.array.lparray);
 		}
 	};
+
+	// No support for Excel 2003 and earlier.
+	using OPER = OPER12;
 
 } // xll
 
