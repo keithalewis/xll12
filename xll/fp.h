@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <new>
 #include <numeric>
+#include <iterator>
 #include <Windows.h>
 #include "XLCALL.H"
 #include "ensure.h"
@@ -147,8 +148,9 @@ namespace xll {
 
 		bool operator==(const _FP12& x) const
 		{
+			auto size = x.rows * x.columns;
 			return rows() == x.rows && columns() == x.columns
-				&& std::equal(begin(), end(), &x.array[0]);
+				&& std::equal(begin(), end(), stdext::checked_array_iterator<const double*>(&x.array[0], size));
 		}
 		bool operator==(const FP12& x) const
 		{
@@ -272,7 +274,7 @@ namespace xll {
 				resize(rows() + 1, n);
 			}
 
-			std::copy(b, e, end() - n);
+			std::copy(b, e, stdext::checked_array_iterator<double*>(end() - n, n));
 
 			return *this;
 		}
@@ -296,7 +298,7 @@ namespace xll {
 				resize(rows() + 1, n);
 			}
 
-			std::copy(b, e, end() - n);
+			std::copy(b, e, stdext::checked_array_iterator<double*>(end() - n, n));
 
 			return *this;
 		}

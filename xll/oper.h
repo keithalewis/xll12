@@ -11,6 +11,7 @@
 #include <malloc.h>
 #include <algorithm>
 #include <initializer_list>
+#include <iterator>
 #include <limits>
 #include <memory>
 
@@ -89,7 +90,7 @@ namespace xll {
 			}
 			else if (xltype == xltypeMulti) {
 				allocate_multi(o.val.array.rows, o.val.array.columns);
-				std::copy(o.begin(), o.end(), begin());
+				std::copy(o.begin(), o.end(), stdext::checked_array_iterator<OPER12*>(begin(), o.size()));
 			}
 			else if (xltype == xltypeBigData) {
 				ensure(!"not implemented");
@@ -342,7 +343,7 @@ namespace xll {
 		OPER12(std::initializer_list<OPER12> o)
 			: OPER12(1, static_cast<COL>(o.size()))
 		{
-			std::copy(o.begin(), o.end(), begin());
+			std::copy(o.begin(), o.end(), stdext::checked_array_iterator<OPER12*>(begin(), o.size()));
 		}
 		OPER12(std::initializer_list<std::initializer_list<OPER12>> o)
 			: OPER12(static_cast<RW>(o.size()), static_cast<COL>(o.begin()->size()))
@@ -356,7 +357,7 @@ namespace xll {
 
 			size_t i = 0;
 			for (const auto& r : o) {
-				std::copy(r.begin(), r.end(), begin() + i*cols);
+				std::copy(r.begin(), r.end(), stdext::checked_array_iterator<OPER12*>(begin() + i*cols, r.size()));
 				++i;
 			}
 		}
@@ -373,7 +374,7 @@ namespace xll {
 		{
 			return type() == xltypeMulti ? val.array.columns : 1;
 		}
-		auto size() const
+		int size() const
 		{
 			return rows() * columns();
 		}
