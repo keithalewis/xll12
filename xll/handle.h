@@ -10,6 +10,7 @@ using HANDLEX = double;
 
 namespace xll {
 
+
 	// HANDLEX that defaults to NaN
 	class handlex {
 		HANDLEX h_;
@@ -69,6 +70,7 @@ namespace xll {
 			}
 			return handles().insert(p).second;
 		}
+	public:
 		static int32_t& i1()
 		{
 			static int32_t i1_ = 0;
@@ -76,7 +78,6 @@ namespace xll {
 			return i1_; // high order bits
 		}
 		T* pt;
-	public:
 		handle(T* pt)
 			: pt(pt)
 		{
@@ -143,5 +144,31 @@ namespace xll {
 			return ptr();
 		}
 */	};
+	template<class  T>
+	inline HANDLEX p2h(T* pt)
+	{
+		union {
+			T* p;
+			int32_t i[2];
+		};
+
+		p = pt;
+		handle<T>::i1() = i[1];
+
+		return i[0];
+	}
+	template<class  T>
+	inline T* h2p(HANDLEX h)
+	{
+		union {
+			T* p;
+			int32_t i[2];
+		};
+
+		i[0] = static_cast<int32_t>(h);
+		i[1] = handle<T>::i1();
+
+		return p;
+	}
 
 } // xll namespace
