@@ -3,7 +3,7 @@
 #pragma once
 
 #define TEST_BEGIN(name) \
-xll::Auto<Open> xao_test_ ## name([]() { try {
+xll::Auto<Open> xao_test_ ## name([]() -> int { try {
 
 #define TEST_END \
 } catch (const std::exception& ex) { \
