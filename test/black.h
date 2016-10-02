@@ -38,19 +38,23 @@ namespace black {
 		return k*P(f, s, k, t) - f*P_(f, s, k, t);
 	}
 #pragma warning(push)
-#pragma warning(disable: 100)
+#pragma warning(disable: 100 101)
 	// Calculate volatility given price.
+	//!!! *Use classes from gsl::root*
 	inline double implied_volatility(double f, double p, double k, double t)
 	{
-		//!!! *Use the class gsl::root
-		//!!! find an initial guess
-		double s = 0;
+		auto v = [f,p,k,t](double s) { return p - put_value(f, s, k, t);};
 
-		//!!! set up a 1-d solver from xll_roots.h
+		//!!! Find values that bracket the root.
+		double s_lo, s_hi;
+
+		//!!! Create a 1-d solver from xll_roots.h
+
+		//!!! Set up the solver.
 
 		//!!! solve for the implied volatility
 
-		return s;
+		return 0;
 	}
-#pragma warning(pop)
+#pragma warning(pop) 
 } // namespace black

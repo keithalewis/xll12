@@ -29,22 +29,22 @@ TEST_END
 AddIn xai_black_put_value(
 	Function(XLL_DOUBLE, L"?xll_black_put_value", L"PUT.VALUE")
 	.Arg(XLL_DOUBLE, L"f", L"is the forward..")
-	.Arg(XLL_DOUBLE, L"k", L"is the strike..")
 	.Arg(XLL_DOUBLE, L"sigma", L"is the volatility..")
+	.Arg(XLL_DOUBLE, L"k", L"is the strike..")
 	.Arg(XLL_DOUBLE, L"t", L"is the time in years to expiration")
 	.Category(L"BLACK")
 	.FunctionHelp(L"The forward value of a put option using the Black model")
 	.Documentation()
 );
-double WINAPI xll_black_put_value(double f, double k, double s, double t)
+double WINAPI xll_black_put_value(double f, double s, double k, double t)
 {
 #pragma XLLEXPORT
 	double value;
 
 	try {
 		ensure (f > 0);
-		ensure (k > 0);
 		ensure (s > 0);
+		ensure (k > 0);
 		ensure (t > 0);
 
 		value = black::put_value(f, s, k, t);
@@ -76,16 +76,26 @@ TEST_END
 #pragma warning(push)
 #pragma warning(disable: 100 702)
 
-/*!!!
+Auto<Open> xao_gsl([] {
+	auto handler = [](const char* reason, const char* file, int line, int err) {
+		char buf[1024];
+		sprintf_s(buf, "%s\nfile: %s\nline: %d\nerrno: %d", reason, file, line, err);
+		MessageBoxA(0, buf, "GSL Error", MB_OK);
+	};
+	using handler_t = void(__cdecl*)(const char*, const char*, int, int);
+	gsl_set_error_handler(static_cast<handler_t>(handler));
+	
+	return TRUE;
+});
+
+//!!! Add arguments, category, and function help.
 AddIn xai_black_implied_volatilty(
 	Function(XLL_DOUBLE, L"?xll_black_implied_volatility", L"IMPLIED.VOLATILITY")
-	//!!! Specify arguments, category, and function help.
 );
-*/
-double WINAPI xll_black_implied_volatility(double f, double p, double s, double t)
+double WINAPI xll_black_implied_volatility(double f, double p, double k, double t)
 {
 #pragma XLLEXPORT
-	double value = std::numeric_limits<double>::quiet_NaN();
+	double s = std::numeric_limits<double>::quiet_NaN();
 
 	try {
 		//!!! ensure parameters are valid
@@ -96,7 +106,7 @@ double WINAPI xll_black_implied_volatility(double f, double p, double s, double 
 		XLL_ERROR(ex.what());
 	}
 
-	return value;
+	return s;
 }
 
 TEST_BEGIN(implied_volatility)
