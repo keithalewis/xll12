@@ -15,19 +15,23 @@ namespace root {
 
 	// root bracketing solvers
 	class fsolver {
-		using root_fsolver = std::unique_ptr<gsl_root_fsolver,decltype(&::gsl_root_fsolver_free)>;
-
-		root_fsolver s;
+		gsl_root_fsolver* s;
 		gsl::function f;
 	public:
 		explicit fsolver(const gsl_root_fsolver_type * type)
-			: s{gsl_root_fsolver_alloc(type), &::gsl_root_fsolver_free}
+			: s{gsl_root_fsolver_alloc(type)}
 		{ }
+		fsolver(const fsolver&) = delete;
+		fsolver& operator=(const fsolver&) = delete;
+		~fsolver()
+		{
+			gsl_root_fsolver_free(s);
+		}
 
 		// needed for gsl_root_fsolver_* routines
 		gsl_root_fsolver* get() const
 		{
-			return s.get();
+			return s;
 		}
 		// syntactic sugar
 		operator gsl_root_fsolver*() const
@@ -39,25 +43,25 @@ namespace root {
 		{
 			f = f_;
 
-			return gsl_root_fsolver_set(s.get(), &f, lo, hi);
+			return gsl_root_fsolver_set(s, &f, lo, hi);
 		}
 
 		// forward to gsl_root_fsolver_* functions
 		int iterate()
 		{
-			return gsl_root_fsolver_iterate(s.get());
+			return gsl_root_fsolver_iterate(s);
 		}
 		double x_lower() const
 		{
-			return gsl_root_fsolver_x_lower(s.get());
+			return gsl_root_fsolver_x_lower(s);
 		}
 		double x_upper() const
 		{
-			return gsl_root_fsolver_x_upper(s.get());
+			return gsl_root_fsolver_x_upper(s);
 		}
 		double root() const
 		{
-			return gsl_root_fsolver_root(s.get());
+			return gsl_root_fsolver_root(s);
 		}
 
 		// specify convergence condition
@@ -82,42 +86,46 @@ namespace root {
 
 	// root finding using derivatives
 	class fdfsolver {
-		using root_fdfsolver = std::unique_ptr<gsl_root_fdfsolver,decltype(&::gsl_root_fdfsolver_free)>;
-		root_fdfsolver s;
+		gsl_root_fdfsolver* s;
 
 		// function and its derivative
 		gsl::function_fdf FdF;
 	public:
 		fdfsolver(const gsl_root_fdfsolver_type * type)
-			: s{gsl_root_fdfsolver_alloc(type),&::gsl_root_fdfsolver_free}
+			: s{gsl_root_fdfsolver_alloc(type)}
 		{ }
-
+		fdfsolver(const fdfsolver&) = delete;
+		fdfsolver& operator=(const fdfsolver&) = delete;
+		~fdfsolver()
+		{
+			gsl_root_fdfsolver_free(s);
+		}
 		// needed for gsl_root_fdfsolver_* routines
 		gsl_root_fdfsolver* get() const
 		{
-			return s.get();
+			return s;
 		}
 		// syntactic sugar
 		operator gsl_root_fdfsolver*() const
 		{
-			return s.get();
+			return s;
 		}
 
 		int set(const std::function<double(double)>& f, const std::function<double(double)>& df, double x0)
 		{
 			FdF = gsl::function_fdf(f, df);
 
-			return gsl_root_fdfsolver_set(s.get(), &FdF, x0);
+			return gsl_root_fdfsolver_set(s, &FdF, x0);
 		}
 
 		// forward to gsl_root_fdfsolver_* functions
 		int iterate()
 		{
-			return gsl_root_fdfsolver_iterate(s.get());
+			return gsl_root_fdfsolver_iterate(s);
 		}
 		double root() const
 		{
-			return gsl_root_fdfsolver_root(s.get());
+			return gsl_root_fdfsolver_root(s);
 		}
 
 		// specify convergence condition given previous root
@@ -148,7 +156,7 @@ namespace root {
 #ifdef _DEBUG
 #include <cassert>
 #include <vector>
-#include <gsl/gsl_poly.h>
+//#include <gsl/gsl_poly.h>
 
 // http://www.gnu.org/software/gsl/manual/html_node/Root-Finding-Examples.html#Root-Finding-Examples
 
@@ -228,7 +236,7 @@ inline void test_gsl_root_fsolver()
 		gsl::root::fsolver s(gsl_root_fsolver_brent);
 
 		std::vector<double> params{-5,0,1}; // -5 + x^2
-		auto F = [params](double x) { return gsl_poly_eval(&params[0], static_cast<int>(params.size()), x); };
+		auto F = [params](double x) { return params[0] + x*(params[1] + x*params[2]); };
 		gsl::function F_(F);
 		assert (F_(0) == -5);
 		assert (F_.call(0) == -5);

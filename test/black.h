@@ -2,6 +2,7 @@
 #pragma once
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include "xll_roots.h"
 
 namespace prob {
 
@@ -36,5 +37,20 @@ namespace black {
 	{
 		return k*P(f, s, k, t) - f*P_(f, s, k, t);
 	}
+#pragma warning(push)
+#pragma warning(disable: 100)
+	// Calculate volatility given price.
+	inline double implied_volatility(double f, double p, double k, double t)
+	{
+		//!!! *Use the class gsl::root
+		//!!! find an initial guess
+		double s = 0;
 
+		//!!! set up a 1-d solver from xll_roots.h
+
+		//!!! solve for the implied volatility
+
+		return s;
+	}
+#pragma warning(pop)
 } // namespace black

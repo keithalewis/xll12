@@ -59,8 +59,7 @@ double WINAPI xll_black_put_value(double f, double k, double s, double t)
 
 TEST_BEGIN(black_put)
 
-//!!! Write a test for xll_black_put using formula (27) of 
-// http://kalx.net/BlaSch1973.pdf for the values
+// Test for xll_black_put using formula (27) of  http://kalx.net/BlaSch1973.pdf 
 // f = x = 100, s = v = 0.2, k = c = 100, t = t* = 0.25, and r = 0. 
 
 	double f = 100, k = 100, s = 0.2, t = 0.25, r = 0;
@@ -71,5 +70,38 @@ TEST_BEGIN(black_put)
 	double v = -f*N1 + k*N2;
 
 	ensure (v == black::put_value(f, s, k, t));
+
+TEST_END
+
+#pragma warning(push)
+#pragma warning(disable: 100 702)
+
+/*!!!
+AddIn xai_black_implied_volatilty(
+	Function(XLL_DOUBLE, L"?xll_black_implied_volatility", L"IMPLIED.VOLATILITY")
+	//!!! Specify arguments, category, and function help.
+);
+*/
+double WINAPI xll_black_implied_volatility(double f, double p, double s, double t)
+{
+#pragma XLLEXPORT
+	double value = std::numeric_limits<double>::quiet_NaN();
+
+	try {
+		//!!! ensure parameters are valid
+
+		//!!! compute the implied volatility
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+
+	return value;
+}
+
+TEST_BEGIN(implied_volatility)
+
+//!!! Test the implied volatility for the values
+// f = 100, s = 0.2, k = 100, and t  = 0.25. 
 
 TEST_END
