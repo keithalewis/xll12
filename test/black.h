@@ -6,6 +6,10 @@
 
 namespace prob {
 
+	inline double normal_pdf(double x)
+	{
+		return exp(-x*x/2)/(M_SQRT2*M_SQRTPI);
+	}
 	inline double normal_cdf(double x)
 	{
 		return (1 + erf(x/M_SQRT2))/2;
@@ -37,13 +41,20 @@ namespace black {
 	{
 		return k*P(f, s, k, t) - f*P_(f, s, k, t);
 	}
+	// Derivative of put value with respect to volatility.
+	inline double put_vega(double f, double s, double k, double t)
+	{
+		auto srt = sqrt(t);
+
+		return f*prob::normal_pdf(log(k/f)/(s*srt) + s*srt/2)*srt;
+	}
 #pragma warning(push)
 #pragma warning(disable: 100 101)
 	// Calculate volatility given price.
 	//!!! *Use classes from gsl::root*
 	inline double implied_volatility(double f, double p, double k, double t)
 	{
-		auto v = [f,p,k,t](double s) { return p - put_value(f, s, k, t);};
+		auto v = [f,p,k,t](double s) { return p - put_value(f, s, k, t); };
 
 		//!!! Find values that bracket the root.
 		double s_lo, s_hi;

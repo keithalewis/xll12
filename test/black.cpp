@@ -1,8 +1,33 @@
 #include "black.h"
 #include "../xll/xll.h"
 
+
 using namespace xll;
 using namespace black;
+
+// Set up GSL error handling.
+Auto<Open> xao_gsl([] {
+	auto handler = [](const char* reason, const char* file, int line, int err) {
+		char buf[1024];
+		sprintf_s(buf, "%s\nfile: %s\nline: %d\nerrno: %d", reason, file, line, err);
+		MessageBoxA(0, buf, "GSL Error", MB_OK);
+	};
+	using handler_t = void(__cdecl*)(const char*, const char*, int, int);
+	gsl_set_error_handler(static_cast<handler_t>(handler));
+
+	return TRUE;
+});
+
+AddIn xai_normal_pdf(
+	Function(XLL_DOUBLE, L"?xll_normal_pdf", L"NORMAL.PDF")
+	.Arg(XLL_DOUBLE, L"x", L"is a number..")
+	.Category(L"PROB")
+);
+double WINAPI xll_normal_pdf(double x)
+{
+#pragma XLLEXPORT
+	return prob::normal_pdf(x);
+}
 
 AddIn xai_normal_cdf(
 	Function(XLL_DOUBLE, L"?xll_normal_cdf", L"NORMAL.CDF")
@@ -73,20 +98,37 @@ TEST_BEGIN(black_put)
 
 TEST_END
 
+AddIn xai_black_put_vega(
+	Function(XLL_DOUBLE, L"?xll_black_put_vega", L"PUT.VEGA")
+	.Arg(XLL_DOUBLE, L"f", L"is the forward..")
+	.Arg(XLL_DOUBLE, L"sigma", L"is the volatility..")
+	.Arg(XLL_DOUBLE, L"k", L"is the strike..")
+	.Arg(XLL_DOUBLE, L"t", L"is the time in years to expiration")
+	.Category(L"BLACK")
+	.FunctionHelp(L"The forward vega of a put option using the Black model")
+	.Documentation()
+);
+double WINAPI xll_black_put_vega(double f, double s, double k, double t)
+{
+#pragma XLLEXPORT
+	double value = std::numeric_limits<double>::quiet_NaN();
+
+	try {
+		ensure (f > 0);
+		ensure (s > 0);
+		ensure (k > 0);
+		ensure (t > 0);
+
+		value = black::put_vega(f, s, k, t);
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+
+	return value;
+}
 #pragma warning(push)
 #pragma warning(disable: 100 702)
-
-Auto<Open> xao_gsl([] {
-	auto handler = [](const char* reason, const char* file, int line, int err) {
-		char buf[1024];
-		sprintf_s(buf, "%s\nfile: %s\nline: %d\nerrno: %d", reason, file, line, err);
-		MessageBoxA(0, buf, "GSL Error", MB_OK);
-	};
-	using handler_t = void(__cdecl*)(const char*, const char*, int, int);
-	gsl_set_error_handler(static_cast<handler_t>(handler));
-	
-	return TRUE;
-});
 
 //!!! Add arguments, category, and function help.
 AddIn xai_black_implied_volatilty(

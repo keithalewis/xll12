@@ -590,6 +590,8 @@ namespace xll {
 
 	// No support for Excel 2003 and earlier.
 	using OPER = OPER12;
+	using LPOPER12 = OPER12*;
+	using LPOPER = LPOPER12;
 
 } // xll
 
