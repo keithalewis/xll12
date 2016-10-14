@@ -2,20 +2,9 @@
 #pragma once
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include "prob.h"
 #include "xll_roots.h"
 
-namespace prob {
-
-	inline double normal_pdf(double x)
-	{
-		return exp(-x*x/2)/(M_SQRT2*M_SQRTPI);
-	}
-	inline double normal_cdf(double x)
-	{
-		return (1 + erf(x/M_SQRT2))/2;
-	}
-
-} // namespace prob
 
 namespace black {
 
@@ -48,24 +37,43 @@ namespace black {
 
 		return f*prob::normal_pdf(log(k/f)/(s*srt) + s*srt/2)*srt;
 	}
-#pragma warning(push)
-#pragma warning(disable: 100 101)
 	// Calculate volatility given price.
-	//!!! *Use classes from gsl::root*
 	inline double implied_volatility(double f, double p, double k, double t)
 	{
 		auto v = [f,p,k,t](double s) { return p - put_value(f, s, k, t); };
 
-		//!!! Find values that bracket the root.
-		double s_lo, s_hi;
+		double s_lo = 0.1, s_hi = 0.3;
 
-		//!!! Create a 1-d solver from xll_roots.h
+		while (v(s_lo) < 0)
+			s_lo /= 2;
+		while (v(s_hi) > 0)
+			s_hi *= 2;
 
-		//!!! Set up the solver.
+		gsl::root::fsolver solver(gsl_root_fsolver_brent);
 
-		//!!! solve for the implied volatility
+		solver.set(v, s_lo, s_hi);
 
-		return 0;
+		double epsrel = 1e-8;
+
+		return solver.solve(gsl::root::test_interval(0, epsrel));
+	}
+#pragma warning(push)
+#pragma warning(disable: 100 101)
+	// Calculate volatility given price using Newton method.
+	inline double implied_volatility2(double f, double p, double k, double t)
+	{
+		auto v = [f,p,k,t](double s) { return p - put_value(f, s, k, t); };
+		auto dv = [f,p,k,t](double s) { return -put_vega(f, s, k, t); };
+	
+		double s0 = 0.2;
+
+		gsl::root::fdfsolver solver(gsl_root_fdfsolver_newton);
+
+		solver.set(v, dv, s0);
+
+		double epsrel = 1e-8;
+
+		return solver.solve(gsl::root::test_delta(0, epsrel));
 	}
 #pragma warning(pop) 
 } // namespace black

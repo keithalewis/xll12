@@ -30,6 +30,12 @@
     <ClCompile Include="xll_roots.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="prob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="poly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="black.h">
@@ -39,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="xll_roots.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="prob.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="poly.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

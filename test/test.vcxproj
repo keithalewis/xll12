@@ -188,6 +188,8 @@
   <ItemGroup>
     <ClCompile Include="black.cpp" />
     <ClCompile Include="handle.cpp" />
+    <ClCompile Include="poly.cpp" />
+    <ClCompile Include="prob.cpp" />
     <ClCompile Include="register.cpp" />
     <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -206,6 +208,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="black.h" />
+    <ClInclude Include="poly.h" />
+    <ClInclude Include="prob.h" />
     <ClInclude Include="xll_math.h" />
     <ClInclude Include="xll_roots.h" />
   </ItemGroup>

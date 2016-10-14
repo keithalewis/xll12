@@ -18,38 +18,6 @@ Auto<Open> xao_gsl([] {
 	return TRUE;
 });
 
-AddIn xai_normal_pdf(
-	Function(XLL_DOUBLE, L"?xll_normal_pdf", L"NORMAL.PDF")
-	.Arg(XLL_DOUBLE, L"x", L"is a number..")
-	.Category(L"PROB")
-);
-double WINAPI xll_normal_pdf(double x)
-{
-#pragma XLLEXPORT
-	return prob::normal_pdf(x);
-}
-
-AddIn xai_normal_cdf(
-	Function(XLL_DOUBLE, L"?xll_normal_cdf", L"NORMAL.CDF")
-	.Arg(XLL_DOUBLE, L"x", L"is a number..")
-	.Category(L"PROB")
-);
-double WINAPI xll_normal_cdf(double x)
-{
-#pragma XLLEXPORT
-	return prob::normal_cdf(x);
-}
-
-TEST_BEGIN(normal_cdf)
-
-// Compare normal_cdf to Excel function NORMSDIST.
-for (double x = -6; x <= 6; x += 0.1) {
-	double Nx  = xll_normal_cdf(x);
-	double Nx_ = Excel(xlfNormsdist, OPER(x));
-	ensure (fabs(Nx - Nx_) < std::numeric_limits<double>::epsilon());
-} 
-
-TEST_END
 
 AddIn xai_black_put_value(
 	Function(XLL_DOUBLE, L"?xll_black_put_value", L"PUT.VALUE")
@@ -130,9 +98,15 @@ double WINAPI xll_black_put_vega(double f, double s, double k, double t)
 #pragma warning(push)
 #pragma warning(disable: 100 702)
 
-//!!! Add arguments, category, and function help.
 AddIn xai_black_implied_volatilty(
 	Function(XLL_DOUBLE, L"?xll_black_implied_volatility", L"IMPLIED.VOLATILITY")
+	.Arg(XLL_DOUBLE, L"f", L"is the forward..")
+	.Arg(XLL_DOUBLE, L"p", L"is the put price..")
+	.Arg(XLL_DOUBLE, L"k", L"is the strike..")
+	.Arg(XLL_DOUBLE, L"t", L"is the time in years to expiration")
+	.Category(L"BLACK")
+	.FunctionHelp(L"The implied volatility of a put option using the Black model")
+	.Documentation()
 );
 double WINAPI xll_black_implied_volatility(double f, double p, double k, double t)
 {
@@ -140,9 +114,12 @@ double WINAPI xll_black_implied_volatility(double f, double p, double k, double 
 	double s = std::numeric_limits<double>::quiet_NaN();
 
 	try {
-		//!!! ensure parameters are valid
+		ensure (f > 0);
+		ensure (p > 0 && p > k - f);
+		ensure (k > 0);
+		ensure (t > 0);
 
-		//!!! compute the implied volatility
+		s = implied_volatility(f, p, k, t);
 	}
 	catch (const std::exception& ex) {
 		XLL_ERROR(ex.what());
@@ -153,7 +130,8 @@ double WINAPI xll_black_implied_volatility(double f, double p, double k, double 
 
 TEST_BEGIN(implied_volatility)
 
-//!!! Test the implied volatility for the values
-// f = 100, s = 0.2, k = 100, and t  = 0.25. 
+double f = 100, s = 0.2, k = 100, t  = 0.25;
+double p = black::put_value(f, s, k, t);
+ensure (fabs(s - black::implied_volatility(f, p, k, t)) < 1e-8);
 
 TEST_END

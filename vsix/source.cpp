@@ -10,31 +10,45 @@ AddIn xai_function(
 	.Arg(XLL_BOOL, L"bool", L"is a boolean value..")
 	.Arg(XLL_LONG, L"long", L"is a 32-bit long integer..")
 	.Category(L"Category")
-	.FunctionHelp(L"Return arguments as a 2x5 array..")
+	.FunctionHelp(L"Return arguments as a 5 x 2 array.")
 	//.Documentation(L"Optional detailed documentation")
 );
 LPOPER WINAPI xll_function(double d, const XCHAR* s, const LPOPER po, BOOL b, LONG l)
 {
 #pragma XLLEXPORT
-	static OPER result(5, 2);
+	static OPER result;
 
-	result(0,0) = L"DOUBLE";
-	result(0,1) = d;
+	try {
+		result.resize(5,3);
 
-	result(1,0) = L"CSTRING";
-	result(1,1) = s;
+		result(0,0) = L"DOUBLE";
+		result(0,1) = d;
+		ensure (result(0,1).type() == xltypeNum);
 
-	result(2,0) = L"OPER";
-	result(2,1) = Excel(xlfConcatenate, 
-					Excel(xlfRows, *po),
-					OPER(L" x "),
-					Excel(xlfColumns, *po));
+		result(1,0) = L"CSTRING";
+		result(1,1) = s;
+		ensure (result(1,1).xltype == xltypeStr);
 
-	result(3,0) = L"BOOL";
-	result(3,1) = b ? true : false;
+		result(2,0) = L"OPER";
+		result(2,1) = Excel(xlfConcatenate, 
+						    Excel(xlfRows, *po),
+						    OPER(L" x "),
+						    Excel(xlfColumns, *po),
+							OPER(L" range"));
 
-	result(4,0) = L"LONG";
-	result(4,1) = l; // really xltypeNum
+		result(3,0) = L"BOOL";
+		result(3,1) = b ? true : false;
+		ensure (result(3,1).xltype == xltypeBool);
+
+		result(4,0) = L"LONG";
+		result(4,1) = l; // Integer types are converted to floating point.
+		ensure (result(4,1).xltype == xltypeNum);
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+
+		result = OPER(xlerr::NA);
+	}
 
 	return &result;
 }

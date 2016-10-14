@@ -145,7 +145,7 @@ namespace root {
 	// convergence helper functions
 	inline auto test_delta(double epsabs, double epsrel)
 	{
-		return [epsabs,epsrel](const fdfsolver& s, double x) {
+		return [epsabs,epsrel](const fdfsolver& s, double x) -> bool {
 			return GSL_SUCCESS == gsl_root_test_delta(x, s.root(), epsabs, epsrel);
 		};
 	}
