@@ -35,7 +35,7 @@ namespace pwflat {
 	}
 
 	// piecewise flat curve
-	// return f[i] if t[i-1] < u <= t[i]
+	// return f[i] if t[i-1] < u <= t[i], _f if u > t[n-1]
 	// assumes t[i] monotonically increasing
 	template<class T, class F>
 	inline F value(const T& u, size_t n, const T* t, const F* f, const F& _f = std::numeric_limits<F>::quiet_NaN())
@@ -152,7 +152,6 @@ inline void test_fms_pwflat()
 		assert (!monotonic(std::rbegin(f), std::rend(f)));
 	}
 	{ // forward
-		//!!! add tests
 		//0, 0, null, null, null
 		assert (isnan(value<int,double>(0, 0, nullptr, nullptr)));
 		//1, 0, null, null, null
@@ -191,9 +190,6 @@ inline void test_fms_pwflat()
 			}
 		}
 
-
-		//		assert (x == forward<int,double>(0, 0, nullptr, nullptr, 0.1)); // !!!VS 2015 compiler error
-
 		for (int i = 0; i < 3; ++i)
 			assert (f[i] == value(t[i], t.size(), t.data(), f.data()));
 	}
@@ -215,10 +211,9 @@ inline void test_fms_pwflat()
 		assert (.1 + .2 + .3*.5 == integral(u, t.size(), t.data(), f.data()));
 		u = 3;
 		assert (fabs(.1 + .2 + .3 - integral(u, t.size(), t.data(), f.data())) < 1e-10);
-		assert (.1 + .2 + .3 != .6); //!!!
+		assert (.1 + .2 + .3 != .6); 
 	}
 	{ // discount
-		//!!! add tests
 		double u_[] = { -.5, 0, .5, 1, 1.5, 2, 2.5, 3, 3.5 };
 		double f_[] = {0, 0, .05, .1, .2, .3, .45, .6, .7};
 		for (int i = 0; i < 9; i++) {
@@ -236,7 +231,6 @@ inline void test_fms_pwflat()
 		}
 	}
 	{ // spot
-		//!!! add tests
 		double u_[] = { -.5, 0, .5, 1, 1.5, 2, 2.5, 3, 3.5 };
 		double f_[] = { .1, .1, .1, .1, .2/1.5, .3/2, .45/2.5, .6/3, .7/3.5 };
 		for (int i = 0; i < 9; i++) {
@@ -251,8 +245,6 @@ inline void test_fms_pwflat()
 		}
 	}
 	{ // present_value
-		// !!! add tests
-		
 		double u_[] = { 0, 1, 2, 3, 4};
 		double d_[] = { 0,
 						discount(u_[1], t.size(), t.data(), f.data(), 0.2),

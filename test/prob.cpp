@@ -59,12 +59,10 @@ double WINAPI xll_njr_cdf(double x, _FP12* kappa)
 
 	return value;
 }
-
-/*!!! Uncomment and implement tests
+/*
 TEST_BEGIN(njr_cdf)
 
-//!!! Test for the cases kappa = {0, 1} (standard normal) and kappa = {2,3}
-// (normal mean 2 variance 3).
+// X = Z + cP, Z std normal, P Poisson with mean lambda.
 
 TEST_END
 */

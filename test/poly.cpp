@@ -29,16 +29,27 @@ double WINAPI xll_Bell(_FP12* kappa)
 	return poly::Bell(n, kappa->array);
 }
 
-/*!!! Uncomment and implement tests.
 TEST_BEGIN(hermite)
 
-//!!! Calculate H_3(x) by hand and check at x = -1, 0, 2.
+// Calculate H_3(x) by hand and check at x = -1, 0, 2.
+auto eps = std::numeric_limits<double>::epsilon();
+auto H3 = [](double x) { return x*x*x - 3*x; };
+double x;
+x = -1;
+ensure (fabs(H3(x) - poly::Hermite(3, x)) < 2*eps);
+x = 0;
+ensure (fabs(H3(x) - poly::Hermite(3, x)) < 2*eps);
+x = 2;
+ensure (fabs(H3(x) - poly::Hermite(3, x)) < 2*eps);
 
 TEST_END
 
 TEST_BEGIN(Bell)
 
-//!!! Calculate B_3(x_1, x_2, x_3) and check at x_1 = -1, x_2 = 0, x_3 = 2.
+// Calculate B_3(x_1, x_2, x_3) and check at x_1 = -1, x_2 = 0, x_3 = 2.
+auto B3 = [](double x1, double x2, double x3) { return x1*x1*x1 + 3*x1*x2 + x3; };
+double x[] = {-1, 0, 2};
+double x1 = x[0], x2 = x[1], x3 = x[2];
+ensure (B3(x1, x2, x3) == poly::Bell(3, x));
 
 TEST_END
-*/

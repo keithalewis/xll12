@@ -197,6 +197,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="xll_bootstrap.cpp" />
     <ClCompile Include="xll_pwflat.cpp" />
     <ClCompile Include="xll_roots.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -209,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="black.h" />
+    <ClInclude Include="fms_bootstrap.h" />
     <ClInclude Include="fms_newton.h" />
     <ClInclude Include="poly.h" />
     <ClInclude Include="prob.h" />
