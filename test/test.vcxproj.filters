@@ -36,6 +36,9 @@
     <ClCompile Include="poly.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="xll_pwflat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="black.h">
@@ -53,5 +56,17 @@
     <ClInclude Include="poly.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fms_pwflat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fms_newton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Bell.xlsx" />
+    <None Include="Hermite.xlsx" />
+    <None Include="newton.xlsx" />
+    <None Include="njr.xlsx" />
   </ItemGroup>
 </Project>

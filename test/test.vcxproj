@@ -197,6 +197,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="xll_pwflat.cpp" />
     <ClCompile Include="xll_roots.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -208,10 +209,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="black.h" />
+    <ClInclude Include="fms_newton.h" />
     <ClInclude Include="poly.h" />
     <ClInclude Include="prob.h" />
     <ClInclude Include="xll_math.h" />
+    <ClInclude Include="fms_pwflat.h" />
     <ClInclude Include="xll_roots.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Bell.xlsx" />
+    <None Include="Hermite.xlsx" />
+    <None Include="newton.xlsx" />
+    <None Include="njr.xlsx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

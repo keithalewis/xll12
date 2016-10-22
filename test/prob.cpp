@@ -39,8 +39,8 @@ TEST_END
 
 AddIn xai_njr_cdf(
 	Function(XLL_DOUBLE, L"?xll_njr_cdf", L"NJR.CDF")
-	.Arg(XLL_DOUBLE, L"x", L"is a number..")
-	.Arg(XLL_FP, L"kappa", L"is the array of cumulants")
+	.Arg(XLL_DOUBLE, L"x", L"is a number.")
+	.Arg(XLL_FP, L"kappa", L"is the array of cumulants..")
 	.Category(L"PROB")
 	.FunctionHelp(L"")
 );
@@ -50,9 +50,8 @@ double WINAPI xll_njr_cdf(double x, _FP12* kappa)
 	double value = std::numeric_limits<double>::quiet_NaN();
 
 	try {
-		//!!! call prob::njr_cdf  
-		value = x*kappa->array[0];
-		ensure (value);
+		int n = kappa->rows*kappa->columns;
+		value = prob::njr_cdf(x, n, kappa->array);
 	}
 	catch  (const std::exception& ex) {
 		XLL_ERROR(ex.what());

@@ -23,11 +23,11 @@ namespace poly {
 	// so
 	// B_n(x_1,..., x_n) = 
 	//   sum_{k=0}^{n-1} C(n-1,k) B_{n-1-k}(x_1,...,x_{n-1-k}) x_{k+1}
-	// Assumes x_i = x[i-1] and x has n+1 values.
+	// Assumes x_i = x[i-1] and x has n values.
 	inline double Bell(int n, const double* x)
 	{
-		// C(n,k) = n!/(k! (n - k)!)
-		// n/1 * (n-1)/2 * ... * (n - k + 1)/k
+			// C(n,k) = n!/(k! (n - k)!)
+			// n/1 * (n-1)/2 * ... * (n - k + 1)/k
 		auto C = [](int n, int k) {
 			long Cnk = 1;
 			for (int k_ = 1; k_ <= k; ++k_, --n) {
@@ -41,7 +41,7 @@ namespace poly {
 			return 1;
 
 		double Bn = 0;
-		for (int k = 0; k <= n; ++k) {
+		for (int k = 0; k < n; ++k) {
 			Bn += C(n - 1, k)*Bell(n - 1 - k, x)*x[k];
 		}
 

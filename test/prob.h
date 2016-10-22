@@ -36,12 +36,21 @@ namespace prob {
 		return (n%2 == 0 ? -1 : 1)*normal_pdf(x)*poly::Hermite(n-1, x);
 	}
 
-	//!!! Implement formula (3) from http://kalx.net/general-formula-option.pdf
+	// Formula (3) from http://kalx.net/general-formula-option.pdf
 	// where kappa are the cumulants of X. Since cumulants start at 1
 	// assume kappa[0] is the first cumulant.
 	inline double njr_cdf(double x, int n, const double* kappa)
 	{
-		return x*n*kappa[0];
+		double Phi = normal_cdf(x);
+		double phi = normal_pdf(x);
+
+		double s = 0;
+		double n_ = 1;
+		for (int i = 0; i < n; ++i) {
+			s += poly::Bell(i + 1, kappa)*poly::Hermite(i, x)/n_;
+			n_ *= (i + 2);
+		}
+		return Phi - phi*s;
 	}
 
 } // namespace prob
