@@ -377,7 +377,7 @@ namespace xll {
 				pf = reinterpret_cast<_FP12*>(new (buf) _FP12);
 			}
 //			memset(buf, 0, sizeof(_FP12) + r*c*sizeof(double));
-			//!!! check size
+			// check size
 			pf->rows = r;
 			pf->columns = c;
 

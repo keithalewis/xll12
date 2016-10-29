@@ -12,7 +12,7 @@ enum {
 	XLL_ALERT_ERROR   = 1,
 	XLL_ALERT_WARNING = 2, 
 	XLL_ALERT_INFO    = 4,
-//	XLL_ALERT_LOG     = 8	// turn on logging (should be separate!!!)
+//	XLL_ALERT_LOG     = 8	// turn on logging (should be separate)
 };
 
 /// OKCANCEL message box. Cancel turns off error bit

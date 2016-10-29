@@ -172,7 +172,7 @@ namespace xll {
 			return *this;
 		}
 		/// Specify the help topic to be used in the Function Wizard.
-		/// !!!This must have the format...
+		/// This must have the format...
 		Args& HelpTopic(xcstr helpTopic)
 		{
 			args[ARG::HelpTopic] = helpTopic;
@@ -255,7 +255,7 @@ namespace xll {
 
 		Args& Documentation(xcstr doc = L"")
 		{
-			//!!!Store to generate documentation
+			//Store to generate documentation
 			doc = doc;
 
 			return *this;
