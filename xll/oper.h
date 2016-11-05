@@ -483,8 +483,8 @@ namespace xll {
 		// Int
 		explicit OPER12(const int& w)
 		{
-			xltype = xltypeInt;
-			val.w = w;
+			xltype = xltypeNum; // just like Excel
+			val.num = w;
 		}
 		/*
 		OPER12& operator=(const int& w)

@@ -239,6 +239,19 @@ void test_multi()
 		ensure (o(1,1) == true);
 	}
 }
+void test_int()
+{
+	{
+		OPER o(1);
+		ensure (o.xltype == xltypeNum);
+		ensure (o.val.num == 1);
+	}
+	{
+		OPER o(1l);
+		ensure (o.xltype == xltypeNum);
+		ensure (o.val.num == 1);
+	}
+}
 void test_handle()
 {
 	auto pi = new std::vector<int>();
@@ -347,6 +360,7 @@ int main()
 	test_str();
 	test_bool();
 	test_multi();
+	test_int();
 	test_handle();
 	test_arity();
 	test_fp();

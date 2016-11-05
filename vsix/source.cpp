@@ -52,3 +52,20 @@ LPOPER WINAPI xll_function(double d, const XCHAR* s, const LPOPER po, BOOL b, LO
 
 	return &result;
 }
+
+static Auto<Open> xao_function([](){
+	try {
+		OPER r(2,3);
+		OPER o = *xll_function(1.23, L"foo", &r, false, 123);
+		ensure (o(0,0) == L"DOUBLE"); ensure (o(0,1) == 1.23);
+		ensure (o(1,0) == L"CSTRING"); ensure (o(1,1) == L"foo");
+		ensure (o(2,0) == L"OPER"); ensure (o(2,1) == L"2 x 3 range");
+		ensure (o(3,0) == L"BOOL"); ensure (o(3,1) == false);
+		ensure (o(4,0) == L"LONG"); ensure (o(4,1) == 123);
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+		return FALSE;
+	}
+	return TRUE;
+});

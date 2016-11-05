@@ -93,9 +93,7 @@ namespace xll {
 			args[ARG::MacroType] = OPER12(2);
 		}
 		/// Function
-		Args(xcstr TypeText, xcstr Procedure, 
-			xcstr FunctionText, xcstr ArgumentText = 0,
-			xcstr Category = 0, xcstr FunctionHelp = 0)
+		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText)
 			: Args()
 		{
 			//args[ARG::ModuleText] = XlGetName();
@@ -103,12 +101,6 @@ namespace xll {
 			args[ARG::TypeText] = TypeText;
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(1);
-			if (ArgumentText)
-				args[ARG::ArgumentText] = ArgumentText;
-			if (Category)
-				args[ARG::Category] = Category;
-			if (FunctionHelp)
-				args[ARG::FunctionHelp] = FunctionHelp;
 		}
 
 		Args& ModuleText(const OPER12& moduleText)
@@ -271,7 +263,11 @@ namespace xll {
 			if (oResult.isErr()) {
 				OPER12 oError(L"Failed to register: ");
 				oError = Excel(xlfConcatenate, oError, args[ARG::FunctionText]);
-				oError = Excel(xlfConcatenate, oError, OPER12(L"\nDid you forget to XLLEXPORT?"));
+				oError = Excel(xlfConcatenate, oError, OPER12(L"/"));
+				oError = Excel(xlfConcatenate, oError, args[ARG::Procedure]);
+				oError = Excel(xlfConcatenate, oError, 
+					OPER12(L"\nDid you forget to XLLEXPORT?")
+				);
 				Excel(xlcAlert, oError);
 			}
 
