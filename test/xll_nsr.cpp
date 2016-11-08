@@ -4,7 +4,7 @@
 
 using namespace xll;
 
-// !!! Implement NSR.E.LOGD
+// Implement NSR.E.LOGD
 static AddIn xai_nsr_e_logd(
 	Function(XLL_DOUBLE, L"?xll_nsr_e_logd", L"NSR.E.LOGD")
 	.Arg(XLL_DOUBLE, L"sigma", L"is the volatility.")
@@ -21,7 +21,7 @@ double WINAPI xll_nsr_e_logd(double sigma, double Dt, double Du, double t, doubl
 	return fms::nsr::E_logD(sigma, Dt, Du, t, u);
 }
 
-// !!! Implement NSR.VAR.LOGD
+// Implement NSR.VAR.LOGD
 static AddIn xai_nsr_var_logd(
 	Function(XLL_DOUBLE, L"?xll_nsr_var_logd", L"NSR.VAR.LOGD")
 	.Arg(XLL_DOUBLE, L"sigma", L"is the volatility.")

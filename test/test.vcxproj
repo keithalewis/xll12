@@ -199,6 +199,7 @@
     </ClCompile>
     <ClCompile Include="xll_bootstrap.cpp" />
     <ClCompile Include="xll_date.cpp" />
+    <ClCompile Include="xll_instrument.cpp" />
     <ClCompile Include="xll_nsr.cpp" />
     <ClCompile Include="xll_pwflat.cpp" />
     <ClCompile Include="xll_roots.cpp">
@@ -219,6 +220,7 @@
     <ClInclude Include="poly.h" />
     <ClInclude Include="prob.h" />
     <ClInclude Include="xll_date.h" />
+    <ClInclude Include="xll_instrument.h" />
     <ClInclude Include="xll_math.h" />
     <ClInclude Include="fms_pwflat.h" />
     <ClInclude Include="xll_roots.h" />

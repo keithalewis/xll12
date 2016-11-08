@@ -52,7 +52,10 @@ double x[] = {-1, 0, 2};
 double x1 = x[0], x2 = x[1], x3 = x[2];
 ensure (B3(x1, x2, x3) == poly::Bell(3, x));
 
-//!!! Test memoization.
-//!!! 
+//!!! [G-K]* Test memoization.
+//double x1 = x[0], x2 = x[1], x3 = x[2] = 4;
+//double x1 = x[0], x2 = x[1] = 5, x3 = x[2];
+//double x1 = x[0] = 6, x2 = x[1], x3 = x[2];
+
 
 TEST_END

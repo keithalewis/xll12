@@ -54,8 +54,8 @@ namespace poly {
 		static const double* x_ = 0;
 		static std::vector<double> B{1};
 
-		//!!! if x and x_ agree up to k, reuse B[1], ... B[k]
-		//!!! and discard B[n] for n > k.
+		//!!! [A-C]* if x and x_ agree up to k, reuse B[1], ... B[k]
+		// and discard B[n] for n > k.
 
 		// Remember previous values
 		n_ = n;
