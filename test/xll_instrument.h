@@ -156,16 +156,16 @@ namespace xll {
 		~forward_rate_agreement()
 		{ }
 	private:
-		void set_(excel_date valuation, excel_date effective)
+		void fix_(excel_date valuation, excel_date effective)
 		{
 			tc.resize(2,2);
 
-			fc(0,0) = (effective - valuation)/DAYS_PER_YEAR;
+			tc(0,0) = (effective - valuation)/DAYS_PER_YEAR;
 			excel_date termination = date_add(effective, tenor); 
-			fc(0,1) = (termination - valuation)/DAYS_PER_YEAR;
+			tc(0,1) = (termination - valuation)/DAYS_PER_YEAR;
 
-			fc(1,0) = -1;
-			fc(1,1) = 1 + f*day_count_fraction(effective, termination,  dcb);
+			tc(1,0) = -1;
+			tc(1,1) = 1 + f*day_count_fraction(effective, termination,  dcb);
 		}
 	};
 
