@@ -64,9 +64,9 @@ namespace xll {
 		fp_instrument& operator=(const fp_instrument&) = default;
 		virtual ~fp_instrument()
 		{ }
-		void resize(int n)
+		void resize(int m)
 		{
-			tc.resize(2, n);
+			tc.resize(2, m);
 		}
 		const _FP12* fp() const
 		{
@@ -86,11 +86,11 @@ namespace xll {
 		}
 		const double* time_() const
 		{
-			return tc.is_empty() ? 0 : tc.array();
+			return tc.is_empty() ? 0 : tc.array(); // or &tc(0,0)
 		}
 		const double* cash_() const
 		{
-			return tc.is_empty() ? 0 : tc.array() + size_();
+			return tc.is_empty() ? 0 : tc.array() + size_(); // &tc(1,0)
 		}
 	};
 
