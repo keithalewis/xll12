@@ -1,6 +1,6 @@
 // xll_date.cpp - Date routines
 #include "xll_date.h"
-#include "../../xll12/xll/xll.h"
+#include "../xll/xll.h"
 
 using namespace xll;
 

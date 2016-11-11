@@ -1,6 +1,6 @@
 // xll_date.h - Daycount fractions
 #pragma once
-#include "../../xll12/xll/xll.h"
+#include "../xll/xll.h"
 
 namespace xll {
 

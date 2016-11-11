@@ -1,5 +1,5 @@
 // xll_pwflat.cpp - Addin for piecewise flat curves.
-#include "../../xll12/xll/xll.h"
+#include "../xll/xll.h"
 #include "fms_pwflat.h"
 
 using namespace fms;

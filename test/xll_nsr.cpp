@@ -1,6 +1,6 @@
 // xll_nsr.cpp - Normal short rate add-in
 #include "fms_nsr.h"
-#include "../../xll12/xll/xll.h"
+#include "../xll/xll.h"
 
 using namespace xll;
 

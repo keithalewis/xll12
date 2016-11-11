@@ -1,6 +1,6 @@
 // xll_bootstrap.cpp - Bootstrap a piecewise flat forward curve.
 #include <vector>
-#include "../../xll12/xll/xll.h"
+#include "../xll/xll.h"
 #include "fms_bootstrap.h"
 
 using namespace std;
