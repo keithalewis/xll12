@@ -22,7 +22,7 @@ namespace poly {
 	// n/1 * (n-1)/2 * ... * (n - k + 1)/k
 	inline unsigned long long C(size_t n, size_t k) {
 		unsigned long long Cnk = 1;
-		for (int k_ = 1; k_ <= k; ++k_, --n) {
+		for (size_t k_ = 1; k_ <= k; ++k_, --n) {
 			Cnk *= n;
 			Cnk /= k_;
 		}
@@ -56,7 +56,7 @@ namespace poly {
 
 		//!!! [A-C]* if x and x_ agree up to k, reuse B[1], ... B[k]
 		// and discard B[n] for n > k.
-		for (i = 0; i < n && i < n_; ++i) {
+		for (size_t i = 0; i < n && i < n_; ++i) {
 			if (x[i] != x_[i]) {
 				B.resize(i);
 			}
