@@ -50,7 +50,13 @@ AddIn xai_date_add_months(
 );
 #ifdef _DEBUG
 TEST_BEGIN(date_add_months)
-ensure ("!!! [Zha*] add tests");
+
+excel_date d = Excel(xlfDate, OPER(2016), OPER(7), OPER(8));
+excel_date d1;
+d1 = date_add(d, months(1));
+ensure(Excel(xlfMonth, OPER(d1)) == 7 + 1);
+d1 = date_add(d, months(-2));
+ensure(Excel(xlfMonth, OPER(d1)) == 7 - 2);
 TEST_END
 #endif // _DEBUG
 

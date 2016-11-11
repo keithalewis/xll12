@@ -84,6 +84,22 @@ const _FP12* WINAPI xll_instrument_cash_flows(HANDLEX h)
 }
 
 //!!! [T-W]* static AddIn xai_cash_deposit with tenor in months
+static AddIn xai_interest_cash_deposit(
+	Function(XLL_HANDLE, L"?xll_interest_cash_deposit", L"INSTRUMENT.CASH.DEPOSIT")
+	.Arg(XLL_LONG, L"tenor", L"is the tenor of the cd in months.")
+	.Arg(XLL_DOUBLE, L"coupon", L"is the coupon")
+	.Arg(XLL_LONG, L"dcb", L"is the fixed leg day count basis from the XLL_DCB_* enumeration..")
+	.Uncalced()
+	.Category(L"XLL")
+	.FunctionHelp(L"Return a handle to an cash deposit.")
+);
+HANDLEX WINAPI xll_cash_deposit(LONG tenor, double coupon, day_count_basis dcb)
+{
+#pragma XLLEXPORT
+	handle<fp_instrument> h(new cash_deposit<months>(tenor, coupon, dcb));
+
+	return h.get();
+}
 
 //!!! [X-Y]* static AddIn xai_forward_rate_agreement with tenor in months
 
