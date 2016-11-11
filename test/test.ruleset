@@ -1,0 +1,2 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for test" Description="Code analysis rules for test.vcxproj." ToolsVersion="14.0" />

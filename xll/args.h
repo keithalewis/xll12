@@ -184,7 +184,7 @@ namespace xll {
 			ensure (i != 0);
 
 			if (args.size() < ARG::ArgumentHelp + i)
-				args.resize(i, ARG::ArgumentHelp + i);
+				args.resize(1, ARG::ArgumentHelp + i);
 
 			args[ARG::ArgumentHelp + i - 1] = argumentHelp;
 

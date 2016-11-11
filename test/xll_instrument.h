@@ -123,7 +123,7 @@ namespace xll {
 		double r;
 		day_count_basis dcb;
 	public:
-		cash_deposit(Tenor tenor, double rate, day_count_basis dcb = ACTUAL_360)
+		cash_deposit(Tenor tenor, double rate, day_count_basis dcb = DCB_ACTUAL_360)
 			: t(tenor), r(rate), dcb(dcb)
 		{ }
 		cash_deposit(const cash_deposit&) = default;
@@ -148,7 +148,7 @@ namespace xll {
 		double f;
 		day_count_basis dcb;
 	public:
-		forward_rate_agreement(Tenor tenor, double forward, day_count_basis dcb = ACTUAL_360)
+		forward_rate_agreement(Tenor tenor, double forward, day_count_basis dcb = DCB_ACTUAL_360)
 			: tenor(tenor), f(forward), dcb(dcb)
 		{ }
 		forward_rate_agreement(const forward_rate_agreement&) = default;
@@ -156,7 +156,7 @@ namespace xll {
 		~forward_rate_agreement()
 		{ }
 	private:
-		void fix_(excel_date valuation, excel_date effective)
+		void fix_(excel_date valuation, excel_date effective) override
 		{
 			tc.resize(2,2);
 
@@ -183,7 +183,7 @@ namespace xll {
 		~interest_rate_swap()
 		{}
 	private:
-		void fix_(excel_date valuation, excel_date effective)
+		void fix_(excel_date valuation, excel_date effective) override
 		{
 
 			excel_date termination = date_add(effective, tenor);

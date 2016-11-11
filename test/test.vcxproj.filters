@@ -95,5 +95,6 @@
     <None Include="Hermite.xlsx" />
     <None Include="newton.xlsx" />
     <None Include="njr.xlsx" />
+    <None Include="test.ruleset" />
   </ItemGroup>
 </Project>
