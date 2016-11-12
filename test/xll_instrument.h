@@ -189,7 +189,7 @@ namespace xll {
 			excel_date termination = date_add(effective, tenor);
 			
 			int n = 1;
-			while (date_add(effective, months(n*12/q)) < termination) {
+			while (date_add(effective, months{n*12/q}) < termination) {
 				++n;
 			}
 			tc.resize(2, n + 1);
@@ -198,7 +198,7 @@ namespace xll {
 			tc(1,0) = -1;
 			excel_date prev = effective;
 			for (int i = 1; prev < termination; ++i) {
-				excel_date next = date_add(effective, months(i*12/q));
+				excel_date next = date_add(effective, months{i*12/q});
 				tc(0,i) = (next - valuation)/DAYS_PER_YEAR;
 				tc(1,i) = c*day_count_fraction(prev, next, dcb);
 				prev = next;

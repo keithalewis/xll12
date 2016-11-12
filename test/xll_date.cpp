@@ -29,9 +29,9 @@ TEST_BEGIN(date_add_years)
 
 excel_date d = Excel(xlfDate, OPER(2016), OPER(7), OPER(8));
 excel_date d1;
-d1 = date_add(d, years(1));
+d1 = date_add(d, years{1});
 ensure (Excel(xlfYear, OPER(d1)) == 2016 + 1);
-d1 = date_add(d, years(-2));
+d1 = date_add(d, years{-2});
 ensure (Excel(xlfYear, OPER(d1)) == 2016 - 2);
 TEST_END
 #endif // _DEBUG
@@ -53,9 +53,9 @@ TEST_BEGIN(date_add_months)
 
 excel_date d = Excel(xlfDate, OPER(2016), OPER(7), OPER(8));
 excel_date d1;
-d1 = date_add(d, months(1));
+d1 = date_add(d, months{1});
 ensure(Excel(xlfMonth, OPER(d1)) == 7 + 1);
-d1 = date_add(d, months(-2));
+d1 = date_add(d, months{-2});
 ensure(Excel(xlfMonth, OPER(d1)) == 7 - 2);
 TEST_END
 #endif // _DEBUG
@@ -91,7 +91,7 @@ AddIn xai_day_count_fraction(
 	.Category(L"XLL")
 	.FunctionHelp(L"Return the day count fraction of an interval using a day count basis.")
 );
-double WINAPI xll_day_count_fraction(double begin, double end, day_count_basis dcb)
+double WINAPI xll_day_count_fraction(excel_date begin, excel_date end, day_count_basis dcb)
 {
 #pragma XLLEXPORT
 	return day_count_fraction(begin, end, dcb);

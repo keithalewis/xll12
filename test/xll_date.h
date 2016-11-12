@@ -1,4 +1,10 @@
 // xll_date.h - Daycount fractions
+/*
+Thoughts on extending chrono/date to financial library.
+year_month_day is year, month, day
+day_point is std::chrono::time_point<days>.
+Only need two global functions: roll(date, method) and adjust(date, calendar)
+*/
 #pragma once
 #include "../xll/xll.h"
 
@@ -23,7 +29,7 @@ enum day_count_basis {
 
 // Define a class that behaves like a type.
 #define CLASS_TYPE(CLASS, TYPE) struct CLASS \
-{ TYPE t; CLASS(TYPE t = 0) : t(t) {} operator TYPE() { return t; }};
+{ TYPE t; CLASS() = default; CLASS(TYPE t) : t(t) {} operator TYPE() { return t; }};
 
 CLASS_TYPE(excel_date, double) // Excel date - days since 1900/1/1
 CLASS_TYPE(years, int)

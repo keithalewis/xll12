@@ -8,7 +8,7 @@ namespace root1d {
 
 	// Solve for f(x) = 0 using the newton method.
 	template<class X, class Y>
-	X newton(X x0, const std::function<Y(X)>& f, const std::function<Y(X)>& df, X eps = 2, int iter = 100) 
+	X newton(X x0, const std::function<Y(X)>& f, const std::function<Y(X)>& df, X eps = 2, int* iter = 0) 
 	{
 		Y dfx = df(x0);
 
@@ -20,10 +20,10 @@ namespace root1d {
 		while (fabs(x - x0) > eps*std::numeric_limits<X>::epsilon()) {
 			x0 = x;
 			dfx = df(x0);
+			if (iter && 0 == *iter--)
+				return std::numeric_limits<X>::quiet_NaN();
 			if (fabs(dfx) < 0.1)
 				dfx = _copysign(0.1, dfx);
-			if (0 == iter--)
-				return std::numeric_limits<X>::quiet_NaN();
 
 			x = x0 - f(x0)/dfx;
 		}
