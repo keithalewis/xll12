@@ -7,8 +7,8 @@ namespace fms {
 namespace root1d {
 
 	// Solve for f(x) = 0 using the newton method.
-	template<class X, class Y>
-	X newton(X x0, const std::function<Y(X)>& f, const std::function<Y(X)>& df, X eps = 2, int* iter = 0) 
+	template<class X = double, class Y = double>
+	inline X newton(X x0, const std::function<Y(X)>& f, const std::function<Y(X)>& df, X eps = 2, int* iter = 0) 
 	{
 		Y dfx = df(x0);
 
@@ -37,7 +37,7 @@ namespace root1d {
 #ifdef _DEBUG
 #include <cassert>
 
-void test_fms_root1d_newton()
+inline void test_fms_root1d_newton()
 {
 	double x = 1;
 	auto f = [](double x) { return x*x - 5; };

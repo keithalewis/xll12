@@ -24,9 +24,6 @@
     <ClCompile Include="handle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="black.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="xll_roots.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,11 +48,11 @@
     <ClCompile Include="xll_instrument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="xll_black.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="black.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xll_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,6 +84,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="xll_instrument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fms_black.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fms_correlation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

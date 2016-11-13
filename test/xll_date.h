@@ -3,7 +3,8 @@
 Thoughts on extending chrono/date to financial library.
 year_month_day is year, month, day
 day_point is std::chrono::time_point<days>.
-Only need two global functions: roll(date, method) and adjust(date, calendar)
+Only need two global functions: roll(date, method) and 
+day_count_fraction(date, day_count_basis)
 */
 #pragma once
 #include "../xll/xll.h"
