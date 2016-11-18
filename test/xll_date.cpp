@@ -101,3 +101,29 @@ TEST_BEGIN(day_count_fraction)
 ensure ("!!! [Zho*] Google some references and add tests");
 TEST_END
 #endif // _DEBUG
+
+#ifdef _DEBUG
+TEST_BEGIN(date_nth_day_of_week)
+
+excel_date nth, date = Excel(xlfDate, OPER(2017), OPER(1), OPER(1));
+ensure (Excel(xlfWeekday, OPER(date), OPER(3)) == DOW_SUN);
+
+nth = date_nth_day_of_week(date, 0, DOW_SUN);
+ensure (Excel(xlfDay, OPER(nth)) == 1);
+nth = date_nth_day_of_week(date, 1, DOW_SUN);
+ensure (Excel(xlfDay, OPER(nth)) == 8);
+nth = date_nth_day_of_week(date, 2, DOW_SUN);
+ensure (Excel(xlfDay, OPER(nth)) == 15);
+nth = date_nth_day_of_week(date, 3, DOW_SUN);
+ensure (Excel(xlfDay, OPER(nth)) == 22);
+nth = date_nth_day_of_week(date, 4, DOW_SUN);
+ensure (Excel(xlfDay, OPER(nth)) == 29);
+
+nth = date_nth_day_of_week(date, 0, DOW_MON);
+ensure (Excel(xlfDay, OPER(nth)) == 2);
+nth = date_nth_day_of_week(date, 4, DOW_MON);
+ensure (Excel(xlfDay, OPER(nth)) == 30);
+
+ensure (Excel(xlfDay, OPER(date_nth_day_of_week(date, 2, DOW_WED))) == 18);
+TEST_END
+#endif // _DEBUG

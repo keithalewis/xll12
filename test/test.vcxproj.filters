@@ -51,6 +51,12 @@
     <ClCompile Include="xll_black.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="xll_correlation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xll_bbg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xll_math.h">
@@ -90,6 +96,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fms_correlation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fms_bbg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

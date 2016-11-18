@@ -186,6 +186,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="xll_bbg.cpp" />
     <ClCompile Include="xll_black.cpp" />
     <ClCompile Include="handle.cpp" />
     <ClCompile Include="poly.cpp" />
@@ -198,6 +199,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="xll_bootstrap.cpp" />
+    <ClCompile Include="xll_correlation.cpp" />
     <ClCompile Include="xll_date.cpp" />
     <ClCompile Include="xll_instrument.cpp" />
     <ClCompile Include="xll_nsr.cpp" />
@@ -212,6 +214,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fms_bbg.h" />
     <ClInclude Include="fms_black.h" />
     <ClInclude Include="fms_bootstrap.h" />
     <ClInclude Include="fms_lmm.h" />

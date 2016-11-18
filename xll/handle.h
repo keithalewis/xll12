@@ -58,17 +58,20 @@ namespace xll {
 		};
 		static bool insert(T* p)
 		{
-			XLOPER12 caller, coerce;
-			Excel12(xlfCaller, &caller, 0);
-			Excel12(xlCoerce, &coerce, 1, &caller);
+			auto hs{handles()};
+			auto coerce = Excel(xlCoerce, Excel(xlfCaller));
+			
 			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
 			{
 				handle h(coerce.val.num);
-				auto i = handles().find(h.ptr());
-				if (i != handles().end())
-					delete *i;
+				auto i = hs.find(h.ptr());
+				if (i != hs.end()) {
+					delete h.ptr();
+					hs.erase(i);
+				}
 			}
-			return handles().insert(p).second;
+
+			return hs.insert(p).second;
 		}
 	public:
 		static int32_t& i1()

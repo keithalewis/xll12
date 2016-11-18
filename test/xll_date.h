@@ -13,6 +13,16 @@ namespace xll {
 
 constexpr double DAYS_PER_YEAR = 365.25;
 
+enum day_of_week {
+	DOW_MON, DOW_MONDAY = DOW_MON,
+	DOW_TUE, DOW_TUESDAY = DOW_TUE,
+	DOW_WED, DOW_WEDNESDAY = DOW_WED,
+	DOW_THU, DOW_THURSDAY = DOW_THU,
+	DOW_FRI, DOW_FRIDAY = DOW_FRI,
+	DOW_SAT, DOW_SATURDAY = DOW_SAT,
+	DOW_SUN, DOW_SUNDAY = DOW_SUN,
+};
+
 enum frequency {
 	FREQ_ANNUAL = 1,
 	FREQ_SEMIANNUAL = 2,
@@ -38,6 +48,11 @@ CLASS_TYPE(months, int)
 CLASS_TYPE(days, int)
 
 #undef CLASS_TYPE
+
+inline excel_date date(int year, int month, int day)
+{
+	return 0 + Excel(xlfDate, OPER(year), OPER(month), OPER(day));
+}
 
 inline excel_date date_add(excel_date x, years y)
 {
@@ -80,6 +95,15 @@ inline excel_date date_add(excel_date x, days d)
 inline double day_count_fraction(excel_date begin, excel_date end, day_count_basis dcb)
 {
 	return xll::Excel(xlfYearfrac, OPER(begin), OPER(end), OPER(dcb));
+}
+
+// 0 indexed Nth day in month
+inline excel_date date_nth_day_of_week(excel_date date, int nth, day_of_week dow) 
+{
+	excel_date fom = date - xll::Excel(xlfDay, OPER(date)) + 1;
+	auto fdom = xll::Excel(xlfWeekday, OPER(fom), OPER(3)); // first day of month with Monday = 0
+
+	return fom + 7*nth + (dow >= fdom ? 0 : 7) + dow - fdom;
 }
 
 } // namespace xll
