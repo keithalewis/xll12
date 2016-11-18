@@ -13,6 +13,84 @@ test_fms_pwflat();
 TEST_END
 #endif 
 
+namespace xll {
+
+	class fp_pwflat {
+		FP12 tf;
+		double _f;
+	public:
+		fp_pwflat(size_t n, const double* t, const double* f, double _f = std::numeric_limits<double>::quiet_NaN())
+			: tf(2,static_cast<COL>(n)), _f(_f)
+		{
+			std::copy(t, t + n, &tf(0, 0));
+			std::copy(f, f + n, &tf(1, 0));
+		}
+		fp_pwflat(const fp_pwflat&) = default;
+		fp_pwflat& operator=(const fp_pwflat&) = default;
+		~fp_pwflat()
+		{ }
+
+		double value(double u) const
+		{
+			return fms::pwflat::value(u, tf.columns(), &tf(0, 0), &tf(1, 0), _f);
+		}
+	};
+
+} // namespace xll
+
+AddIn xai_fp_pwflat(
+	Function(XLL_HANDLE, L"?xll_fp_pwflat", L"FP.PWFLAT")
+	.Arg(XLL_FP, L"times", L"is array of times.")
+	.Arg(XLL_FP, L"forwards", L"is array of forwards.")
+	.Arg(XLL_DOUBLE, L"extrapoate", L"is the value to extrapolate past last time.")
+	.Uncalced()
+	.Category(L"PWFLAT")
+	.FunctionHelp(L"Return a handle to a piecewise flat forward curve.")
+);
+
+HANDLEX WINAPI xll_fp_pwflat(const _FP12* pt, const _FP12* pf, double _f)
+{
+#pragma XLLEXPORT
+	handlex h;
+
+	try {
+		int n = size(*pt);
+		ensure(n == size(*pf));
+
+		handle<xll::fp_pwflat> h_(new xll::fp_pwflat(n, pt->array, pf->array, _f));
+		h = h_.get();
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+
+	return h;
+}
+AddIn xai_fp_pwflat_value(
+	Function(XLL_DOUBLE, L"?xll_fp_pwflat_value", L"FP.PWFLAT.VALUE")
+	.Arg(XLL_HANDLE, L"curve", L"is handle to a fp_pwflat curve.")
+	.Arg(XLL_DOUBLE, L"u", L"is the time at which to value the curve.")
+	.Category(L"PWFLAT")
+	.FunctionHelp(L"Value of piecewise flat forward curve.")
+);
+double WINAPI xll_fp_pwflat_value(HANDLEX c, double u)
+{
+#pragma XLLEXPORT
+	double f = std::numeric_limits<double>::quiet_NaN();
+
+	try {
+		handle<fp_pwflat> c_(c);
+		ensure(c_ != 0);
+
+		f = c_->value(u);
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+
+	return f;
+}
+
 AddIn xai_pwflat_value(
 	Function(XLL_DOUBLE, L"?xll_pwflat_value", L"PWFLAT.VALUE")
 	.Arg(XLL_DOUBLE, L"u", L"is the time at which to value the curve.")

@@ -24,6 +24,10 @@ namespace correlation {
 			{
 				return u[i][j];
 			}
+			// rho(i,j) = .1;
+			// rho.operator()(i,j) = .1;
+			// proxy(u,i,j) = .1;
+			// proxy(u,i,j).operator=(.1);
 			void operator=(const X& rho)
 			{
 				// rotate u_j to u'_j in the direction of u_i
@@ -75,7 +79,7 @@ namespace correlation {
 			if (i > j)
 				std::swap(i,j);
 
-			return u[i][j]
+			return j <= i ? u[i][j] : 0;
 		}
 		proxy operator()(size_t i, size_t j)
 		{
