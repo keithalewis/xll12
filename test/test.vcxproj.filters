@@ -101,6 +101,9 @@
     <ClInclude Include="fms_bbg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xll_pwflat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Bell.xlsx" />

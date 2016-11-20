@@ -43,6 +43,12 @@ namespace xll {
 
 			return cash_()[i];
 		}
+		T maturity() const
+		{
+			auto n = size();
+
+			return n ? time(n-1) : 0;
+		}
 	private:
 		// subclass must override
 		virtual size_t size_() const = 0;
