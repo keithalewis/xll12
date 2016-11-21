@@ -1,6 +1,5 @@
 // xll_pwflat.cpp - Addin for piecewise flat curves.
-#include "../xll/xll.h"
-#include "fms_pwflat.h"
+#include "xll_pwflat.h"
 
 using namespace fms;
 using namespace xll;
@@ -13,30 +12,6 @@ test_fms_pwflat();
 TEST_END
 #endif 
 
-namespace xll {
-
-	class fp_pwflat {
-		FP12 tf;
-		double _f;
-	public:
-		fp_pwflat(size_t n, const double* t, const double* f, double _f = std::numeric_limits<double>::quiet_NaN())
-			: tf(2,static_cast<COL>(n)), _f(_f)
-		{
-			std::copy(t, t + n, &tf(0, 0));
-			std::copy(f, f + n, &tf(1, 0));
-		}
-		fp_pwflat(const fp_pwflat&) = default;
-		fp_pwflat& operator=(const fp_pwflat&) = default;
-		~fp_pwflat()
-		{ }
-
-		double value(double u) const
-		{
-			return fms::pwflat::value(u, tf.columns(), &tf(0, 0), &tf(1, 0), _f);
-		}
-	};
-
-} // namespace xll
 
 AddIn xai_fp_pwflat(
 	Function(XLL_HANDLE, L"?xll_fp_pwflat", L"FP.PWFLAT")

@@ -227,6 +227,7 @@
     <ClInclude Include="xll_instrument.h" />
     <ClInclude Include="xll_math.h" />
     <ClInclude Include="fms_pwflat.h" />
+    <ClInclude Include="xll_pwflat.h" />
     <ClInclude Include="xll_roots.h" />
   </ItemGroup>
   <ItemGroup>
