@@ -17,7 +17,7 @@ namespace root1d {
 			return std::numeric_limits<X>::quiet_NaN();
 		
 		X x = x0 - f(x0)/dfx;
-		while (fabs(x - x0) > eps*std::numeric_limits<X>::epsilon()) {
+		while (fabs(x - x0) >= eps*std::numeric_limits<X>::epsilon()) {
 			x0 = x;
 			dfx = df(x0);
 			if (iter && 0 == *iter--)
