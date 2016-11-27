@@ -28,5 +28,20 @@ namespace nsr {
 		return sigma*sigma*(u - t)*(u - t)*t;
 	}
 
+	// Covariance
+	template<class C, class X = decltype(**C)>
+	inline X Cov(size_t n, C cov)
+	{
+		X x{0};
+
+		for (size_t i = 0; i < n; ++i) {
+			x += cov[i][i];
+			for (size_t j = i + 1; j < n; ++j)
+				x += 2*cov[i][j];
+		}
+
+		return x;
+	}
+
 } // namespace nsr
 } // namespace fms
