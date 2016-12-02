@@ -59,24 +59,29 @@ namespace xll {
 	// implement using FP data type
 	class fp_instrument : public instrument<double,double> {
 	protected:
-		FP12 tc; // time and cash flows
+		FP12 t, c; // time and cash flows
 	public:
 		fp_instrument()
 		{ }
 		fp_instrument(int n)
-			: tc(2, n)
+			: t(1,n), c(1, n)
 		{ }
 		fp_instrument(const fp_instrument&) = default;
 		fp_instrument& operator=(const fp_instrument&) = default;
 		virtual ~fp_instrument()
 		{ }
+		const _FP12* fp_time() const
+		{
+			return t.get();
+		}
+		const _FP12* fp_cash() const
+		{
+			return c.get();
+		}
 		void resize(int m)
 		{
-			tc.resize(2, m);
-		}
-		const _FP12* fp() const
-		{
-			return tc.is_empty() ? 0 : tc.get();
+			t.resize(1, m);
+			c.resize(1, m);
 		}
 		// Fix times and cash flows based on valuation and effective date, where
 		// valuation is date price is quoted and effective is the first cash flow.
@@ -88,24 +93,24 @@ namespace xll {
 		virtual void fix_(excel_date, excel_date) = 0;
 		size_t size_() const
 		{
-			return tc.is_empty() ? 0 : tc.columns();
+			return t.is_empty() ? 0 : t.columns();
 		}
 		const double* time_() const
 		{
-			return tc.is_empty() ? 0 : tc.array(); // or &tc(0,0)
+			return t.is_empty() ? 0 : t.array();
 		}
 		const double* cash_() const
 		{
-			return tc.is_empty() ? 0 : tc.array() + size_(); // &tc(1,0)
+			return c.is_empty() ? 0 : c.array();
 		}
 	};
 
 	template<class Tenor>
 	class zero_coupon_bond : public fp_instrument {
-		Tenor t;
+		Tenor tenor;
 	public:
-		zero_coupon_bond(Tenor maturity)
-			: t(maturity)
+		zero_coupon_bond(Tenor tenor)
+			: tenor(tenor)
 		{ }
 		zero_coupon_bond(const zero_coupon_bond&) = default;
 		zero_coupon_bond& operator=(const zero_coupon_bond&) = default;
@@ -115,22 +120,22 @@ namespace xll {
 		void fix_(excel_date valuation, excel_date effective)
 		{
 			effective = effective; // not used
-			tc.resize(2, 1);
+			resize(1);
 
-			excel_date maturity = date_add(valuation, t);
-			tc(0,0) = (maturity - valuation)/DAYS_PER_YEAR;
-			tc(1,0) = 1;
+			excel_date maturity = date_add(valuation, tenor);
+			t[0] = (maturity - valuation)/DAYS_PER_YEAR;
+			c[0] = 1;
 		}
 	};
 
 	template<class Tenor>
 	class cash_deposit : public fp_instrument {
-		Tenor t;
-		double r;
+		Tenor tenor;
+		double rate;
 		day_count_basis dcb;
 	public:
 		cash_deposit(Tenor tenor, double rate, day_count_basis dcb = DCB_ACTUAL_360)
-			: t(tenor), r(rate), dcb(dcb)
+			: tenor(tenor), rate(rate), dcb(dcb)
 		{ }
 		cash_deposit(const cash_deposit&) = default;
 		cash_deposit& operator=(const cash_deposit&) = default;
@@ -140,22 +145,22 @@ namespace xll {
 		void fix_(excel_date valuation, excel_date effective)
 		{
 			effective = effective; // not used
-			tc.resize(2,1);
+			resize(1);
 
-			excel_date maturity = date_add(valuation, t);
-			tc(0,0) = (maturity - valuation)/DAYS_PER_YEAR;			
-			tc(1,0) = 1 + r*day_count_fraction(valuation, maturity, dcb);
+			excel_date maturity = date_add(valuation, tenor);
+			t[0] = (maturity - valuation)/DAYS_PER_YEAR;			
+			c[0] = 1 + rate*day_count_fraction(valuation, maturity, dcb);
 		}
 	};
 
 	template<class Tenor>
 	class forward_rate_agreement : public fp_instrument {
 		Tenor tenor;
-		double f;
+		double forward;
 		day_count_basis dcb;
 	public:
 		forward_rate_agreement(Tenor tenor, double forward, day_count_basis dcb = DCB_ACTUAL_360)
-			: tenor(tenor), f(forward), dcb(dcb)
+			: tenor(tenor), forward(forward), dcb(dcb)
 		{ }
 		forward_rate_agreement(const forward_rate_agreement&) = default;
 		forward_rate_agreement& operator=(const forward_rate_agreement&) = default;
@@ -164,25 +169,25 @@ namespace xll {
 	private:
 		void fix_(excel_date valuation, excel_date effective) override
 		{
-			tc.resize(2,2);
+			resize(2);
 
-			tc(0,0) = (effective - valuation)/DAYS_PER_YEAR;
+			t[0] = (effective - valuation)/DAYS_PER_YEAR;
 			excel_date termination = date_add(effective, tenor); 
-			tc(0,1) = (termination - valuation)/DAYS_PER_YEAR;
+			t[1] = (termination - valuation)/DAYS_PER_YEAR;
 
-			tc(1,0) = -1;
-			tc(1,1) = 1 + f*day_count_fraction(effective, termination,  dcb);
+			c[0] = -1;
+			c[1] = 1 + forward*day_count_fraction(effective, termination,  dcb);
 		}
 	};
 
 	class interest_rate_swap : public fp_instrument {
 		years tenor;
-		double c;
-		frequency q;
+		double coupon;
+		frequency freq;
 		day_count_basis dcb; // of fixed leg
 	public:
 		interest_rate_swap(years tenor, double coupon, frequency freq, day_count_basis dcb)
-			: tenor(tenor), c(coupon), q(freq), dcb(dcb)
+			: tenor(tenor), coupon(coupon), freq(freq), dcb(dcb)
 		{ }
 		interest_rate_swap(const interest_rate_swap&) = default;
 		interest_rate_swap& operator=(const interest_rate_swap&) = default;
@@ -195,22 +200,22 @@ namespace xll {
 			excel_date termination = date_add(effective, tenor);
 			
 			int n = 1;
-			while (date_add(effective, months{n*12/q}) < termination) {
+			while (date_add(effective, months{n*12/freq}) < termination) {
 				++n;
 			}
-			tc.resize(2, n + 1);
+			resize(n + 1);
 			
-			tc(0,0) = (effective - valuation)/DAYS_PER_YEAR;
-			tc(1,0) = -1;
+			t[0] = (effective - valuation)/DAYS_PER_YEAR;
+			c[0] = -1;
 			excel_date prev = effective;
 			for (int i = 1; prev < termination; ++i) {
-				excel_date next = date_add(effective, months{i*12/q});
-				tc(0,i) = (next - valuation)/DAYS_PER_YEAR;
-				tc(1,i) = c*day_count_fraction(prev, next, dcb);
+				excel_date next = date_add(effective, months{i*12/freq});
+				t[i] = (next - valuation)/DAYS_PER_YEAR;
+				c[i] = coupon*day_count_fraction(prev, next, dcb);
 				prev = next;
 			}
 			ensure (prev == termination);
-			tc(1,tc.columns()-1) += 1;
+			c[c.columns()-1] += 1;
 		}
 	};
 

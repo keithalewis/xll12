@@ -57,30 +57,56 @@ HANDLEX WINAPI xll_instrument_fix(HANDLEX h, double val, double eff)
 	return h;
 }
 
-static AddIn xai_instrument_cash_flows(
-	Function(XLL_FP, L"?xll_instrument_cash_flows", L"INSTRUMENT.CASH.FLOWS")
+static AddIn xai_instrument_time(
+	Function(XLL_FP, L"?xll_instrument_time", L"INSTRUMENT.TIME")
 	.Arg(XLL_HANDLE, L"instrument", L"is a handle to an instrument..")
 	.Category(L"XLL")
-	.FunctionHelp(L"Return two row array of times and cash flow amounts of an intrument.")
+	.FunctionHelp(L"Return cash flow times of an intrument.")
 );
-const _FP12* WINAPI xll_instrument_cash_flows(HANDLEX h)
+const _FP12* WINAPI xll_instrument_time(HANDLEX h)
 {
 #pragma XLLEXPORT
-	const _FP12* ptc = 0;
+	const _FP12* pc = 0;
 
 	try {
 		handle<fp_instrument> h_(h);
 
 		if (h_) {
-			ptc = h_->fp();
-			ensure (0 != ptc);
+			pc = h_->fp_time();
+			ensure (0 != pc);
 		}
 	}
 	catch (const std::exception& ex) {
 		XLL_ERROR(ex.what());
 	}
 
-	return ptc;
+	return pc;
+}
+
+static AddIn xai_instrument_cash(
+	Function(XLL_FP, L"?xll_instrument_cash", L"INSTRUMENT.CASH")
+	.Arg(XLL_HANDLE, L"instrument", L"is a handle to an instrument..")
+	.Category(L"XLL")
+	.FunctionHelp(L"Return cash flow amounts of an intrument.")
+);
+const _FP12* WINAPI xll_instrument_cash(HANDLEX h)
+{
+#pragma XLLEXPORT
+	const _FP12* pc = 0;
+
+	try {
+		handle<fp_instrument> h_(h);
+
+		if (h_) {
+			pc = h_->fp_cash();
+			ensure (0 != pc);
+		}
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+
+	return pc;
 }
 
 static AddIn xai_instrument_cash_deposit(
