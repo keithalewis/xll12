@@ -13,7 +13,7 @@ namespace xll {
 
 	// (Non-Virtal) Interface to all (fixed income) instruments
 	// https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Non-Virtual_Interface
-	template<class T, class C>
+	template<class T = double, class C = double>
 	class instrument {
 	public:
 		virtual ~instrument()
@@ -27,15 +27,16 @@ namespace xll {
 		{
 			return time_();
 		}
+		const C* cash() const
+		{
+			return cash_();
+		}
+		// Convenience functions.
 		const T& time(size_t i) const
 		{
 			ensure (i < size());
 
 			return time_()[i];
-		}
-		const C* cash() const
-		{
-			return cash_();
 		}
 		const C& cash(size_t i) const
 		{
@@ -43,6 +44,7 @@ namespace xll {
 
 			return cash_()[i];
 		}
+		// Time of last cash flow.
 		T maturity() const
 		{
 			auto n = size();
@@ -56,7 +58,7 @@ namespace xll {
 		virtual const C* cash_() const = 0;
 	};
 
-	// implement using FP data type
+	// Implement using FP data type
 	class fp_instrument : public instrument<double,double> {
 	protected:
 		FP12 t, c; // time and cash flows

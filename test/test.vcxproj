@@ -236,6 +236,7 @@
     <None Include="newton.xlsx" />
     <None Include="njr.xlsx" />
     <None Include="test.ruleset" />
+    <None Include="usdyc.xlsx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

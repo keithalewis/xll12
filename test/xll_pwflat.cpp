@@ -17,7 +17,7 @@ AddIn xai_fp_pwflat(
 	Function(XLL_HANDLE, L"?xll_fp_pwflat", L"FP.PWFLAT")
 	.Arg(XLL_FP, L"times", L"is array of times.")
 	.Arg(XLL_FP, L"forwards", L"is array of forwards.")
-	.Arg(XLL_DOUBLE, L"extrapoate", L"is the value to extrapolate past last time.")
+	.Arg(XLL_DOUBLE, L"extrapolate", L"is the value to extrapolate past last time.")
 	.Uncalced()
 	.Category(L"PWFLAT")
 	.FunctionHelp(L"Return a handle to a piecewise flat forward curve.")

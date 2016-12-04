@@ -39,7 +39,7 @@ namespace fms {
 		template<class T, size_t N>
 		inline int find(const T(&table)[N], const T& t)
 		{
-			return (int)(std::find(table, table + N, t) - table);
+			return static_cast<int>(std::find(table, table + N, t) - table);
 		}
 	} // namespace cmegroup
 namespace bbg {

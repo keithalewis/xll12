@@ -111,5 +111,6 @@
     <None Include="newton.xlsx" />
     <None Include="njr.xlsx" />
     <None Include="test.ruleset" />
+    <None Include="usdyc.xlsx" />
   </ItemGroup>
 </Project>

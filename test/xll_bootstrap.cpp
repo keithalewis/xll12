@@ -28,7 +28,9 @@ HANDLEX WINAPI xll_bootstrap(const _FP12* pi, const _FP12* pp)
 			handle<fp_instrument> i_(pi->array[i]);
 			ensure (i_);
 			double t = i_->maturity();
-			double f = pwflat::bootstrap(pp->array[i], i_->size(), i_->time(), i_->cash(), h_->size(), h_->time(), h_->forward());
+			double f = pwflat::bootstrap(pp->array[i], 
+				i_->size(), i_->time(), i_->cash(), 
+				h_->size(), h_->time(), h_->forward());
 			h_->push_back(t, f);
 		}
 
