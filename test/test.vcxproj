@@ -186,6 +186,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bachelier.cpp" />
     <ClCompile Include="xll_bbg.cpp" />
     <ClCompile Include="xll_black.cpp" />
     <ClCompile Include="handle.cpp" />

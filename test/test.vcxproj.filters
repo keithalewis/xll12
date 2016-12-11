@@ -57,6 +57,9 @@
     <ClCompile Include="xll_bbg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bachelier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xll_math.h">
