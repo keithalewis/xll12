@@ -1,0 +1,2 @@
+Add #defines for XLL_DOUBLE12/X
+What to do with _T?

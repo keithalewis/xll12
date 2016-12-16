@@ -102,4 +102,7 @@
     <None Include="xll12.bat" />
     <None Include="LICENSE.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="TODO.txt" />
+  </ItemGroup>
 </Project>

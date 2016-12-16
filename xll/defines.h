@@ -51,6 +51,8 @@
 				
 #define XLL_HANDLE XLL_DOUBLE
 
+
+
 #ifdef XLL_EXPORTS
 #define DECLSPEC_IMPEXP //__declspec(dllexport)
 #else
