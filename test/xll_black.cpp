@@ -137,3 +137,5 @@ double p = black::put_value(f, s, k, t);
 ensure (fabs(s - black::implied_volatility(f, p, k, t)) < 1e-8);
 
 TEST_END
+
+	
