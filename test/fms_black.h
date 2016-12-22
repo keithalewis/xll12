@@ -30,6 +30,11 @@ namespace black {
 	{
 		return k*P(f, s, k, t) - f*P_(f, s, k, t);
 	}
+	// d/df E max(k - F, 0) where F = f exp(-s^2t/2 + s B_t)
+	inline double put_delta(double f, double s, double k, double t)
+	{
+		return  - f*P_(f, s, k, t);
+	}
 	// Derivative of put value with respect to volatility.
 	inline double put_vega(double f, double s, double k, double t)
 	{

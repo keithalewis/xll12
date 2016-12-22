@@ -1,7 +1,6 @@
 #include "fms_black.h"
 #include "../xll/xll.h"
 
-
 using namespace xll;
 using namespace fms;
 using namespace black;
