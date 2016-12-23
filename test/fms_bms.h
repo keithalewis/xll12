@@ -12,7 +12,7 @@ namespace bms {
 	//  v_bms = D E {k - S_t, 0}
 	//        = D E {k - F_t, 0}
 	// Use the put_value formula *from fms_black.h* to value the option.
-	double put_value(double r, double s, double sigma, double k, double t)
+	double put_value(double D, double s, double sigma, double k, double t)
 	{
 		return 0; 
 	}
