@@ -1,4 +1,7 @@
 // xll_instrument.h - fixed income instruments
+// Interface should be fix(valuation, quote) where quote is the
+// appropriate price/coupon for the instrument.
+// ???Allow for non fixed cash flows such as F_t(u,v)?
 #pragma once
 #include "xll_date.h"
 

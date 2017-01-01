@@ -1,5 +1,6 @@
 // fms_bms.h - Black Merton Scholes model
 #pragma once
+#include "fms_black.h"
 
 namespace fms {
 namespace bms {
@@ -14,10 +15,19 @@ namespace bms {
 	// Use the put_value formula *from fms_black.h* to value the option.
 	double put_value(double D, double s, double sigma, double k, double t)
 	{
-		return 0; 
+		double f = s / D;
+
+		return D*black::put_value(f, sigma, k, t); 
 	}
 
 	// Use the put_delta formula *from fms_black.h* to value the option delta.
+	// Delta is d/ds v_bms = d/ds v_black = D*black::put_delta df/ds = black::put_delta.
+	double put_delta(double D, double s, double sigma, double k, double t)
+	{
+		double f = s / D;
+
+		return D*black::put_delta(f, sigma, k, t);
+	}
 
 } // namespace bms
 } // namespace fms
