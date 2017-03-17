@@ -41,8 +41,8 @@ LPOPER WINAPI xll_function(double d, const XCHAR* s, const LPOPER po, BOOL b, LO
 		ensure (result(3,1).xltype == xltypeBool);
 
 		result(4,0) = L"LONG";
-		result(4,1) = l; // Integer types are converted to floating point.
-		ensure (result(4,1).xltype == xltypeNum);
+		result(4,1) = l;
+		ensure (result(4,1).xltype == xltypeInt);
 	}
 	catch (const std::exception& ex) {
 		XLL_ERROR(ex.what());
