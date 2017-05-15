@@ -361,7 +361,7 @@ int main()
 	test_bool();
 	test_multi();
 	test_int();
-	test_handle();
+//	test_handle();
 	test_arity();
 	test_fp();
 
