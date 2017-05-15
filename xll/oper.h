@@ -538,7 +538,7 @@ namespace xll {
 		void allocate_multi(RW rw, COL col)
 		{
 			// check rw, col size?
-			val.array.lparray = static_cast<XLOPER12*>(::malloc(rw*col*sizeof(XLOPER12)));
+			val.array.lparray = static_cast<XLOPER12*>(::calloc(rw*col, sizeof(XLOPER12)));
 			ensure (val.array.lparray);
 			val.array.rows = rw;
 			val.array.columns = col;
