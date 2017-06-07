@@ -349,6 +349,14 @@ void test_fp()
 	ensure (a4(1,1) == 2);
 }
 
+void test_error()
+{
+	XLL_ALERT_LEVEL(0);
+	ensure (0 == XLL_ALERT_LEVEL());
+	ensure (0 == XLL_ALERT_LEVEL(1));
+	ensure (1 == XLL_ALERT_LEVEL());
+}
+
 int main()
 {
 	dre.seed(static_cast<unsigned>(::time(0)));
@@ -364,6 +372,7 @@ int main()
 //	test_handle();
 	test_arity();
 	test_fp();
+	test_error();
 
 	return 0;
 }

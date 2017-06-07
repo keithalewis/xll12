@@ -1,5 +1,5 @@
 // error.h - Error reporting functions
-// Copyright (c) 2005-2011 KALX, LLC. All rights reserved.
+// Copyright (c) KALX, LLC. All rights reserved.
 #pragma once
 
 #ifndef _LIB
@@ -14,6 +14,11 @@ enum {
 	XLL_ALERT_INFO    = 4,
 //	XLL_ALERT_LOG     = 8	// turn on logging (should be separate)
 };
+
+using DWORD = unsigned long;
+
+/// Set error level and return old
+DWORD XLL_ALERT_LEVEL(DWORD level = -1);
 
 /// OKCANCEL message box. Cancel turns off error bit
 int XLL_ERROR(const char* e, bool force = false);
