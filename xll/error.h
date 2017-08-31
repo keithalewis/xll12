@@ -1,12 +1,7 @@
 // error.h - Error reporting functions
 // Copyright (c) KALX, LLC. All rights reserved.
 #pragma once
-
-#ifndef _LIB
-
-//#pragma comment(linker, "/include:?xll_alert_level@@3V?$Object@DK@Reg@@A")
-
-#endif // _LIB
+#include <Windows.h>
 
 enum { 
 	XLL_ALERT_ERROR   = 1,
@@ -14,8 +9,6 @@ enum {
 	XLL_ALERT_INFO    = 4,
 //	XLL_ALERT_LOG     = 8	// turn on logging (should be separate)
 };
-
-using DWORD = unsigned long;
 
 /// Set error level and return old
 DWORD XLL_ALERT_LEVEL(DWORD level = -1);

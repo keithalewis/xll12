@@ -64,9 +64,11 @@ struct Command : public OPER12 {
 		for (const auto& item : ref)
 			this->push_down(ref);
 	}
-	Add(COMMAND bar, MENU menu, const OPER12& pos1, const OPER12& pos2)
+	Command& Add(COMMAND bar, MENU menu, const OPER12& pos1, const OPER12& pos2)
 	{ 
 		operator[](0) = bar;
+
+		return *this;
 	}
 };
 

@@ -1,11 +1,9 @@
 #pragma warning(disable: 4996)
 #include "error.h"
-#include <Windows.h>
-#include <stdexcept>
-#include <string>
 #include "registry.h"
 
-static Reg::Key<DWORD> xll_alert_level(HKEY_CURRENT_USER, L"Software\\KALX\\xll\\xll_alert_level");
+static LPCTSTR XLL_ALERT_LEVEL_ = TEXT("Software\\KALX\\xll\\xll_alert_level");
+static Reg::Key<DWORD> xll_alert_level(HKEY_CURRENT_USER, XLL_ALERT_LEVEL_);
 
 DWORD XLL_ALERT_LEVEL(DWORD level)
 {
@@ -48,3 +46,18 @@ XLL_INFO(const char* e, bool force)
 {
 	return XLL_ALERT(e, "Information", XLL_ALERT_INFO, MB_ICONINFORMATION, force);
 }
+
+#ifdef _DEBUG
+
+struct test_registry {
+	test_registry()
+	{
+		Reg::Key<DWORD> key(HKEY_CURRENT_USER, TEXT("tmp\\key"));
+	}
+	~test_registry()
+	{
+	}
+};
+test_registry _{};
+
+#endif // _DEBUG
