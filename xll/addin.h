@@ -15,7 +15,7 @@ namespace xll {
 				return args.Register().isNum();
 			});
 			Auto<Close> ac([args]() {
-				return Excel(xlfUnregister, args.RegisterId()) == true;
+				return args.Unregister();
 			});
 		}
 	};

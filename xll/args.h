@@ -254,7 +254,7 @@ namespace xll {
 		}
 
 		/// Register an add-in function or macro
-		OPER12 Register() const // logically
+		OPER12 Register() const
 		{
 			if (args[ARG::ModuleText].type() != xltypeStr)
 				args[ARG::ModuleText] = XlGetName();
@@ -273,6 +273,11 @@ namespace xll {
 
 			return oResult;
 		}
+        /// Unregister and add-in function or macro
+        int Unregister() const
+        {
+            return Excel(xlfUnregister, RegisterId()) == true;
+        }
 	};
 	// semantic alias
 	using Function = Args;
