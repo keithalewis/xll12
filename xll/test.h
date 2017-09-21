@@ -1,11 +1,19 @@
 // test.h - convenience macros for testing
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
+#include <exception>
+#include <functional>
 
-#define TEST_BEGIN(name) \
-xll::Auto<xll::Open> xao_test_ ## name([]() -> int { try {
-
-#define TEST_END \
-} catch (const std::exception& ex) { \
-	MessageBoxA(0, ex.what(), "Error", MB_OK); return FALSE; } \
-return TRUE; });
+namespace xll {
+    struct test {
+        test(const std::function<void(void)>& f)
+        {
+            try {
+                f();
+            }
+            catch (const std::exception& ex) {
+                MessageBoxA(0, ex.what(), "Failed", MB_OK);
+            }
+        }
+    };
+}

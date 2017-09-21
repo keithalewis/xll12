@@ -69,6 +69,10 @@
 	XLL_LPOPER, XLL_DECORATE(L"xll_" L#name, 0), L#name).Category(cat).FunctionHelp(desc)); \
 	extern "C" __declspec(dllexport) LPOPER WINAPI xll_##name(void)      \
 	{ static OPER o(value); return static_cast<LPOPER>(&o); }
+#define XLL_ENUM_DOC(value, name, cat, desc, doc) static xll::AddIn xai_##name(Function(   \
+	XLL_LPOPER, XLL_DECORATE(L"xll_" L#name, 0), L#name).Category(cat).FunctionHelp(desc)); \
+	extern "C" __declspec(dllexport) LPOPER WINAPI xll_##name(void)      \
+	{ static OPER o(value); return static_cast<LPOPER>(&o); }
 /*
 #define XLL_ENUM_DOC(value, name, cat, desc, doc) static xll::AddIn xai_##name##12(   \
 	Function12(XLL_DECORATE(L"xll_" L#name L"12", 0), XLL_LPOPER, L#name) \
