@@ -14,6 +14,9 @@ namespace xll {
             catch (const std::exception& ex) {
                 MessageBoxA(0, ex.what(), "Failed", MB_OK);
             }
+            catch (...) {
+                MessageBoxA(0, "Unknown exception in xll::test", "Failed", MB_OK);
+            }
         }
     };
 }
