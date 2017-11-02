@@ -80,6 +80,25 @@ namespace xll {
 		{
 			xltype = static_cast<DWORD>(type);
 		}
+        OPER12(const XLOPER12& o)
+        {
+			xltype = o.xltype;
+
+			if (xltype == xltypeStr) {
+				allocate_str(o.val.str[0]);
+				copy_str(o.val.str + 1);
+			}
+			else if (xltype == xltypeMulti) {
+				allocate_multi(o.val.array.rows, o.val.array.columns);
+				std::copy(o.val.array.lparray, o.val.array.lparray + size(), stdext::checked_array_iterator<OPER12*>(begin(), size()));
+			}
+			else if (xltype == xltypeBigData) {
+				ensure(!"not implemented");
+			}
+			else {
+				val = o.val;
+			}
+        }
 		OPER12(const OPER12& o)
 		{
 			xltype = o.type();
@@ -222,6 +241,10 @@ namespace xll {
 				return val.w;
 			if (type() == xltypeBool)
 				return val.xbool;
+            if (type() == xltypeMissing)
+                return 0;
+            if (type() == xltypeNil)
+                return 0;
 
 			throw std::runtime_error("OPER12::operator double() only used for num, int, and bool");
 		}
