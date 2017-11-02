@@ -28,7 +28,8 @@ namespace xll {
 	};
 
 	// Pointers to objects encoded as doubles.
-	// Assumes high 32 bits are constant.
+	// Use first pointer allocated as a base offset
+    // because 64-bit pointers are not always valid doubles.
 	template<class T>
 	class handle {
 		static std::set<HANDLEX>& handles()
@@ -37,18 +38,13 @@ namespace xll {
 
 			return handles_;
 		}
-		static void gc()
-		{
-			for (auto& h : handles())
-				delete h.ptr();
-		}
 
         static bool insert(HANDLEX h)
 		{
-			auto hs{handles()};
+			std::set<HANDLEX>& hs = handles();
 			auto coerce = Excel(xlCoerce, Excel(xlfCaller));
 
-            // delete value in cell
+            // Delete value in cell if it is an existing pointer.
 			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
 			{
 				auto i = hs.find(coerce.val.num);
@@ -61,24 +57,31 @@ namespace xll {
 			return hs.insert(h).second;
 		}
 	public:
-        // offset from first call
-        static ptrdiff_t offset(T* p = 0)
+        // base to offset from
+        static T* base()
         {
-            static T* p0 = nullptr;
-
-            if (p0 == nullptr)
-                p0 = p;
-
-            return p0 - p;
+            static std::unique_ptr<T> p0(new T{});
+        
+            return 0;//p0.get();
         }
         static HANDLEX p2h(T* p)
         {
-            return static_cast<HANDLEX>(offset(p));
+            // ptrdiff_t dp = p - base();
+            //return static_cast<HANDLEX>(dp);
+            union { double d; T* p; } u;
+            u.p = p;
+
+            return u.d;
         }
         // h = p0 - p, p = p0 - h
         static T* h2p(HANDLEX h)
         {
-            return (T*)0 + offset() - static_cast<ptrdiff_t>(h);
+            //ptrdiff_t dp = static_cast<ptrdiff_t>(h);
+            //return base() + dp;
+            union { double d; T* p; } u;
+            u.d = h;
+
+            return u.p;
         }
 		T* pt;
 		handle(T* pt)
@@ -88,6 +91,7 @@ namespace xll {
 		}
 		handle(HANDLEX h)
 		{
+            //!!! check if h in handles
 			pt = h2p(h);
 		}
 		handle(const handle&) = delete;
@@ -113,6 +117,12 @@ namespace xll {
 		T* ptr()
 		{
 			return pt;
+		}
+        // Call this in Auto<Close>.
+		static void gc()
+		{
+			for (auto& h : handles())
+				delete h2p(h);
 		}
     };
 } // xll namespace
