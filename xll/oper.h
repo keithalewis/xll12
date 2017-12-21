@@ -245,6 +245,10 @@ namespace xll {
                 return 0;
             if (type() == xltypeNil)
                 return 0;
+            if (type() == xltypeMulti)
+                return 1; //???
+            if (type() == xltypeStr)
+                return val.str[0] != 0 && val.str[1] != 0;
 
 			throw std::runtime_error("OPER12::operator double() only used for num, int, and bool");
 		}

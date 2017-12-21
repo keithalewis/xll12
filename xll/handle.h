@@ -32,6 +32,7 @@ namespace xll {
     // because 64-bit pointers are not always valid doubles.
 	template<class T>
 	class handle {
+        //!!! Use set of unique_ptr<T>
 		static std::set<HANDLEX>& handles()
 		{
 			static std::set<HANDLEX> handles_;
@@ -69,6 +70,8 @@ namespace xll {
             // ptrdiff_t dp = p - base();
             //return static_cast<HANDLEX>(dp);
             union { double d; T* p; } u;
+            //memset(&u, 0, sizeof(u));
+            //u.d = 0;
             u.p = p;
 
             return u.d;
