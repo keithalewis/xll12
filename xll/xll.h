@@ -9,6 +9,7 @@
 
 // Module handle from DllMain
 extern HMODULE xll_hModule;
+extern HMODULE xll_Instance;
 
 #include "fp.h"
 #include "error.h"
@@ -17,4 +18,6 @@ extern HMODULE xll_hModule;
 #include "handle.h"
 #include "test.h"
 
-extern HMODULE xll_Instance;
+#ifndef _LIB
+#pragma comment(linker, "/include:" XLL_DECORATE("xll_trace", 4))
+#endif // _LIB

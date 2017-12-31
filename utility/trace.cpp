@@ -3,16 +3,16 @@
 
 using namespace xll;
 
-AddIn xai_trace(
-    Function(XLL_LPXLOPER, L"?xll_trace", L"XLL.TRACE")
+static AddIn xai_trace(
+    Function(XLL_LPXLOPER, L"_xll_trace@4", L"XLL.TRACE")
     .Arg(XLL_LPXLOPER, L"cell", L"is the cell to trace.")
     .Category(L"XLL")
     .FunctionHelp(L"Alert when cell is called in a calculation.")
     .Uncalced()
 );
-LPXLOPER12 WINAPI xll_trace(LPXLOPER12 px)
+extern "C" __declspec(dllexport) LPXLOPER12 WINAPI xll_trace(LPXLOPER12 px)
 {
-#pragma XLLEXPORT
+//#pragma XLLEXPORT
     std::wstring s;
     s = L"Reference: ";
     OPER o = Excel(xlfReftext, *px, OPER(true));

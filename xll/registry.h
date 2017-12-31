@@ -25,7 +25,7 @@ namespace Reg {
 	template<>
 	inline std::optional<DWORD> QueryValue(HKEY key, LPCTSTR name)
 	{
-		DWORD type, value, size;
+        DWORD type, value, size{0};
 
 		if (ERROR_SUCCESS != RegQueryValueEx(key, name, 0, &type, byte_ptr(&value), &size))
 			return std::optional<DWORD>({});

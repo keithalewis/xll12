@@ -201,6 +201,7 @@
     <ClInclude Include="xll\xll.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="utility\trace.cpp" />
     <ClCompile Include="xll\auto.cpp" />
     <ClCompile Include="xll\debug.cpp" />
     <ClCompile Include="xll\dllmain.cpp" />
