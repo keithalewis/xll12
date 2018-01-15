@@ -23,7 +23,9 @@
 // Use Auto<XXX> xao_foo(xll_foo) to run xll_foo on event XXX
 namespace xll {
 
+    class OpenBefore {};
 	class Open {};
+    class OpenAfter {};
 	class Close {};
 	class Add {};
 	class Remove {};

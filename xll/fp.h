@@ -194,7 +194,7 @@ namespace xll {
 			return buf ? (is_empty() ? 0 : pf->rows * pf->columns) : 0;
 		}
 
-		void resize(RW r, COL c)
+		void resize(RW r, COL c = 1)
 		{
 			realloc(r, c);
 		}

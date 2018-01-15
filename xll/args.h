@@ -27,6 +27,7 @@ namespace xll {
 	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
 		mutable OPER12 args;
+        OPER12 ArgumentDefault;
 	public:
 		/// Name of Excel add-in
 		static OPER12& XlGetName()
@@ -191,7 +192,7 @@ namespace xll {
 			return *this;
 		}
 		/// Add an individual argument.
-		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr)
+		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr, xcstr Default = nullptr)
 		{
 			OPER12& Type = args[ARG::TypeText];
 			Type &= type;
@@ -201,8 +202,14 @@ namespace xll {
 				Text &= L", ";
 			Text &= text;
 			
-			if (helpText && *helpText)
-				ArgumentHelp(Arity(), helpText);
+            auto n = Arity();
+			if (helpText && *helpText) {
+				ArgumentHelp(n, helpText);
+            }
+            if (Default && *Default) {
+                ArgumentDefault.resize(n+1,1);
+                ArgumentDefault[n] = Default;
+            }
 
 			return *this;
 		}

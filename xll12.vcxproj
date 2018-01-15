@@ -22,7 +22,7 @@
     <ProjectGuid>{3563C165-8A72-4BE5-B8AF-FD5904C9030E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>xll12</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -201,6 +201,7 @@
     <ClInclude Include="xll\xll.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="utility\this.cpp" />
     <ClCompile Include="utility\trace.cpp" />
     <ClCompile Include="xll\auto.cpp" />
     <ClCompile Include="xll\debug.cpp" />

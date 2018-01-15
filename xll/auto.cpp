@@ -35,7 +35,17 @@ extern "C"
 int __declspec(dllexport) WINAPI
 xlAutoOpen(void)
 {
-	return Auto_<Open>(__FUNCTION__);
+    int rc;
+    
+    rc = Auto_<OpenBefore>(__FUNCTION__);
+    if (rc != TRUE)
+        return rc;
+	rc = Auto_<Open>(__FUNCTION__);
+    if (rc != TRUE)
+        return rc;
+    rc = Auto_<OpenAfter>(__FUNCTION__);
+
+    return rc;
 }
 
 extern "C"

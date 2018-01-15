@@ -95,6 +95,9 @@
     <ClCompile Include="utility\trace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="utility\this.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Visualizers\oper.natvis">

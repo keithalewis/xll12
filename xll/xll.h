@@ -19,5 +19,6 @@ extern HMODULE xll_Instance;
 #include "test.h"
 
 #ifndef _LIB
+#pragma comment(linker, "/include:" XLL_DECORATE("xll_this", 0))
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_trace", 4))
 #endif // _LIB
