@@ -102,7 +102,7 @@ namespace xll {
 			: buf(0)
 		{
 			realloc(x.rows(), x.columns());
-			copy(x.pf);
+			copy(x.get());
 		}
 		FP12(const _FP12& x)
 			: buf(0)
@@ -129,7 +129,7 @@ namespace xll {
 		{
 			if (&x != this) {
 				realloc(x.rows(), x.columns());
-				copy(x.pf);
+			    copy(x.get());
 			}
 
 			return *this;
@@ -154,8 +154,8 @@ namespace xll {
 		}
 		bool operator==(const FP12& x) const
 		{
-			return operator==(*x.pf);
-		}
+            return operator==(*x.get());
+        }
 		bool operator!=(const _FP12& x) const
 		{
 			return !operator==(x);
@@ -166,32 +166,32 @@ namespace xll {
 		}
 		_FP12* get(void)
 		{
-			return pf;
-		}
+            return reinterpret_cast<_FP12*>(buf);
+        }
 		// use when returning to Excel
 		const _FP12* get(void) const
 		{
-			return pf;
-		}
+            return reinterpret_cast<_FP12*>(buf);
+        }
 		double* array()
 		{
-			return pf->array;
+			return get()->array;
 		}
 		const double* array() const
 		{
-			return pf->array;
+			return get()->array;
 		}
 		RW rows() const
 		{
-			return pf->rows;
+			return get()->rows;
 		}
 		COL columns() const
 		{
-			return pf->columns;
+			return get()->columns;
 		}
 		INT32 size() const
 		{
-			return buf ? (is_empty() ? 0 : pf->rows * pf->columns) : 0;
+			return buf ? (is_empty() ? 0 : get()->rows * get()->columns) : 0;
 		}
 
 		void resize(RW r, COL c = 1)
@@ -200,53 +200,53 @@ namespace xll {
 		}
 		const double& operator[](INT32 i) const
 		{
-			return pf->array[i];
+			return get()->array[i];
 		}
 		double& operator[](INT32 i)
 		{
-			return pf->array[i];
+			return get()->array[i];
 		}
 		const double& operator()(RW i, COL j) const
 		{
-			return xll::index(*pf, i, j);
+			return xll::index(*get(), i, j);
 		}
 		double& operator()(RW i, COL j)
 		{
-			return xll::index(*pf, i, j);
+			return xll::index(*get(), i, j);
 		}
 		// cyclic index
 		const double& index(INT32 i) const
 		{
-			return xll::index(*pf, i);
+			return xll::index(*get(), i);
 		}
 		double& index(INT32 i)
 		{
-			return xll::index(*pf, i);
+			return xll::index(*get(), i);
 		}
 		const double& index(RW i, COL j) const
 		{
-			return xll::index(*pf, i, j);
+			return xll::index(*get(), i, j);
 		}
 		double& index(RW i, COL j)
 		{
-			return xll::index(*pf, i, j);
+			return xll::index(*get(), i, j);
 		}
 
 		double* begin()
 		{
-			return pf->array;
+			return get()->array;
 		}
 		const double* begin() const
 		{
-			return pf->array;
+			return get()->array;
 		}
 		double* end()
 		{
-			return pf->array + size();
+			return get()->array + size();
 		}
 		const double* end() const
 		{
-			return pf->array + size();
+			return get()->array + size();
 		}
 		template<class T>
 		FP12& push_back(const T& t)
@@ -321,7 +321,7 @@ namespace xll {
 				INT32 sz = size();
 				ensure (c == columns());
 				resize(rows() + 1, columns());
-				memmove(begin() + c, pf->array, sz*sizeof(double));
+				memmove(begin() + c, get()->array, sz*sizeof(double));
 				memcpy(begin(), b, c*sizeof(double));
 			}
 			else if (n < -1) {
@@ -352,47 +352,44 @@ namespace xll {
 
 		bool is_empty(void) const
 		{
-			return xll::is_empty(*pf);
+			return xll::is_empty(*get());
 		}
 	private:
 		void copy(const double* p)
 		{
-			pf->array[0] = p[0]; // could be empty array
+			get()->array[0] = p[0]; // could be empty array
 			for (auto i = 1; i < size(); ++i)
-				pf->array[i] = p[i];
+				get()->array[i] = p[i];
 		}
 		void copy(const _FP12* p)
 		{
-			ensure (pf->rows == p->rows);
-			ensure (pf->columns == p->columns);
+			ensure (get()->rows == p->rows);
+			ensure (get()->columns == p->columns);
 
 			copy(p->array);
 		}
 		void realloc(RW r, COL c)
 		{
 			if (!buf || size() != r*c) {
-				void* p = ::realloc(buf, sizeof(_FP12) + r*c*sizeof(double));
-				ensure (p != 0);
-				buf = (char*)p;
-				pf = reinterpret_cast<_FP12*>(new (buf) _FP12);
+				buf = static_cast<char*>(::realloc(buf, sizeof(_FP12) + r*c*sizeof(double)));
+				ensure (buf != 0);
 			}
 //			memset(buf, 0, sizeof(_FP12) + r*c*sizeof(double));
 			// check size
-			pf->rows = r;
-			pf->columns = c;
+			get()->rows = r;
+			get()->columns = c;
 
 			// empty array
 			if (r*c == 0) {
-				pf->rows = 1;
-				pf->columns = 1;
-				pf->array[0] = std::numeric_limits<double>::quiet_NaN();
+				get()->rows = 1;
+				get()->columns = 1;
+				get()->array[0] = std::numeric_limits<double>::quiet_NaN();
 			}
 			else if (is_empty()) {
-				pf->array[0] = 0; // so resize(1,1) on empty array is not empty
+				get()->array[0] = 0; // so resize(1,1) on empty array is not empty
 			}
 		}
 		char* buf;
-		_FP12* pf;
 	};
 
 } // namespace xll
