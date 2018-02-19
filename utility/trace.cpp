@@ -4,7 +4,7 @@
 using namespace xll;
 
 static AddIn xai_trace(
-    Function(XLL_LPXLOPER, L"_xll_trace@4", L"TRACE")
+    Function(XLL_LPXLOPER, XLL_DECORATE(L"xll_trace", 4), L"TRACE")
     .Arg(XLL_LPXLOPER, L"cell", L"is the cell to trace.")
     .Category(L"XLL")
     .FunctionHelp(L"Alert when cell is called in a calculation.")

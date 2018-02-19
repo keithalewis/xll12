@@ -5,7 +5,7 @@
 using namespace xll;
 
 static AddIn xai_this(
-	Function(XLL_LPXLOPER, L"_xll_this@0", L"THIS")
+	Function(XLL_LPXLOPER, XLL_DECORATE(L"xll_this", 0), L"THIS")
     .Uncalced()
 	.Category(L"XLL")
 	.FunctionHelp(L"Return the contents of the calling cell.")
