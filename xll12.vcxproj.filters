@@ -69,9 +69,6 @@
     <ClInclude Include="xll\ref.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xll\registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,6 +96,9 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="utility\trace.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+    <ClCompile Include="utility\paste_function.cpp">
       <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>

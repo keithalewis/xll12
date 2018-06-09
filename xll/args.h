@@ -41,7 +41,7 @@ namespace xll {
 			return hModule;
 		}
 		/// <summary>Number of function arguments</summary>
-		/// Detect the number of arguments based on the text type of a function.
+		/// Detect the number of arguments based on the type text of a function.
 		static int Arity(const OPER12& tt)
 		{
 			int arity = 0;
