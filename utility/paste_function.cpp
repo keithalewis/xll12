@@ -18,7 +18,7 @@ xll_paste_function()
     catch (const std::exception& ex) {
         XLL_ERROR(ex.what());
 
-        return FALSE
+        return FALSE;
     }
 
     return TRUE;
