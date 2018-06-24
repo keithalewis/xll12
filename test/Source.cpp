@@ -2,39 +2,11 @@
 
 using namespace xll;
 
-class base {
-    int data_;
-public:
-    base(int data = 0)
-        : data_(data)
-    { }
-    virtual ~base() // for RTTI
-    { }
-    int value(void) const
-    {
-        return data_;
-    }
-};
-
-class derived : public base {
-    int data_;
-public:
-    derived(int bdata = 0, int ddata = 0)
-        : base(bdata), data_(ddata)
-    { }
-    ~derived()
-    { }
-    int value2(void) const
-    {
-        return data_;
-    }
-};
-
 // construct C++ object in Excel
 static AddIn xai_base(
     Function(XLL_HANDLE, L"?xll_base", L"XLL.BASE")
     .Arg(XLL_SHORT, L"int", L"is an int")
-    .Uncalced()
+    .Uncalced() // must specify for handles
     .Category(L"XLL")
     .FunctionHelp(L"Handle example")
 );

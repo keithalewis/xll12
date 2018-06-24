@@ -47,7 +47,9 @@ namespace xll {
         // h = p0 - p, p = p0 - h
         static T* h2p(HANDLEX h)
         {
-            ensure(h < 9e15 && h > -9e15); // 2^52 ish
+            static double intmax = ldexp(1, 53);
+            ensure(h < intmax && h > -intmax);
+
             return base() + static_cast<ptrdiff_t>(h);
         }
 
@@ -61,7 +63,8 @@ namespace xll {
         static void insert(T* p)
 		{
 			auto& hs = handles();
-			const auto& coerce = Excel(xlCoerce, Excel(xlfCaller));
+            const auto& caller = Excel(xlfCaller);
+			const auto& coerce = Excel(xlCoerce, caller);
 
             // Delete value in cell if it is an existing pointer.
 			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
