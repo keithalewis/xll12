@@ -295,7 +295,7 @@ namespace xll {
 			if (xltype == xltypeStr) {
 				if (!len)
 					len = wcslen(str);
-				size_t end = 1 + val.str[0];
+				auto end = 1 + val.str[0];
 				reallocate_str(val.str[0] + len);
 				wmemcpy(val.str + end, str, len);
 			}
@@ -441,11 +441,13 @@ namespace xll {
 		}
 		OPER12& operator()(RW i, COL j)
 		{
-			return operator[](i*columns() + j);
+			auto n = i * columns() + j;
+			return operator[](n);
 		}
 		const OPER12& operator()(RW i, COL j) const
 		{
-			return operator[](i*columns() + j);
+			auto n = i * columns() + j;
+			return operator[](n);
 		}
 
 		OPER12& resize(RW rw, COL col)
@@ -487,8 +489,10 @@ namespace xll {
 					ensure (columns() == o.columns());
 					resize(rows() + o.rows(), columns());
 				}
-				for (auto i = size; i < this->size(); ++i)
-					operator[](i) = o[i - size];
+				for (auto i = size; i < this->size(); ++i) {
+					auto i_size = i - size;
+					operator[](i) = o[i_size];
+				}
 			}
 
 			return *this;
@@ -565,7 +569,8 @@ namespace xll {
 		void allocate_multi(RW rw, COL col)
 		{
 			// check rw, col size?
-			val.array.lparray = static_cast<XLOPER12*>(::calloc(rw*col, sizeof(XLOPER12)));
+			auto size = rw * col;
+			val.array.lparray = static_cast<XLOPER12*>(::calloc(size, sizeof(XLOPER12)));
 			ensure (val.array.lparray);
 			val.array.rows = rw;
 			val.array.columns = col;

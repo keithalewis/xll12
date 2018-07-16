@@ -371,7 +371,8 @@ namespace xll {
 		void realloc(RW r, COL c)
 		{
 			if (!buf || size() != r*c) {
-				buf = static_cast<char*>(::realloc(buf, sizeof(_FP12) + r*c*sizeof(double)));
+				auto size = r * c;
+				buf = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
 				ensure (buf != 0);
 			}
 //			memset(buf, 0, sizeof(_FP12) + r*c*sizeof(double));
