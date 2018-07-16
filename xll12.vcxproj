@@ -181,7 +181,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="xll\addin.h" />
     <ClInclude Include="xll\auto.h" />
     <ClInclude Include="xll\command.h" />
@@ -201,6 +200,7 @@
     <ClInclude Include="xll\xll.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="utility\paste_function.cpp" />
     <ClCompile Include="utility\this.cpp" />
     <ClCompile Include="utility\trace.cpp" />
     <ClCompile Include="xll\auto.cpp" />

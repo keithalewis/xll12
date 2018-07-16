@@ -36,7 +36,23 @@ namespace xll {
 		REF12(RW rw = 0, COL col = 0, RW height = 1, COL width = 1)
 			: XLREF12{rw, rw + height - 1, col, col + width - 1}
 		{ }
-		/// Translate a reference by rw, col
+        RW rows() const
+        {
+            return rwLast - rwFirst + 1;
+        }
+        COL columns() const
+        {
+            return colLast - colFirst + 1;
+        }
+        size_t size() const
+        {
+            return rows()*columns();
+        }
+        inline REF12 index(RW rw, COL col = 0) const
+        {
+            return REF12(rwFirst + rw, colFirst + col);
+        }
+        /// Translate a reference by rw, col
 		REF12& move(RW rw, COL col = 0)
 		{
 			rwFirst  += rw;
@@ -51,11 +67,27 @@ namespace xll {
 		REF12& left(COL col = 1) { return move(0, -col); }
 		REF12& right(COL col = 1) { return move(0, col); }
 	};
-	/// Return a reference translated by <c>rw</c> and <c>col</c>.
-	inline REF12 move(REF12 r, RW rw = 0, COL col = 0)
-	{
-		return r.move(rw, col);
-	}
+    inline RW rows(const REF12& ref)
+    {
+        return ref.rows();
+    }
+    inline COL columns(const REF12& ref)
+    {
+        return ref.columns();
+    }
+    inline size_t size(const REF12& ref)
+    {
+        return ref.size();
+    }
+    inline REF12 index(const REF12& ref, RW rw, COL col = 0)
+    {
+        return ref.index(rw, col);
+    }
+    /// Return a reference translated by <c>rw</c> and <c>col</c>.
+    inline REF12 move(REF12 r, RW rw = 0, COL col = 0)
+    {
+        return r.move(rw, col);
+    }
 
 	// No support for Excel 2003 and earlier.
 	using REF = REF12;

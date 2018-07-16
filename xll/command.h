@@ -46,6 +46,8 @@ enum MENU {
 
 struct Command : public OPER12 {
 	using xcstr = const XCHAR*;
+    using OPER12::push_back;
+    using OPER12::operator[];
 	/// command ref item
 	struct Item : public OPER12 {
 		using OPER12::operator[];
@@ -62,7 +64,7 @@ struct Command : public OPER12 {
 	{
 		operator[](0) = name;
 		for (const auto& item : ref)
-			this->push_down(ref);
+			push_back(item);
 	}
 	Command& Add(COMMAND bar, MENU menu, const OPER12& pos1, const OPER12& pos2)
 	{ 
@@ -71,6 +73,5 @@ struct Command : public OPER12 {
 		return *this;
 	}
 };
-
 
 } // xll namespace

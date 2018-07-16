@@ -32,66 +32,59 @@ namespace xll {
     // because 64-bit pointers are not always valid doubles.
 	template<class T>
 	class handle {
-        //!!! Use set of unique_ptr<T>
-		static std::set<HANDLEX>& handles()
-		{
-			static std::set<HANDLEX> handles_;
+        using uptr = std::unique_ptr<T>;
 
-			return handles_;
-		}
-
-        static bool insert(HANDLEX h)
-		{
-			std::set<HANDLEX>& hs = handles();
-			auto coerce = Excel(xlCoerce, Excel(xlfCaller));
-
-            // Delete value in cell if it is an existing pointer.
-			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
-			{
-				auto i = hs.find(coerce.val.num);
-				if (i != hs.end()) {
-					delete h2p(*i);
-					hs.erase(i);
-				}
-			}
-
-			return hs.insert(h).second;
-		}
-	public:
-        // base to offset from
         static T* base()
         {
-            static std::unique_ptr<T> p0(new T{});
-        
-            return 0;//p0.get();
+            static uptr p0(new T{});
+
+            return p0.get();
         }
         static HANDLEX p2h(T* p)
         {
-            // ptrdiff_t dp = p - base();
-            //return static_cast<HANDLEX>(dp);
-            union { double d; T* p; } u;
-            //memset(&u, 0, sizeof(u));
-            //u.d = 0;
-            u.p = p;
-
-            return u.d;
+            return static_cast<HANDLEX>(p - base());
         }
         // h = p0 - p, p = p0 - h
         static T* h2p(HANDLEX h)
         {
-            //ptrdiff_t dp = static_cast<ptrdiff_t>(h);
-            //return base() + dp;
-            union { double d; T* p; } u;
-            u.d = h;
+            static double intmax = ldexp(1, 53);
+            ensure(h < intmax && h > -intmax);
 
-            return u.p;
+            return base() + static_cast<ptrdiff_t>(h);
         }
-		T* pt;
-		handle(T* pt)
-			: pt(pt)
+
+        static std::set<uptr>& handles()
 		{
-			insert(p2h(pt));
+			static std::set<uptr> handles_;
+
+			return handles_;
 		}
+
+        static void insert(T* p)
+		{
+			auto& hs = handles();
+            const auto& caller = Excel(xlfCaller);
+			const auto& coerce = Excel(xlCoerce, caller);
+
+            // Delete value in cell if it is an existing pointer.
+			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
+			{
+                double n = coerce.val.num;
+                auto i = std::find_if(hs.begin(), hs.end(), [n](const uptr& h) { return n == p2h(h.get()); });
+				if (i != hs.end()) {
+					hs.erase(i);
+				}
+			}
+
+            hs.insert(std::move(uptr(p)));
+		}
+		T* pt;
+    public:
+        handle(T* p)
+            : pt(p)
+        {
+            insert(p);
+        }
 		handle(HANDLEX h)
 		{
             //!!! check if h in handles
@@ -101,6 +94,11 @@ namespace xll {
 		handle& operator=(const handle&) = delete;
 		~handle()
 		{ }
+        template<class U>
+        bool operator==(const handle<U>& h) const
+        {
+            return pt == h.pt;
+        }
 		HANDLEX get() const
 		{
 			return p2h(pt);
@@ -120,12 +118,6 @@ namespace xll {
 		T* ptr()
 		{
 			return pt;
-		}
-        // Call this in Auto<Close>.
-		static void gc()
-		{
-			for (auto& h : handles())
-				delete h2p(h);
 		}
     };
 } // xll namespace
