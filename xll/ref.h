@@ -44,7 +44,7 @@ namespace xll {
         {
             return colLast - colFirst + 1;
         }
-        size_t size() const
+        auto size() const
         {
             return rows()*columns();
         }
