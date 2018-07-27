@@ -5,6 +5,7 @@
 #include <functional>
 
 namespace xll {
+	// Run a function on construction.
     struct test {
         test(const std::function<void(void)>& f)
         {

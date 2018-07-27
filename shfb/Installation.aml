@@ -14,16 +14,17 @@
       <!-- <autoOutline /> -->
       <para>Clone the 
         <externalLink>
-		<linkText>xll12 library</linkText>
-		<linkUri>https://github.com/keithalewis/xll12.git</linkUri>
+		<linkText>xlltemplate library</linkText>
+		<linkUri>https://github.com/keithalewis/xlltemplate.git</linkUri>
 		<linkTarget>_blank</linkTarget>
 		</externalLink>
 		using git.
       </para>
       <para>
-      	Start Visual Studio 2013 and create a new project. You
-      	will see Xll AddIn Project under the Visual C++ templates.
-		!!!Exact directions!!!      	
+      	Open <c>xlltemplate.sln</c> and build (F5). This will create
+        <c>xlltemplate.xll</c> that can be opened in Excel. As you
+        type <c>=XLL.FUNCTION</c> in a cell you should see it
+        appear in intellisense.
       </para>
     </introduction>
     <!-- Add one or more top-level section elements.  These are collapsible.

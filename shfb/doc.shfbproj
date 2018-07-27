@@ -97,12 +97,6 @@
     <None Include="The xll12 Library.aml" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="FunctionWizard.png">
-      <ImageId>FunctionWizard</ImageId>
-      <AlternateText>Function Wizard</AlternateText>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Reference\" />
   </ItemGroup>
   <!-- Import the SHFB build targets -->

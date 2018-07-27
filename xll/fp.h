@@ -1,5 +1,5 @@
 // fp.h - Two dimensional array of doubles.
-// Copyright (c) 2011 KALX, LLC. All rights reserved. No warranty is made.
+// Copyright (c) KALX, LLC. All rights reserved. No warranty is made.
 #pragma once
 #include <algorithm>
 #include <cstdlib>

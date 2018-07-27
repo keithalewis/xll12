@@ -51,14 +51,6 @@
 				
 #define XLL_HANDLE XLL_DOUBLE
 
-
-
-#ifdef XLL_EXPORTS
-#define DECLSPEC_IMPEXP //__declspec(dllexport)
-#else
-#define DECLSPEC_IMPEXP __declspec(dllimport)
-#endif
-
 // Convenience wrappers for Excel calls
 #define XLF(fn, ...) xll::Excel(xlf##fn, __VA_ARGS__)
 #define XLC(fn, ...) xll::Excel(xlc##fn, __VA_ARGS__)

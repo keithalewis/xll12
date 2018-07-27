@@ -1,4 +1,5 @@
 // registry.h - Non-throwing Windows registry access using optional.
+// Copyright (c) KALX, LLC. All rights reserved. No warranty is made.
 #pragma once
 #include <windows.h>
 #include <optional>
