@@ -101,6 +101,9 @@
     <ClCompile Include="utility\paste_function.cpp">
       <Filter>utility</Filter>
     </ClCompile>
+    <ClCompile Include="xll\doc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Visualizers\oper.natvis">
