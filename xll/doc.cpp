@@ -19,7 +19,9 @@ namespace {
 		scoped_handle& operator=(const scoped_handle&) = delete;
 		~scoped_handle()
 		{
-			CloseHandle(h);
+            if (h != INVALID_HANDLE_VALUE) {
+			    CloseHandle(h);
+            }
 		}
 	};
 }

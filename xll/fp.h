@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <initializer_list>
-#include <new>
 #include <numeric>
 #include <iterator>
 #include <Windows.h>
