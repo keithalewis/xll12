@@ -26,11 +26,23 @@ namespace {
 	};
 }
 
-void make_doc(void)
+static AddIn xai_make_doc(
+    Macro(L"?xll_make_doc", L"XLL.MAKE.DOC")
+);
+int xll_make_doc(void)
 {
+    try {
 	OPER12 dir = Args::XlGetName();
 	// get addin name
 	// remove from dir
+    }
+    catch (const std::exception& ex) {
+        XLL_ERROR(ex.what());
+
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 /*

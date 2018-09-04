@@ -28,6 +28,9 @@ namespace xll {
 	class Args {
 		mutable OPER12 args;
         OPER12 ArgumentDefault;
+        xcstr documentation = nullptr;
+        xcstr remarks = nullptr;
+        xcstr examples = nullptr;
 	public:
 		/// Name of Excel add-in
 		static OPER12& XlGetName()
@@ -253,13 +256,24 @@ namespace xll {
 		}
 		// Str ...
 
-		Args& Documentation(xcstr doc = L"")
+		Args& Documentation(xcstr _documentation)
 		{
-			//Store to generate documentation
-			doc = doc;
+            documentation = _documentation;
 
 			return *this;
 		}
+        Args& Remarks(xcstr _remarks)
+        {
+            remarks = _remarks;
+
+            return *this;
+        }
+        Args& Examples(xcstr _examples)
+        {
+            examples = _examples;
+
+            return *this;
+        }
 
 		/// Register an add-in function or macro
 		OPER12 Register() const

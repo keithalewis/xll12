@@ -63,7 +63,7 @@
     </FooterText>
     <HeaderText>
     </HeaderText>
-    <CopyrightText>Copyright %28c%29 2016, KALX, LLC</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b KALX, LLC</CopyrightText>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional
@@ -88,6 +88,7 @@
     <ContentLayout Include="Content Layout.content" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Reference\FUNCTION.aml" />
     <None Include="The Life of an xll.aml" />
     <None Include="Reference\Reference.aml" />
     <None Include="Reference\AddIn.aml" />
