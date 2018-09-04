@@ -32,3 +32,28 @@ void make_doc(void)
 	// get addin name
 	// remove from dir
 }
+
+/*
+
+FUNCTION function
+
+Description
+   ...
+
+Syntax
+
+FUNCTION(arg,...)
+
+The DATEVALUE function syntax has the following arguments:
+
+- *Arg* Argument help...
+
+Remarks
+
+...
+
+Examples
+
+...
+
+*/

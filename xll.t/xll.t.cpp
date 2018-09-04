@@ -153,8 +153,8 @@ void test_str()
 	o2 &= L"bar";
 	ensure (o2 == L"foobar")
 	{
-		auto v = std::uniform_int_distribution<int>{1, 0x7FFF};
-        auto u = std::uniform_int_distribution<int>{ 1, std::numeric_limits<XCHAR>::max() };
+		auto v = std::uniform_int_distribution<int>{1, 0x7FFE};
+        auto u = std::uniform_int_distribution<int>{ 1, -1 + std::numeric_limits<XCHAR>::max() };
         for (int i = 0; i < 100; ++i) {
 			size_t len = v(dre);
 			std::wstring s3;
