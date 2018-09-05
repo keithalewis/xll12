@@ -49,13 +49,13 @@
         </list>
       </content>
     </section>
-    <section address="SubSection2">
+    <section address="Remarks">
       <title>Remarks</title>
       <content>
         <para>Remarks go here.</para>
       </content>
     </section>
-    <section address="SubSection3">
+    <section address="Examples">
       <title>Examples</title>
       <content>
         <para>Examples go here.</para>
