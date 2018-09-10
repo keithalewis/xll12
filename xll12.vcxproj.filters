@@ -102,7 +102,7 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="xll\doc.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
