@@ -1,7 +1,7 @@
 #include "Header.h"
 
 using namespace xll;
-
+#if 0
 // construct C++ object in Excel
 static AddIn xai_base(
     Function(XLL_HANDLE, L"?xll_base", L"XLL.BASE")
@@ -214,3 +214,4 @@ static Auto<Open> xao_handles(test_handles);
 
 #endif // _DEBUG
 
+#endif

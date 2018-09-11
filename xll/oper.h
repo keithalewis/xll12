@@ -283,16 +283,12 @@ namespace xll {
                 return val.w;
             if (type() == xltypeBool)
                 return val.xbool;
-            if (type() == xltypeMissing)
-                return 0;
-            if (type() == xltypeNil)
-                return 0;
-            if (type() == xltypeMulti)
-                return 1; //???
+            if (type() == xltypeErr)
+                return false;
             if (type() == xltypeStr)
                 return val.str[0] != 0 && val.str[1] != 0;
 
-            throw std::runtime_error("OPER12::operator double() only used for num, int, and bool");
+            throw std::runtime_error("OPER12::operator double() only used for num, int, bool, and err");
         }
         int isNum() const
         {
@@ -445,9 +441,9 @@ namespace xll {
         }
         int size() const
         {
-            return rows() * columns();
+            return type() == xltypeStr ? val.str[0] : rows() * columns();
         }
-        OPER12* begin()
+        OPER12* begin() // xltypeStr???
         {
             return type() == xltypeMulti ? static_cast<OPER12*>(val.array.lparray) : this;
         }
@@ -517,11 +513,11 @@ namespace xll {
                 return push_back(o);
             }
             else {
-                auto size = this->size();
+                auto size = rows() * columns();
 
                 if (rows() == 1) {
                     ensure(o.rows() == 1);
-                    resize(1, columns() + o.size());
+                    resize(1, columns() + o.rows() * o.columns());
                 }
                 else if (columns() == 1) {
                     ensure(o.columns() == 1);
@@ -554,7 +550,7 @@ namespace xll {
         }
 
         // Int
-        explicit OPER12(const int& w)
+        explicit OPER12(int w)
         {
             xltype = xltypeNum; // just like Excel
             val.num = w;

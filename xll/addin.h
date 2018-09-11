@@ -8,12 +8,17 @@
 namespace xll {
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
-        std::map<OPER12, Args> map_;
-	public:
+    public:
+        static std::map<OPER12, Args>& map()
+        {
+            static std::map<OPER12, Args> map_;
+
+            return map_;
+        }
 		/// Register and Unregister an add-in when Excel calls xlAutoOpen and xlAutoClose.
 		AddIn(const Args& args)
 		{
-            map_[args.FunctionText()] = args;
+            map()[args.FunctionText()] = args;
 
 			Auto<Open> ao([args]() { 
 				return args.Register().isNum();
@@ -22,14 +27,6 @@ namespace xll {
 				return args.Unregister();
 			});
 		}
-        auto begin() const
-        {
-            return map_.begin();
-        }
-        auto end() const
-        {
-            return map_.end();
-        }
     };
 	using AddIn12 = AddIn;
 	using AddInX = AddIn;

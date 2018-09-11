@@ -41,9 +41,44 @@ std::wstring make_guid(const std::wstring& s)
     return std::wstring(buf);
 }
 
-void make_shfbproj(std::wostream& os, const std::wstring& project, const AddIn& addin, 
-    const std::wstring& email = L"", const std::wstring& copy = L"")
+inline OPER find_last_of(const OPER& find, const OPER& within)
 {
+    OPER off{ 0 };
+    
+    while (auto next = Excel(xlfFind, find, within, OPER(off + 1))) {
+        off = next;
+    }
+
+    return off;
+}
+
+// Content Layout chunks
+const OPER ProjectGuid(
+    LR"shfb(
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets = "Build" xmlns = "http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion = "4.0">
+  <PropertyGroup>
+    <Configuration Condition = " '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition = " '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>)shfb"
+);
+
+void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy = L""*/)
+{
+    OPER lib = Args::XlGetName();
+
+    auto off = find_last_of(OPER(L"\\"), lib);
+    auto dir = Excel(xlfLeft, lib, off);
+    auto file = Excel(xlfRight, lib, OPER(lib.size() - off));
+    auto project = Excel(xlfLeft, file, OPER(find_last_of(OPER(L"."), file) - 1));
+    auto aml = Excel(xlfConcatenate, dir, project, OPER(L".aml"));
+
+    auto cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"));
+    ensure(cl);
+    Excel(xlfFwrite, cl, ProjectGuid);
+    Excel(xlfFclose, cl);
+#if 0
     os << LR"shfb(
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets = "Build" xmlns = "http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion = "4.0">
@@ -53,7 +88,7 @@ void make_shfbproj(std::wostream& os, const std::wstring& project, const AddIn& 
     <SchemaVersion>2.0< / SchemaVersion>
     <ProjectGuid>)shfb";
     
-    os << make_guid(project).c_str();
+    os << make_guid(proj).c_str();
 
     os << LR"shfb(</ProjectGuid>
     <SHFBSchemaVersion>2017.9.26.0</SHFBSchemaVersion>
@@ -61,7 +96,7 @@ void make_shfbproj(std::wostream& os, const std::wstring& project, const AddIn& 
     <OutputPath>.\Debug\</OutputPath>
     <HtmlHelpName>)shfb";
 
-    os << project.c_str();
+    os << proj;
 
     os << LR"shfb(</HtmlHelpName>
     <Language>en-US</Language>
@@ -146,7 +181,7 @@ void make_shfbproj(std::wostream& os, const std::wstring& project, const AddIn& 
   )shfb";
     os << L"<None Include=\"" << project.c_str() << L".aml\" />\n";
 
-    for (const auto& ai : addin) {
+    for (const auto& ai : AddIn::map()) {
         os << L"<None Include=\"" << ai.first << L".aml\" />\n";
     }
 
@@ -156,24 +191,22 @@ void make_shfbproj(std::wostream& os, const std::wstring& project, const AddIn& 
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
 </Project>
     )shfb";
+#endif
 }
 
 void make_function(const Args& args)
 {
     OPER function = args.FunctionText();
-
 }
-/*
+
 static AddIn xai_make_doc(
     Macro(XLL_DECORATE(L"xll_make_doc", 0), L"XLL.MAKE.DOC")
-);*/
+);
 extern "C" __declspec(dllexport) int WINAPI
 xll_make_doc(void)
 {
-    return TRUE;
-    /*
     try {
-	    OPER dir = Args::XlGetName();
+        make_shfbproj();
 	    // get addin name
 	    // remove from dir
     }
@@ -183,11 +216,9 @@ xll_make_doc(void)
         return FALSE;
     }
 
-    return TRUE;*/
+    return TRUE;
 }
-
 /*
-
 FUNCTION function
 
 Description

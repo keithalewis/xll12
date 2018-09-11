@@ -23,24 +23,34 @@ namespace Reg {
 	template<class T>
 	inline std::optional<T> QueryValue(HKEY key, LPCTSTR name);
 
-	template<>
-	inline std::optional<DWORD> QueryValue(HKEY key, LPCTSTR name)
-	{
-        DWORD type, value, size{0};
+    template<>
+    inline std::optional<DWORD> QueryValue(HKEY key, LPCTSTR name)
+    {
+        DWORD type, value, size{ 0 };
 
-		if (ERROR_SUCCESS != RegQueryValueEx(key, name, 0, &type, byte_ptr(&value), &size))
-			return std::optional<DWORD>({});
+        if (ERROR_SUCCESS != RegQueryValueEx(key, name, 0, &type, byte_ptr(&value), &size))
+            return std::optional<DWORD>({});
 
-		if (REG_DWORD != type)
-			return std::optional<DWORD>({});
+        if (REG_DWORD != type)
+            return std::optional<DWORD>({});
 
-		return std::optional<DWORD>(value);
-	}
+        return std::optional<DWORD>(value);
+    }
 
 	template<class T>
-	inline LSTATUS SetValue(HKEY key, LPCTSTR name, const T& value);
+    inline LSTATUS SetValue(HKEY key, LPCTSTR name, const T& value);
 
-	template<>
+    // REG_BINARY - Binary data in any form.
+    template<>
+    inline LSTATUS SetValue(HKEY key, LPCTSTR name, const std::basic_string_view<BYTE>& value)
+    {
+        DWORD type = REG_BINARY, size = value.size();
+
+        return RegSetValueEx(key, name, 0, type, value.data(), size);
+    }
+
+    // REG_DWORD - A 32 - bit number.
+    template<>
 	inline LSTATUS SetValue(HKEY key, LPCTSTR name, const DWORD& value)
 	{
 		DWORD type = REG_DWORD, size = sizeof(DWORD);
@@ -48,7 +58,16 @@ namespace Reg {
 		return RegSetValueEx(key, name, 0, type, const_byte_ptr(&value), size);
 	}
 
-	template<class T>
+    // REG_SZ - A null - terminated string.
+    template<>
+    inline LSTATUS SetValue(HKEY key, LPCTSTR name, const std::basic_string_view<TCHAR>& value)
+    {
+        DWORD type = REG_SZ, size = value.size() + 1;
+
+        return RegSetValueEx(key, name, 0, type, const_byte_ptr(value.data()), size);
+    }
+
+    template<class T>
 	class Key  
 	{
 		HKEY key;
