@@ -74,7 +74,7 @@ void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy =
     auto project = Excel(xlfLeft, file, OPER(find_last_of(OPER(L"."), file) - 1));
     auto aml = Excel(xlfConcatenate, dir, project, OPER(L".aml"));
 
-    auto cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"));
+    auto cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"), OPER(3));
     ensure(cl);
     Excel(xlfFwrite, cl, ProjectGuid);
     Excel(xlfFclose, cl);
