@@ -13,6 +13,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <memory>
 
 enum class xlerr {
@@ -25,6 +26,22 @@ enum class xlerr {
     NA = xlerrNA,
     GettingData = xlerrGettingData
 };
+
+/*!!! not yet supported
+inline const std::map<int, const wchar_t*> xlerr_message = {
+  {xlretSuccess,       L"success"},
+  {xlretAbort,         L"macro halted"},
+  {xlretInvXlfn,       L"invalid function number"},
+  {xlretInvCount,      L"invalid number of arguments"},
+  {xlretInvXloper,     L"invalid OPER structure"},
+  {xlretStackOvfl,     L"stack overflow"},
+  {xlretFailed,        L"command failed"},
+  {xlretUncalced,      L"uncalced cell"},
+  {xlretNotThreadSafe, L"not allowed during multi-threaded calc"},
+  {xlretInvAsynchronousContext, L"invalid asynchronous function handle"},
+  {xlretNotClusterSafe,L"not supported on cluster"},
+};
+*/
 
 enum class xltype {
     Num = xltypeNum,        // IEEE 64-bit floating point
@@ -298,7 +315,8 @@ namespace xll {
         // Str
         explicit OPER12(const XCHAR* str)
             : OPER12(str, str ? wcslen(str) : 0)
-        { }
+        {
+        }
         template<int n>
         OPER12(const XCHAR(&str)[n])
             : OPER12(str, n - 1) // char arrays have termniating null

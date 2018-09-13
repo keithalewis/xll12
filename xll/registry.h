@@ -44,27 +44,30 @@ namespace Reg {
     template<>
     inline LSTATUS SetValue(HKEY key, LPCTSTR name, const std::basic_string_view<BYTE>& value)
     {
-        DWORD type = REG_BINARY, size = value.size();
+        DWORD type = REG_BINARY;
+        size_t size = value.size();
 
-        return RegSetValueEx(key, name, 0, type, value.data(), size);
+        return RegSetValueEx(key, name, 0, type, value.data(), static_cast<DWORD>(size));
     }
 
     // REG_DWORD - A 32 - bit number.
     template<>
 	inline LSTATUS SetValue(HKEY key, LPCTSTR name, const DWORD& value)
 	{
-		DWORD type = REG_DWORD, size = sizeof(DWORD);
+        DWORD type = REG_DWORD;
+        size_t size = sizeof(DWORD);
 
-		return RegSetValueEx(key, name, 0, type, const_byte_ptr(&value), size);
+		return RegSetValueEx(key, name, 0, type, const_byte_ptr(&value), static_cast<DWORD>(size));
 	}
 
     // REG_SZ - A null - terminated string.
     template<>
     inline LSTATUS SetValue(HKEY key, LPCTSTR name, const std::basic_string_view<TCHAR>& value)
     {
-        DWORD type = REG_SZ, size = value.size() + 1;
+        DWORD type = REG_SZ;
+        size_t size = value.size() + 1;
 
-        return RegSetValueEx(key, name, 0, type, const_byte_ptr(value.data()), size);
+        return RegSetValueEx(key, name, 0, type, const_byte_ptr(value.data()), static_cast<DWORD>(size));
     }
 
     template<class T>
