@@ -3,6 +3,7 @@
 
 using namespace xll;
 
+// must use compiler intrinsics for x64
 #ifndef _M_X64 
 AddIn xai_asm(
     Function(XLL_LONG, L"?xll_asm", L"XLL.ASM")
