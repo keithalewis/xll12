@@ -106,6 +106,13 @@ void test_num()
 	ensure (num == num2);
 	num = num2;
 	ensure (num == num2);
+
+    OPER12 o3{ 0 };
+    ensure(o3.xltype == xltypeNum);
+    ensure(o3.val.num == 0);
+//    OPER12 o4 = 0; // calls OPER12(const XCHAR*) !!!
+//    ensure(o4.xltype == xltypeNum);
+//    ensure(o4.val.num == 0);
 }
 
 void test_str()

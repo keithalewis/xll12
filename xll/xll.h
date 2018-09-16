@@ -22,4 +22,5 @@ extern HMODULE xll_Instance;
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_this", 0))
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_trace", 4))
 //#pragma comment(linker, "/include:" XLL_DECORATE("xll_paste_function", 0))
+#pragma comment(linker, "/include:" XLL_DECORATE("xll_make_doc", 0))
 #endif // _LIB

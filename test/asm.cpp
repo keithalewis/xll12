@@ -3,6 +3,8 @@
 
 using namespace xll;
 
+// must use compiler intrinsics for x64
+#ifndef _M_X64 
 AddIn xai_asm(
     Function(XLL_LONG, L"?xll_asm", L"XLL.ASM")
     .Arg(XLL_LONG, L"num", L"is a number")
@@ -21,3 +23,4 @@ LONG WINAPI xll_asm(LONG num, LONG pow)
     }
     // returns value in EAX
 }
+#endif
