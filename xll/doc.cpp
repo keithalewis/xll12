@@ -32,7 +32,7 @@ inline std::wstring guid(const std::wstring& s)
     wchar_t buf[32+4+1];
 
     std::hash<std::wstring> hash;
-    swprintf(buf, 36, L"%8x-0000-0000-0000-000000000000", hash(s));
+    swprintf(buf, 36, L"%8x-0000-0000-0000-000000000000", static_cast<signed>(hash(s)));
 
     return std::wstring(buf);
 }

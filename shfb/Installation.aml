@@ -21,9 +21,9 @@
 		using git.
       </para>
       <para>
-      	Open <c>xlltemplate.sln</c> and build (F5). This will create
-        <c>xlltemplate.xll</c> that can be opened in Excel. As you
-        type <c>=XLL.FUNCTION</c> in a cell you should see it
+      	Open <codeInline>xlltemplate.sln</codeInline> and build (F5). This will create
+        <codeInline>xlltemplate.xll</codeInline> that can be opened in Excel. As you
+        type <codeInline>=XLL.FUNCTION</codeInline> in a cell you should see it
         appear in intellisense.
       </para>
     </introduction>

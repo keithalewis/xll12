@@ -9,6 +9,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{195A5FF4-1B49-477F-8B3A-45E61A96E860}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		winhlp.bat = winhlp.bat
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{D8B5094A-5F0B-492B-B45F-D9EB4DDEDE48}"

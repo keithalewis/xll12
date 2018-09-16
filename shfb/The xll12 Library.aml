@@ -49,7 +49,7 @@
         </para>
         <para>
           The xll12 library works with all versions of Windows since XP and
-          all versions of Excel since 2007. Suported features
+          all versions of Excel since 2007. Supported features
           include the big grid, wide character strings, thread safe and 
           asynchronous functions.
         </para>

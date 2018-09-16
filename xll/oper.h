@@ -194,7 +194,23 @@ namespace xll {
 		{
 			return !operator==(o);
 		}
-		// bool operator<(...)
+        bool operator<(const OPER12& o) const
+        {
+            if (xltype != o.xltype) {
+                return xltype < o.xltype;
+            }
+
+            switch (xltype) {
+            case xltypeNum:
+                return val.num < o.val.num;
+            case xltypeStr:
+                return std::lexicographical_compare(val.str + 1, val.str + 1 + val.str[0], o.val.str + 1, o.val.str + 1 + o.val.str[0]);
+            case xltypeBool:
+                return val.xbool < o.val.xbool;
+            }
+
+            return false;
+        }
 
 		template<class T>
 		OPER12& operator=(const T& t)
