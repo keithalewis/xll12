@@ -361,7 +361,7 @@ void test_error()
 {
 	XLL_ALERT_LEVEL(0);
 	ensure (0 == XLL_ALERT_LEVEL());
-	ensure (0 == XLL_ALERT_LEVEL(1));
+	ensure (-1 == XLL_ALERT_LEVEL(1));
 	ensure (1 == XLL_ALERT_LEVEL());
 }
 

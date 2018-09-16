@@ -52,6 +52,20 @@ inline OPER find_last_of(const OPER& find, const OPER& within)
     return off;
 }
 
+// Can only write 255 chars.
+inline OPER fwrite(const OPER& file, const OPER& text)
+{
+    int start = 0;
+    int len = static_cast<int>(Excel(xlfLen, text));
+    while (len > 255) {
+        auto result = Excel(xlfFwrite, file, Excel(xlfMid, text, start, 255));
+        ensure(result == 255);
+        start += 255;
+        len -= 255;
+    }
+    return Excel(xlfFwrite, file, Excel(xlfMid, text, start, len));
+}
+
 // Content Layout chunks
 const OPER ProjectGuid(
     LR"shfb(
@@ -75,8 +89,8 @@ void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy =
     auto aml = Excel(xlfConcatenate, dir, project, OPER(L".aml"));
 
     auto cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"), OPER(3));
-    ensure(cl);
-    Excel(xlfFwrite, cl, ProjectGuid);
+    ensure(cl.isNum());
+    fwrite(cl, ProjectGuid);
     Excel(xlfFclose, cl);
 #if 0
     os << LR"shfb(
@@ -218,6 +232,7 @@ xll_make_doc(void)
 
     return TRUE;
 }
+Auto<Open> xao_make_doc(xll_make_doc);
 /*
 FUNCTION function
 

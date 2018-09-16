@@ -2,9 +2,7 @@
 // Copyright (c) KALX, LLC. All rights reserved. No warranty is made.
 #pragma once
 #include <windows.h>
-#include <optional>
 #include <string>
-#include <variant>
 #include <vector>
 
 namespace Reg {
@@ -20,97 +18,110 @@ namespace Reg {
 		return static_cast<const BYTE*>(static_cast<const void*>(p));
 	}
 
-	template<class T>
-	inline std::optional<T> QueryValue(HKEY key, LPCTSTR name);
-
-    template<>
-    inline std::optional<DWORD> QueryValue(HKEY key, LPCTSTR name)
-    {
-        DWORD type, value, size{ 0 };
-
-        if (ERROR_SUCCESS != RegQueryValueEx(key, name, 0, &type, byte_ptr(&value), &size))
-            return std::optional<DWORD>({});
-
-        if (REG_DWORD != type)
-            return std::optional<DWORD>({});
-
-        return std::optional<DWORD>(value);
-    }
-
-	template<class T>
-    inline LSTATUS SetValue(HKEY key, LPCTSTR name, const T& value);
-
-    // REG_BINARY - Binary data in any form.
-    template<>
-    inline LSTATUS SetValue(HKEY key, LPCTSTR name, const std::basic_string_view<BYTE>& value)
-    {
-        DWORD type = REG_BINARY;
-        size_t size = value.size();
-
-        return RegSetValueEx(key, name, 0, type, value.data(), static_cast<DWORD>(size));
-    }
-
-    // REG_DWORD - A 32 - bit number.
-    template<>
-	inline LSTATUS SetValue(HKEY key, LPCTSTR name, const DWORD& value)
+    class Key  
 	{
-        DWORD type = REG_DWORD;
-        size_t size = sizeof(DWORD);
+		HKEY key;
+        DWORD disp;
+	public: 
+		Key(HKEY hkey, LPCTSTR subkey, REGSAM sam = KEY_ALL_ACCESS)
+		{ 
+            // open existing or create new key
+            RegCreateKeyEx(hkey, subkey, 0, 0, 0, sam, 0, &key, &disp);
+		}
+		Key(const Key&) = default;
+		Key& operator=(const Key&) = default;
+		~Key()
+		{
+    	    RegCloseKey(key);
+		}
 
-		return RegSetValueEx(key, name, 0, type, const_byte_ptr(&value), static_cast<DWORD>(size));
-	}
+        bool isNew() const
+        {
+            return disp == REG_CREATED_NEW_KEY;
+        }
+        bool isExisting() const
+        {
+            return disp == REG_OPENED_EXISTING_KEY;
+        }
 
-    // REG_SZ - A null - terminated string.
+        operator HKEY() const
+        {
+            return key;
+        }
+	};
+
+    template<class T> 
+    struct entry_traits {
+        static const DWORD type;
+        static const BYTE* data(const T&);
+        static BYTE* data(T&);
+        static DWORD size(const T&);
+    };
+
     template<>
-    inline LSTATUS SetValue(HKEY key, LPCTSTR name, const std::basic_string_view<TCHAR>& value)
-    {
-        DWORD type = REG_SZ;
-        size_t size = value.size() + 1;
+    struct entry_traits<DWORD> {
+        static const DWORD type =  REG_DWORD;
+        static const BYTE* data(const DWORD& value)
+        {
+            return const_byte_ptr(&value);
+        }
+        static BYTE* data(DWORD& value)
+        {
+            return byte_ptr(&value);
+        }
+        static DWORD size(const DWORD&)
+        {
+            return sizeof(DWORD);
+        }
+    };
 
-        return RegSetValueEx(key, name, 0, type, const_byte_ptr(value.data()), static_cast<DWORD>(size));
+    template<class T>
+    inline LSTATUS SetValue(HKEY hkey, LPCTSTR name, const T& value)
+    {
+        return RegSetValueEx(hkey, name, 0, entry_traits<T>::type, entry_traits<T>::data(value), entry_traits<T>::size(value));
     }
 
     template<class T>
-	class Key  
-	{
-		HKEY key;
-		std::basic_string<TCHAR> subkey;
-		std::optional<T> value_;
-	public:
-		Key(HKEY hkey, LPCTSTR subkey, REGSAM sam = KEY_ALL_ACCESS)
-			: subkey(subkey)
-		{ 
-			DWORD disp;
+    inline LSTATUS QueryValue(HKEY hkey, LPCTSTR name, T& value)
+    {
+        DWORD size;
+        DWORD type = entry_traits<T>::type;
 
-			if (ERROR_SUCCESS == RegCreateKeyEx(hkey, subkey, 0, 0, 0, sam, 0, &key, &disp)) {
-				if (REG_OPENED_EXISTING_KEY == disp) {
-					value_ = QueryValue<T>(key, subkey);
-				}
-			}
-		}
-		Key(const Key&) = delete;
-		Key& operator=(const Key&) = delete;
-		~Key()
-		{
-			RegCloseKey(key);
-		}
+        if constexpr (entry_traits<T>::type == REG_SZ) {
+            LSTATUS status;
+            status = RegQueryValueEx(hkey, name, 0, &type, 0, &size);
+            if (status != ERROR_SUCCESS) {
+                return status;
+            }
+            value.resize(size + 1);
+        }
 
-		template<class U>
-		constexpr T value_or(U&& u) const&
-		{
-			return value_.value_or(u);
-		}
-		constexpr const T& value() const&
-		{
-			return value_.value();
-		}
-		Key& operator=(const T& val)
-		{
-			if (ERROR_SUCCESS == SetValue(key, subkey.c_str(), val))
-				value_ = val;
+        return RegQueryValueEx(hkey, name, 0, &type, entry_traits<T>::data(value), &size);
+    }
 
-			return *this;
-		}
-	};
+    template<class T>
+    class Entry {
+        HKEY hkey;
+        std::basic_string<TCHAR> name;
+    public:
+        Entry(HKEY hkey, LPCTSTR name)
+            : hkey(hkey), name(name)
+        { }
+        operator T()
+        {
+            T value;
+
+            QueryValue(hkey, name.c_str(), value);
+
+            return value;
+        }
+        Entry& operator=(const T& value)
+        {
+            SetValue(hkey, name.c_str(), value);
+
+            return *this;
+        }
+    };
+
 
 }

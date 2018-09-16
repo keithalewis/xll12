@@ -3,32 +3,32 @@
 #include "registry.h"
 
 static LPCTSTR XLL_ALERT_LEVEL_ = TEXT("Software\\KALX\\xll\\xll_alert_level");
-static Reg::Key<DWORD> xll_alert_level(HKEY_CURRENT_USER, XLL_ALERT_LEVEL_);
+static Reg::Key xal(HKEY_CURRENT_USER, TEXT("Software\\KALX\\xll"));
+static Reg::Entry<DWORD> xll_alert_level(xal, TEXT("xll_alert_level"));
 
 DWORD XLL_ALERT_LEVEL(DWORD level)
 {
-	DWORD olevel = xll_alert_level.value_or(-1);
+    DWORD olevel = xll_alert_level;
+    
+    xll_alert_level = level;
 
-	if (level != -1)
-		xll_alert_level = level;
-
-	return olevel;
+    return olevel;
 }
 
 int 
 XLL_ALERT(const char* text, const char* caption, DWORD level, UINT type, bool force)
 {
 	try {
-		if ((xll_alert_level.value()&level) || force) {
+		if ((xll_alert_level&level) || force) {
 			if (IDCANCEL == MessageBoxA(GetForegroundWindow(), text, caption, MB_OKCANCEL|type))
-				xll_alert_level = (xll_alert_level.value() & ~level);
+				xll_alert_level = (xll_alert_level & ~level);
 		}
 	}
 	catch (const std::exception& ex) {
 		MessageBoxA(GetForegroundWindow(), ex.what(), "Alert", MB_OKCANCEL| MB_ICONERROR);
 	}
 
-	return static_cast<int>(xll_alert_level.value());
+	return static_cast<int>(xll_alert_level);
 }
 
 int 
@@ -52,7 +52,7 @@ XLL_INFO(const char* e, bool force)
 struct test_registry {
 	test_registry()
 	{
-		Reg::Key<DWORD> key(HKEY_CURRENT_USER, TEXT("tmp\\key"));
+		Reg::Key key(HKEY_CURRENT_USER, TEXT("tmp\\key"));
 	}
 	~test_registry()
 	{
