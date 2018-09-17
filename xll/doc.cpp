@@ -55,21 +55,23 @@ inline OPER find_last_of(const OPER& find, const OPER& within)
 // Can only write 255 chars.
 inline OPER fwrite(const OPER& file, const OPER& text)
 {
-    int start = 0;
-    int len = static_cast<int>(Excel(xlfLen, text));
+    OPER start{ 1 };
+    OPER len = Excel(xlfLen, text);
+    
     while (len > 255) {
-        auto result = Excel(xlfFwrite, file, Excel(xlfMid, text, start, 255));
+        const OPER& mid = Excel(xlfMid, text, start, OPER(255));
+        auto result = Excel(xlfFwrite, file, mid);
         ensure(result == 255);
-        start += 255;
-        len -= 255;
+        start = start + 255;
+        len = len - 255;
     }
+    
     return Excel(xlfFwrite, file, Excel(xlfMid, text, start, len));
 }
 
 // Content Layout chunks
 const OPER ProjectGuid(
-    LR"shfb(
-<?xml version="1.0" encoding="utf-8"?>
+    LR"shfb(<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets = "Build" xmlns = "http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion = "4.0">
   <PropertyGroup>
     <Configuration Condition = " '$(Configuration)' == '' ">Debug</Configuration>
@@ -78,41 +80,16 @@ const OPER ProjectGuid(
     <ProjectGuid>)shfb"
 );
 
-void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy = L""*/)
-{
-    OPER lib = Args::XlGetName();
-
-    auto off = find_last_of(OPER(L"\\"), lib);
-    auto dir = Excel(xlfLeft, lib, off);
-    auto file = Excel(xlfRight, lib, OPER(lib.size() - off));
-    auto project = Excel(xlfLeft, file, OPER(find_last_of(OPER(L"."), file) - 1));
-    auto aml = Excel(xlfConcatenate, dir, project, OPER(L".aml"));
-
-    auto cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"), OPER(3));
-    ensure(cl.isNum());
-    fwrite(cl, ProjectGuid);
-    Excel(xlfFclose, cl);
-#if 0
-    os << LR"shfb(
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets = "Build" xmlns = "http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion = "4.0">
-  <PropertyGroup>
-    <Configuration Condition = " '$(Configuration)' == '' ">Debug< / Configuration>
-    <Platform Condition = " '$(Platform)' == '' ">AnyCPU< / Platform>
-    <SchemaVersion>2.0< / SchemaVersion>
-    <ProjectGuid>)shfb";
-    
-    os << make_guid(proj).c_str();
-
-    os << LR"shfb(</ProjectGuid>
+const OPER HtmlHelpName(
+    LR"shfb(</ProjectGuid>
     <SHFBSchemaVersion>2017.9.26.0</SHFBSchemaVersion>
     <!-- SHFB properties -->
     <OutputPath>.\Debug\</OutputPath>
-    <HtmlHelpName>)shfb";
+    <HtmlHelpName>)shfb"
+);
 
-    os << proj;
-
-    os << LR"shfb(</HtmlHelpName>
+const OPER HelpTitle(
+    LR"shfb(</HtmlHelpName>
     <Language>en-US</Language>
     <ApiFilter />
     <ComponentConfigurations />
@@ -146,66 +123,87 @@ void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy =
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
     <NamingMethod>Guid</NamingMethod>
-    <HelpTitle>)shfb";
+    <HelpTitle>)shfb"
+);
 
-    os << L"The " << project.c_str() << L" add-in library";
-
-    os << L"</HelpTitle>\n";
-    
-    if (email.length() > 0) {
-        os << L"<FeedbackEMailAddress>" << email.c_str() << L"</FeedbackEMailAddress>\n";
-    }
-    
-    os << LR"shfb(<ContentPlacement>AboveNamespaces</ContentPlacement>
-        <HelpFileVersion>1.0.0.0</HelpFileVersion>
-        <MaximumGroupParts>2</MaximumGroupParts>
-        <NamespaceGrouping>False</NamespaceGrouping>
-        <FooterText>
-        </FooterText>
-        <HeaderText>
-        </HeaderText>
-    )shfb";
-
-    if (copy.length() > 0) {
-        os << L"<CopyrightText>" << copy.c_str() << L"</CopyrightText>\n";
-    }
-
-    os << LR"shfb(
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
-  </PropertyGroup>
-  <ItemGroup>
+const OPER ItemGroup(
+    LR"shfb(</HelpTitle>
+    <FeedbackEMailAddress>???</FeedbackEMailAddress>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <HelpFileVersion>1.0.0.0</HelpFileVersion>
+    <MaximumGroupParts>2</MaximumGroupParts>
+    <NamespaceGrouping>False</NamespaceGrouping>
+    <FooterText>
+    </FooterText>
+    <HeaderText>
+    </HeaderText>
+    <CopyrightText>???</CopyrightText>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
+    </PropertyGroup>
+    <ItemGroup>
     <ContentLayout Include="Content Layout.content" />
-  </ItemGroup>
-  <ItemGroup>
-  )shfb";
-    os << L"<None Include=\"" << project.c_str() << L".aml\" />\n";
+    </ItemGroup>
+    <ItemGroup>
+    <None Include=")shfb"
+);
 
-    for (const auto& ai : AddIn::map()) {
-        os << L"<None Include=\"" << ai.first << L".aml\" />\n";
-    }
-
-    os << LR"shfb(
-  </ItemGroup>
+const OPER Project(
+    LR"shfb(</ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
 </Project>
-    )shfb";
-#endif
+    )shfb"
+);
+
+void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy = L""*/)
+{
+    OPER lib = Args::XlGetName();
+
+    OPER off = find_last_of(OPER(L"\\"), lib);
+    OPER dir = Excel(xlfLeft, lib, off);
+    OPER file = Excel(xlfRight, lib, OPER(lib.size() - off));
+    OPER project = Excel(xlfLeft, file, OPER(find_last_of(OPER(L"."), file) - 1));
+    OPER aml = Excel(xlfConcatenate, dir, project, OPER(L".aml"));
+
+    OPER fd = Excel(xlfFopen, dir & project & OPER(L".shfbproj"), OPER(3));
+    ensure(fd.isNum());
+    
+    fwrite(fd, ProjectGuid);
+    Excel(xlfFwrite, fd, OPER(make_guid(std::wstring(aml.val.str + 1, aml.val.str[0]))));
+    
+    fwrite(fd, HtmlHelpName);
+    Excel(xlfFwrite, fd, project);
+
+    fwrite(fd, HelpTitle);
+    Excel(xlfFwrite, fd, OPER(L"The ") & project & OPER(L" add-in library"));
+
+    fwrite(fd, ItemGroup);
+    Excel(xlfFwrite, fd, project & OPER(L".aml\" />\n"));
+
+    for (const auto& ai : AddIn::map()) {
+        if (ai.second.Documentation()) {
+            Excel(xlfFwrite, fd, OPER(L"<None Include=\"") & ai.first & OPER(L".aml\" />\n"));
+        }
+    }
+
+    fwrite(fd, Project);
+
+    Excel(xlfFclose, fd);
 }
 
 void make_function(const Args& args)

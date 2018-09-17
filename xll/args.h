@@ -262,17 +262,29 @@ namespace xll {
 
 			return *this;
 		}
+        xcstr Documentation() const
+        {
+            return documentation;
+        }
         Args& Remarks(xcstr _remarks)
         {
             remarks = _remarks;
 
             return *this;
         }
+        xcstr Remarks() const
+        {
+            return remarks;
+        }
         Args& Examples(xcstr _examples)
         {
             examples = _examples;
 
             return *this;
+        }
+        xcstr Examples() const
+        {
+            return examples;
         }
 
 		/// Register an add-in function or macro
