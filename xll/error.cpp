@@ -2,9 +2,17 @@
 #include "error.h"
 #include "registry.h"
 
-static LPCTSTR XLL_ALERT_LEVEL_ = TEXT("Software\\KALX\\xll\\xll_alert_level");
 static Reg::Key xal(HKEY_CURRENT_USER, TEXT("Software\\KALX\\xll"));
 static Reg::Entry<DWORD> xll_alert_level(xal, TEXT("xll_alert_level"));
+struct xal_initialize {
+    xal_initialize()
+    {
+        if (xal.isNew()) {
+            xll_alert_level = 7;
+        }
+    }
+};
+xal_initialize xal_initialize_{};
 
 DWORD XLL_ALERT_LEVEL(DWORD level)
 {
@@ -50,10 +58,12 @@ XLL_INFO(const char* e, bool force)
 #ifdef _DEBUG
 
 struct test_registry {
+    Reg::Key key;
 	test_registry()
 	{
-		Reg::Key key(HKEY_CURRENT_USER, TEXT("tmp\\key"));
-	}
+		key = Reg::Key(HKEY_CURRENT_USER, TEXT("tmp\\key"));
+        RegDeleteKey(key, TEXT("tmp\\key"));
+    }
 	~test_registry()
 	{
 	}

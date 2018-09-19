@@ -32,6 +32,7 @@ namespace xll {
     // because 64-bit pointers are not always valid doubles.
 	template<class T>
 	class handle {
+    public:
         using uptr = std::unique_ptr<T>;
 
         static T* base()

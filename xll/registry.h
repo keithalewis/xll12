@@ -23,16 +23,34 @@ namespace Reg {
 		HKEY key;
         DWORD disp;
 	public: 
+        Key()
+            : disp{ 0 }
+        { }
 		Key(HKEY hkey, LPCTSTR subkey, REGSAM sam = KEY_ALL_ACCESS)
 		{ 
             // open existing or create new key
             RegCreateKeyEx(hkey, subkey, 0, 0, 0, sam, 0, &key, &disp);
 		}
-		Key(const Key&) = default;
-		Key& operator=(const Key&) = default;
+		Key(const Key&) = delete;
+        Key(Key&& key_)
+            : key(key_.key), disp(key_.disp)
+        {
+            disp = 0;
+        }
+        Key& operator=(Key&& key_)
+        {
+            key = key_.key;
+            disp = key_.disp;
+            key_.disp = 0;
+
+            return *this;
+        }
+		Key& operator=(const Key&) = delete;
 		~Key()
 		{
-    	    RegCloseKey(key);
+            if (disp != 0) {
+    	        RegCloseKey(key);
+            }
 		}
 
         bool isNew() const
