@@ -26,5 +26,8 @@
     <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="correlation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
