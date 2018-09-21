@@ -62,7 +62,15 @@ struct test_registry {
 	test_registry()
 	{
 		key = Reg::Key(HKEY_CURRENT_USER, TEXT("tmp\\key"));
-        RegDeleteKey(key, TEXT("tmp\\key"));
+        LSTATUS status;
+        status = RegDeleteKey(key, TEXT("tmp\\key"));
+        using tstring = std::basic_string<TCHAR>;
+        Reg::Key key2(HKEY_CURRENT_USER, TEXT("tmp\\string"));
+        Reg::Entry<tstring> value(key2, TEXT("value"));
+        tstring s = value;
+        value = TEXT("text");
+        s = value;
+        s = s;
     }
 	~test_registry()
 	{

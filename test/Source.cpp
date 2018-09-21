@@ -147,13 +147,7 @@ test_base_derived(void)
     handle<derived> dd(xhd);
     ensure(2 == dd->value());
     ensure(3 == dd->value2());
-    /*
-    handle<base> hb2;
-    hb2 = &b;
-    HANDLEX xhb2 = hb2.get();
-    handle<base> hbb2(xhb2);
-    ensure (1 == hbb2->value());
-    */
+     
 }
 /*
 struct foo {

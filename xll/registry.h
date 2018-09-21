@@ -75,7 +75,6 @@ namespace Reg {
         static BYTE* data(T&);
         static DWORD size(const T&);
     };
-
     template<>
     struct entry_traits<DWORD> {
         static const DWORD type =  REG_DWORD;
@@ -90,6 +89,22 @@ namespace Reg {
         static DWORD size(const DWORD&)
         {
             return sizeof(DWORD);
+        }
+    };
+    template<>
+    struct entry_traits<std::basic_string<TCHAR>> {
+        static const DWORD type = REG_SZ;
+        static const BYTE* data(const std::basic_string<TCHAR>& value)
+        {
+            return const_byte_ptr(value.data());
+        }
+        static BYTE* data(std::basic_string<TCHAR>& value)
+        {
+            return byte_ptr(&value[0]);
+        }
+        static DWORD size(const std::basic_string<TCHAR>& value)
+        {
+            return sizeof(TCHAR)*(value.size() + 1);
         }
     };
 
