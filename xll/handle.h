@@ -37,7 +37,11 @@ namespace xll {
 
         static T* base()
         {
+#ifdef _WIN64
             static uptr p0(new T{});
+#else
+            static uptr p0(nullptr);
+#endif
 
             return p0.get();
         }

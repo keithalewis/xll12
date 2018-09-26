@@ -4,25 +4,24 @@
 
 using namespace xll;
 using namespace fms;
-using layout = correlation<double>::layout;
 
 AddIn xai_correlation(
     Function(XLL_HANDLE, L"?xll_correlation", L"CORRELATION")
     .Arg(XLL_FP, L"rho", L"is an array of init vectors without their last component.")
-    .Arg(XLL_LONG, L"layout?", L"is an optional layout argument.")
+    .Arg(XLL_WORD, L"layout", L"is either CORRELATION_LOWER, or CORRELATION_PACKED")
     .Category(L"XLL")
     .FunctionHelp(L"Return a handle to a correlation object.")
     .Uncalced()
 );
-HANDLEX WINAPI xll_correlation(const _FP12* prho, layout type)
+HANDLEX WINAPI xll_correlation(const _FP12* prho, fms::correlation<>::layout type)
 {
 #pragma XLLEXPORT
     handlex result;
 
     try {
+        using corr = fms::correlation<double>;
         ensure(prho->rows == prho->columns);
-        type = fms::correlation<double>::layout::lower_triangular; // !!! for now
-        handle<fms::correlation<double>> h(new fms::correlation<double>(prho->rows + 1, begin(*prho), type));
+        handle<corr> h(new corr(prho->rows + 1, begin(*prho), type));
         result = h.get();
     }
     catch (const std::exception& ex) {
@@ -56,3 +55,58 @@ double WINAPI xll_correlation_rho(HANDLEX h, WORD i, WORD j)
 
     return result;
 }
+
+#ifdef _DEBUG
+
+#pragma warning(disable: 4456) // declaration of 'corr' hides previous local declaration)
+xll::test test_correlation([]() {
+    double eps = std::numeric_limits<double>::epsilon();
+    //using fms::correlation<double>::packed();
+    {
+        fms::correlation<> corr;
+    }
+    {
+        fms::correlation<> corr(1, nullptr);
+        ensure (corr.size() == 1);
+        ensure (corr.rho(0, 0) == 1);
+    }
+    {
+        double rho = 0.5;
+        fms::correlation<> corr(2, &rho, fms::correlation<>::packed);
+        ensure (corr.size() == 2);
+        ensure (corr.rho(0, 0) == 1);
+        ensure (corr.rho(0, 1) == 0.5);
+        ensure (corr.rho(1, 0) == 0.5);
+        ensure (fabs(corr.rho(1, 1) - 1) <= eps);
+    }
+    {
+        double rho[] = {0.5,  0.4, 0.3};
+        fms::correlation<> corr(3, rho);
+        ensure (corr.size() == 3);
+        ensure (corr.rho(0, 0) == 1);
+        ensure (corr.rho(0, 1) == 0.5);
+        ensure (corr.rho(0, 2) == 0.4);
+        ensure (corr.rho(1, 0) == 0.5);
+        ensure (fabs(corr.rho(1, 1) - 1) <= eps);
+        ensure (corr.rho(1, 2) == 0.5*0.4 + sqrt(1-0.5*0.5)*0.3);
+        ensure (corr.rho(2, 0) == 0.4);
+        ensure (corr.rho(2, 1) == 0.5*0.4 + sqrt(1-0.5*0.5)*0.3);
+        ensure (fabs(corr.rho(2, 2) - 1) <= eps);
+    }
+    {
+        double rho[] = {0.5, 0, 0.4, 0.3};
+        fms::correlation<> corr(3, rho, fms::correlation<>::lower);
+        ensure (corr.size() == 3);
+        ensure (corr.rho(0, 0) == 1);
+        ensure (corr.rho(0, 1) == 0.5);
+        ensure (corr.rho(0, 2) == 0.4);
+        ensure (corr.rho(1, 0) == 0.5);
+        ensure (fabs(corr.rho(1, 1) - 1) <= eps);
+        ensure (corr.rho(1, 2) == 0.5*0.4 + sqrt(1-0.5*0.5)*0.3);
+        ensure (corr.rho(2, 0) == 0.4);
+        ensure (corr.rho(2, 1) == 0.5*0.4 + sqrt(1-0.5*0.5)*0.3);
+        ensure (fabs(corr.rho(2, 2) - 1) <= eps);
+    }
+});
+
+#endif // _DEBUG
