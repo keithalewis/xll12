@@ -104,7 +104,7 @@ namespace Reg {
         }
         static DWORD size(const std::basic_string<TCHAR>& value)
         {
-            return sizeof(TCHAR)*(value.size() + 1);
+            return static_cast<DWORD>(sizeof(TCHAR)*(value.size() + 1)) ;
         }
     };
 

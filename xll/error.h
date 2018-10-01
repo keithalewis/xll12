@@ -11,7 +11,7 @@ enum {
 };
 
 /// Set error level and return old
-DWORD XLL_ALERT_LEVEL(DWORD level = -1);
+DWORD XLL_ALERT_LEVEL(DWORD level);
 
 /// OKCANCEL message box. Cancel turns off error bit
 int XLL_ERROR(const char* e, bool force = false);

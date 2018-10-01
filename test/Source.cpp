@@ -134,16 +134,6 @@ test_base_derived(void)
 
     handle<derived> hd(new derived(2, 3));
     HANDLEX xhd = hd.get();
-    auto ptr = hd.ptr();
-    auto base = handle<derived>::base();
-    ensure(base == handle<derived>::base());
-    ensure(base == handle<derived>::base());
-    ptrdiff_t diff;
-    diff = ptr - base;
-    auto ddd = base + diff;
-    ensure(ddd == ptr);
-    ensure(2 == ddd->value());
-    ensure(3 == ddd->value2());
     handle<derived> dd(xhd);
     ensure(2 == dd->value());
     ensure(3 == dd->value2());

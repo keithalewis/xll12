@@ -34,28 +34,14 @@ namespace xll {
 	class handle {
     public:
         using uptr = std::unique_ptr<T>;
-
-        static T* base()
-        {
-#ifdef _WIN64
-            static uptr p0(new T{});
-#else
-            static uptr p0(nullptr);
-#endif
-
-            return p0.get();
-        }
         static HANDLEX p2h(T* p)
         {
-            return static_cast<HANDLEX>(p - base());
+            return static_cast<HANDLEX>(PtrToUint(p));
         }
         // h = p0 - p, p = p0 - h
         static T* h2p(HANDLEX h)
         {
-            static double intmax = ldexp(1, 53);
-            ensure(h < intmax && h > -intmax);
-
-            return base() + static_cast<ptrdiff_t>(h);
+            return static_cast<T*>(UintToPtr(static_cast<unsigned long>(h)));
         }
 
         static std::set<uptr>& handles()
