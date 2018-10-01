@@ -36,7 +36,7 @@ std::wstring make_guid(const std::wstring& s)
     wchar_t buf[32+4+1];
 
     std::hash<std::wstring> hash;
-    swprintf(buf, 36, L"%8zu-0000-0000-0000-000000000000", hash(s));
+    swprintf(buf, 36, L"%08x-0000-0000-0000-000000000000", hash(s));
 
     return std::wstring(buf);
 }
@@ -170,6 +170,36 @@ const OPER Project(
     )shfb"
 );
 
+void write_function(const OPER& ft, const Args& args)
+{
+    Excel(xlfFwrite, ft, OPER(LR"shfb(<?xml version="1.0" encoding = "utf-8"?>
+        <topic id=")shfb"));
+    Excel(xlfFwrite, ft, OPER(make_guid(args.FunctionText().to_string())));
+    Excel(xlfFwrite, ft, OPER(LR"shfb(" revisionNumber="1">
+        <developerConceptualDocument
+        xmlns = "http://ddue.schemas.microsoft.com/authoring/2003/5"
+        xmlns:xlink = "http://www.w3.org/1999/xlink">
+)shfb"));
+     
+    if (args.isFunction()) {
+        Excel(xlfFwriteln, ft, OPER(L"<introduction><para>"));
+        Excel(xlfFwriteln, ft, args.FunctionHelp());
+        Excel(xlfFwriteln, ft, OPER(L"</para></introduction>"));
+        Excel(xlfFwriteln, ft, OPER(L"<section><title>Description</title><content><para>"));
+        Excel(xlfFwriteln, ft, args.Documentation());
+        Excel(xlfFwriteln, ft, OPER(L"</para></content></section>"));
+    }
+    else if (args.isMacro()) {
+
+    }
+    else if (args.isDocumentation()) {
+        Excel(xlfFwriteln, ft, OPER(L"<introduction><para>intro</para></introduction>"));
+        Excel(xlfFwriteln, ft, OPER(L"<section><title>title</title></section>"));
+    }
+
+    Excel(xlfFwriteln, ft, OPER(L"</developerConceptualDocument>\n</topic>"));
+}
+
 void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy = L""*/)
 {
     OPER lib = Args::XlGetName();
@@ -184,7 +214,7 @@ void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy =
     ensure(fd.isNum());
     
     fwrite(fd, ProjectGuid);
-    Excel(xlfFwrite, fd, OPER(make_guid(std::wstring(aml.val.str + 1, aml.val.str[0]))));
+    Excel(xlfFwrite, fd, OPER(make_guid(aml.to_string())));
     
     fwrite(fd, HtmlHelpName);
     Excel(xlfFwrite, fd, project);
@@ -195,11 +225,38 @@ void make_shfbproj(/*const std::wstring& email = L"", const std::wstring& copy =
     fwrite(fd, ItemGroup);
     Excel(xlfFwrite, fd, project & OPER(L".aml\" />\n"));
 
+    OPER cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"), OPER(3));
+    ensure(cl.isNum());
+    Excel(xlfFwriteln, cl, OPER(L"<?xml version = \"1.0\" encoding = \"utf-8\"?>"));
+    Excel(xlfFwriteln, cl, OPER(L"<Topics>"));
+    std::wstring topics;
     for (const auto& ai : AddIn::map()) {
-        if (ai.second.Documentation()) {
+        if (ai.second.isDocumentation()) {
+            Excel(xlfFwrite, cl, OPER(L"<Topic id=\""));
+            Excel(xlfFwrite, cl, OPER(make_guid(ai.second.FunctionText().to_string())));
+            Excel(xlfFwriteln, cl, OPER(L"\" visible=\"true\" isExpanded=\"true\"/>"));
+
+            OPER dh = Excel(xlfFopen, aml, OPER(3));
+            ensure(dh.isNum());
+            write_function(dh, ai.second); // write_args!!!
+            Excel(xlfFclose, dh);
+        }
+        else if (ai.second.Documentation()) {
             Excel(xlfFwrite, fd, OPER(L"<None Include=\"") & ai.first & OPER(L".aml\" />\n"));
+            
+            topics.append(L"<Topic id=\"");
+            topics.append(make_guid(ai.second.FunctionText().to_string()));
+            topics.append(L"\" visible=\"True\" />");
+            
+            OPER fh = Excel(xlfFopen, dir & ai.second.FunctionText() & OPER(L".aml"), OPER(3));
+            ensure(fh.isNum());
+            write_function(fh, ai.second);
+            Excel(xlfFclose, fh);
         }
     }
+    fwrite(cl, OPER(topics));
+    Excel(xlfFwriteln, cl, OPER(L"</Topics>"));
+    Excel(xlfFclose, cl);
 
     fwrite(fd, Project);
 

@@ -339,6 +339,16 @@ namespace xll {
         {
             return type() == xltypeStr ? TRUE : FALSE;
         }
+        const std::wstring_view to_string_view() const
+        {
+            return std::wstring_view(val.str + 1, val.str[0]);
+        }
+        std::wstring to_string() const
+        {
+            const std::wstring_view& sv = to_string_view();
+
+            return std::wstring(sv.begin(), sv.end());
+        }
         /*
         OPER12& operator=(const XCHAR* str)
         {

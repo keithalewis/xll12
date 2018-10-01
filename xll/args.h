@@ -106,8 +106,15 @@ namespace xll {
 			args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(1);
 		}
+        /// Documentation
+        Args(xcstr _documentation)
+            : Args()
+        {
+            documentation = _documentation;
+            args[ARG::MacroType] = OPER(-1);
+        }
 
-		Args& ModuleText(const OPER12& moduleText)
+		Args& ModuleText(const OPER& moduleText)
 		{
 			args[ARG::ModuleText] = moduleText;
 
@@ -136,7 +143,7 @@ namespace xll {
 
 			return *this;
 		}
-		const OPER12& FunctionText() const
+		const OPER& FunctionText() const
 		{
 			return args[ARG::FunctionText];
 		}
@@ -148,7 +155,24 @@ namespace xll {
 
 			return *this;
 		}
-		/// Hide the name of the function from Excel.
+        bool isFunction() const
+        {
+            return args[ARG::MacroType] == 1;
+        }
+        bool isMacro() const
+        {
+            return args[ARG::MacroType] == 2;
+        }
+        bool isHidden() const
+        {
+            return args[ARG::MacroType] == 0;
+        }
+        bool isDocumentation() const
+        {
+            return args[ARG::MacroType] == -1; // special type
+        }
+
+        /// Hide the name of the function from Excel.
 		Args& Hidden()
 		{
 			return MacroType(0);
@@ -163,7 +187,7 @@ namespace xll {
 		/// Specify the shortcut text for calling the function.
 		Args& ShortcutText(XCHAR shortcutText)
 		{
-			args[ARG::ShortcutText] = OPER12(&shortcutText, 1);
+			args[ARG::ShortcutText] = OPER(&shortcutText, 1);
 
 			return *this;
 		}
@@ -182,7 +206,11 @@ namespace xll {
 
 			return *this;
 		}
-		/// Specify individual argument help in the Function Wizard.
+        const OPER& FunctionHelp() const
+        {
+            return args[ARG::FunctionHelp];
+        }
+        /// Specify individual argument help in the Function Wizard.
 		Args& ArgumentHelp(int i, xcstr argumentHelp)
 		{
 			ensure (i != 0);
@@ -198,10 +226,10 @@ namespace xll {
 		/// Add an individual argument.
 		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr, xcstr Default = nullptr)
 		{
-			OPER12& Type = args[ARG::TypeText];
+			OPER& Type = args[ARG::TypeText];
 			Type &= type;
 			
-			OPER12& Text = args[ARG::ArgumentText];
+			OPER& Text = args[ARG::ArgumentText];
 			if (Arity() > 1)
 				Text &= L", ";
 			Text &= text;
@@ -226,7 +254,7 @@ namespace xll {
 		}
 		int isThreadsafe()
 		{
-			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_THREAD_SAFE)).isNum();
+			return Excel(xlfFind, args[ARG::TypeText], OPER(XLL_THREAD_SAFE)).isNum();
 		}
 		Args& Uncalced()
 		{
@@ -236,7 +264,7 @@ namespace xll {
 		}
 		int isUncalced()
 		{
-			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_UNCALCED)).isNum();
+			return Excel(xlfFind, args[ARG::TypeText], OPER(XLL_UNCALCED)).isNum();
 		}
 		Args& Volatile()
 		{
@@ -246,7 +274,7 @@ namespace xll {
 		}
 		int isVolatile()
 		{
-			return Excel(xlfFind, args[ARG::TypeText], OPER12(XLL_VOLATILE)).isNum();
+			return Excel(xlfFind, args[ARG::TypeText], OPER(XLL_VOLATILE)).isNum();
 		}
 
 		/// Convenience function for number types.
@@ -288,19 +316,22 @@ namespace xll {
         }
 
 		/// Register an add-in function or macro
-		OPER12 Register() const
+		OPER Register() const
 		{
+            if (isDocumentation()) {
+                return OPER(1);
+            }
 			if (args[ARG::ModuleText].type() != xltypeStr)
 				args[ARG::ModuleText] = XlGetName();
 
-			OPER12 oResult = Excelv(xlfRegister, args);
+			OPER oResult = Excelv(xlfRegister, args);
 			if (oResult.isErr()) {
-				OPER12 oError(L"Failed to register: ");
+				OPER oError(L"Failed to register: ");
 				oError = Excel(xlfConcatenate, oError, args[ARG::FunctionText]);
-				oError = Excel(xlfConcatenate, oError, OPER12(L"/"));
+				oError = Excel(xlfConcatenate, oError, OPER(L"/"));
 				oError = Excel(xlfConcatenate, oError, args[ARG::Procedure]);
 				oError = Excel(xlfConcatenate, oError, 
-					OPER12(L"\nDid you forget to XLLEXPORT?")
+					OPER(L"\nDid you forget to #pragma XLLEXPORT?")
 				);
 				Excel(xlcAlert, oError);
 			}
@@ -316,6 +347,7 @@ namespace xll {
 	// semantic alias
 	using Function = Args;
 	using Macro = Args;
+    using Documentation = Args;
 	// backwards compatibility
 	using ArgsX = Args;
 	using FunctionX = Args;
@@ -326,7 +358,7 @@ namespace xll {
 
 	/// Array appropriate for xlfRegister.
 	/// Use like <c>Excelv(xlfRegister, Arguments(...))</c>
-	inline OPER12 Arguments(
+	inline OPER Arguments(
 		xcstr Procedure,        // C function
 		xcstr TypeText,         // return type and arg codes 
 		xcstr FunctionText,     // Excel function
@@ -347,25 +379,25 @@ namespace xll {
 		xcstr ArgumentHelp9 = 0
 	)
 	{
-		OPER12 args(Args::XlGetName());
-		args.push_back(OPER12(Procedure));
-		args.push_back(OPER12(TypeText));
-		args.push_back(OPER12(FunctionText));
-		args.push_back(OPER12(ArgumentText));
-		args.push_back(OPER12(MacroType));
-		args.push_back(OPER12(Category));
-		args.push_back(OPER12(ShortcutText));
-		args.push_back(OPER12(HelpTopic));
-		args.push_back(OPER12(FunctionHelp));
-		args.push_back(OPER12(ArgumentHelp1));
-		args.push_back(OPER12(ArgumentHelp2));
-		args.push_back(OPER12(ArgumentHelp3));
-		args.push_back(OPER12(ArgumentHelp4));
-		args.push_back(OPER12(ArgumentHelp5));
-		args.push_back(OPER12(ArgumentHelp6));
-		args.push_back(OPER12(ArgumentHelp7));
-		args.push_back(OPER12(ArgumentHelp8));
-		args.push_back(OPER12(ArgumentHelp9));
+		OPER args(Args::XlGetName());
+		args.push_back(OPER(Procedure));
+		args.push_back(OPER(TypeText));
+		args.push_back(OPER(FunctionText));
+		args.push_back(OPER(ArgumentText));
+		args.push_back(OPER(MacroType));
+		args.push_back(OPER(Category));
+		args.push_back(OPER(ShortcutText));
+		args.push_back(OPER(HelpTopic));
+		args.push_back(OPER(FunctionHelp));
+		args.push_back(OPER(ArgumentHelp1));
+		args.push_back(OPER(ArgumentHelp2));
+		args.push_back(OPER(ArgumentHelp3));
+		args.push_back(OPER(ArgumentHelp4));
+		args.push_back(OPER(ArgumentHelp5));
+		args.push_back(OPER(ArgumentHelp6));
+		args.push_back(OPER(ArgumentHelp7));
+		args.push_back(OPER(ArgumentHelp8));
+		args.push_back(OPER(ArgumentHelp9));
 
 		return args;
 	}

@@ -7,11 +7,14 @@ using namespace fms;
 
 AddIn xai_correlation(
     Function(XLL_HANDLE, L"?xll_correlation", L"CORRELATION")
-    .Arg(XLL_FP, L"rho", L"is an array of init vectors without their last component.")
+    .Arg(XLL_FP, L"rho", L"is an array of vectors without their last component.")
     .Arg(XLL_WORD, L"layout", L"is either CORRELATION_LOWER, or CORRELATION_PACKED")
     .Category(L"XLL")
     .FunctionHelp(L"Return a handle to a correlation object.")
     .Uncalced()
+    .Documentation(LR"(
+        Create a handle to a correlation object using an array of vectors.
+    )")
 );
 HANDLEX WINAPI xll_correlation(const _FP12* prho, fms::correlation<>::layout type)
 {

@@ -9,6 +9,7 @@ namespace xll {
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
     public:
+        // Map function text to args.
         static std::map<OPER12, Args>& map()
         {
             static std::map<OPER12, Args> map_;
