@@ -351,6 +351,15 @@ namespace xll {
 			if (args[ARG::ModuleText].type() != xltypeStr)
 				args[ARG::ModuleText] = XlGetName();
 
+//            OPER HelpTopic(L"file:///"); // html help file
+//            HelpTopic = HelpTopic & XlGetName();
+//            HelpTopic = Excel(xlfSubstitute, HelpTopic, OPER(L".xll"), OPER(L".chm!"));
+//            args[ARG::HelpTopic] = L"file:///C:/Users/kalx/source/repos/xll12/test/Debug/Help/html/c4189495-0000-0000-0000-00000000000.htm";
+            args[ARG::HelpTopic] 
+                = L"C:/Users/kalx/source/repos/xll12/test/Debug/Help/test.chm!3fb303e6-0000-0000-0000-00000000000";
+                //= L"file:///C:/Users/kalx/source/repos/xll12/test/Debug/Help\test.chm::/html/c4189495-0000-0000-0000-00000000000.htm";
+                //= L"file:///C:/Users/kalx/source/repos/xll12/test/Debug/Help/html/c4189495-0000-0000-0000-00000000000.htm";
+
 			OPER oResult = Excelv(xlfRegister, args);
 			if (oResult.isErr()) {
 				OPER oError(L"Failed to register: ");

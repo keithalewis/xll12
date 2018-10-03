@@ -15,7 +15,7 @@
     <RootNamespace>doc</RootNamespace>
     <Name>doc</Name>
     <!-- SHFB properties -->
-    <OutputPath>.\Help\</OutputPath>
+    <OutputPath>.\Help</OutputPath>
     <HtmlHelpName>{{Base}}</HtmlHelpName>
     <Language>en-US</Language>
     <ApiFilter />
