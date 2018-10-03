@@ -19,6 +19,9 @@
     <Filter Include="utility">
       <UniqueIdentifier>{247b7f30-3efd-46ba-b8fe-3dbc60ec8214}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shfb">
+      <UniqueIdentifier>{268191a5-f3ba-4acf-8ec3-499328a712a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xll\xll.h">
@@ -104,6 +107,9 @@
     <ClCompile Include="xll\doc.cpp">
       <Filter>utility</Filter>
     </ClCompile>
+    <ClCompile Include="xll\shfb\shfb.cpp">
+      <Filter>shfb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Visualizers\oper.natvis">
@@ -116,6 +122,18 @@
   <ItemGroup>
     <None Include="xll12.bat" />
     <None Include="LICENSE.md" />
+    <None Include="xll\shfb\template.shfbproj">
+      <Filter>shfb</Filter>
+    </None>
+    <None Include="xll\shfb\Content Layout.content">
+      <Filter>shfb</Filter>
+    </None>
+    <None Include="xll\shfb\Documentation.aml">
+      <Filter>shfb</Filter>
+    </None>
+    <None Include="xll\shfb\Function.aml">
+      <Filter>shfb</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

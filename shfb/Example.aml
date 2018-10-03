@@ -26,11 +26,9 @@
     <!-- <procedure>Optional procedures.  See How To document for procedure layout example.</procedure> -->
     <!-- <requirements>Optional requirements section</requirements> -->
     <!-- <demonstrates>Optional info about what is demonstrated</demonstrates> -->
-    <!--
     <codeExample>
       <code source="../test/sample.cpp" numberLines="true" />
     </codeExample>
-	-->
     <!-- Add one or more top-level section elements.  These are collapsible.
          If using <autoOutline />, add an address attribute to identify it
          and specify a title so that it can be jumped to with a hyperlink. -->
@@ -43,14 +41,11 @@
           Let's go through it line by line.
         </para>
         <para>
-          Line 1 is the C++ way to include the C library functions from <codeInline>math.h</codeInline>. Remove
-          the <codeInline>.h</codeInline> and prepend a <codeInline>c</codeInline>.
-        </para>
-        <para>
           Line 2 pulls in everything you need to create an Excel add-in.
         </para>
         <para>
           Line 4 saves you the trouble of typing <codeInline>xll::</codeInline>
+            in front of the names of things.
         </para>
         <para>
           Line 6 is where the real action starts. When your add-in is opened
@@ -59,12 +54,10 @@
           to people that need to understand what your code does.
         </para>
         <para>
-          Line 7 is where you can decide to create a <codeInline>Function</codeInline>,
-          <codeInline>Macro</codeInline>, or <codeInline>Document</codeInline>.
-          In this case it is a function that returns a <codeInline>LPOPER</codeInline>
-          (which is just a pointer to an <codeInline>OPER</codeInline>), tells
-          Excel the C++ name of your function, and what you want Excel to call it.
-          <codeInline>OPER</codeInline>s are C++ objects that represent a cell or range of cells.
+          Line 7 is where you create a <codeInline>Function</codeInline>.
+          The function returns a <codeInline>double</codeInline>,
+          calls the C++ function <codeInline>xll_double</codeInline>
+          when you enter <codeInline>=XLL.DOUBLE</codeInline> in Excel.
         </para>
         <para>
           You can specify the arguments your function takes using the
@@ -74,28 +67,28 @@
             <linkTarget>_blank</linkTarget>
           </externalLink>.
 
-          Line 8 indicates the first argument is a floating point number. In the function
-          wizard it will be called "Number" and the individual argument help will be
-          "is a floating point number." These strings can be anything, so use your imagination
-          to come up with something your users will find helpful. Another way to say this
-          is <codeInline>.Arg(XLL_DOUBLE, "Number", "is a number.")</codeInline>. Intellisense will
-          help you with the various types <codeInline>OPER</codeInline>'s can have.
+          Line 8 indicates the first argument is a 64-bit floating point number. In the function
+          wizard it will be called "x" and the individual argument help will be
+          "is the number to double." These strings can be anything, so use your imagination
+          to come up with something that your users will find helpful.
         </para>
         <para>
-          Lines 9 and 10 determine what will show up in the Function Wizard.
+          Line 9 is a short description of what your functions does and 
+          line 10 specifies the category to use in the Function Wizard.
         </para>
-        <!--           <code source="../xll/args.h" region="OPER_types" /> -->
+          <para>Notice how the AddIn arguments appear in the Function Wizard:</para>
         <mediaLink>
           <image xlink:href="FunctionWizard"/>
         </mediaLink>
 
         <para>
-          Line 12 says the function returns a pointer to an <codeInline>OPER</codeInline>.
-          <codeInline>LP</codeInline> is Microsoft speak for "long pointer" but it is
-          the same as <codeInline>OPER*</codeInline>. You know
-          what a pointer is and don't need to know about "long", "far", and "near"
-          pointers unless you are writing code to run on a 386 running a 16-bit version
-          of the Windows operating system.
+          Line 12 says the function returns a <codeInline>double</codeInline>,
+            uses an old-fashioned
+            <externalLink>
+                <linkText>calling convention</linkText>
+                <linkUri>https://docs.microsoft.com/en-us/cpp/cpp/calling-conventions?view=vs-2017</linkUri>
+            </externalLink>
+            , and begins the definition of the C++ function Excel will call.
           Be sure to put <codeInline>WINAPI</codeInline> between the return
           type and the function name. If you forget there will be no warning and your
           code will mysteriously fail at random times.

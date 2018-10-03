@@ -54,11 +54,8 @@
           asynchronous functions.
         </para>
         <para>
-          You can also generate documentation integrated
-          with Excel help using the same tool Microsoft uses. If you want
-          someone else to benefit from your handiwork just give them the add-in,
-          help file, and workbooks you create for a portable and professional
-          solution.
+          Use this library to create an add-in and help file documenting how
+          to use your handiwork.
         </para>
         <para>
             <link xlink:href="d7e05719-f06e-4480-8f4a-e3ce3aeef4e0">Get started</link>!

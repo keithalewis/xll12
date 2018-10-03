@@ -41,7 +41,13 @@ namespace xll {
 		}
 		static int Call(void)
 		{
-			return all_of(begin(macros()), end(macros()), [](const macro& m) { return m(); });
+            for (const auto& m : macros()) {
+                if (!m()) {
+                    return FALSE;
+                }
+            }
+
+            return TRUE;
 		}
 	private:
 		static std::vector<macro>& macros(void)

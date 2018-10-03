@@ -14,7 +14,7 @@ template<class X>
 int Auto_(const char* caption)
 {
 	try {
-		ensure (Auto<X>::Call());
+		Auto<X>::Call();
 	}
 	catch (const std::exception& ex) {
 		MessageBoxA(GetActiveWindow(), ex.what(), caption, MB_OK);

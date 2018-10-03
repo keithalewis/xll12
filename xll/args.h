@@ -341,6 +341,9 @@ namespace xll {
         /// Unregister and add-in function or macro
         int Unregister() const
         {
+            if (isDocumentation())
+                return TRUE;
+
             return Excel(xlfUnregister, RegisterId()) == true;
         }
 	};

@@ -209,6 +209,7 @@
     <ClCompile Include="xll\doc.cpp" />
     <ClCompile Include="xll\error.cpp" />
     <ClCompile Include="xll\oper.cpp" />
+    <ClCompile Include="xll\shfb\shfb.cpp" />
     <ClCompile Include="xll\XLCALL.CPP" />
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +221,14 @@
   <ItemGroup>
     <None Include="LICENSE.md" />
     <None Include="xll12.bat" />
+    <None Include="xll\shfb\Content Layout.content">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xll\shfb\Documentation.aml" />
+    <None Include="xll\shfb\Function.aml" />
+    <None Include="xll\shfb\template.shfbproj">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

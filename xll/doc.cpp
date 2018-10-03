@@ -31,7 +31,7 @@ namespace {
 }
 
 // guids based on strings
-std::wstring make_guid(const std::wstring& s)
+inline std::wstring make_guid(const std::wstring& s)
 {
     wchar_t buf[32+4+1];
 
@@ -287,7 +287,7 @@ xll_make_doc(void)
 
     return TRUE;
 }
-Auto<Open> xao_make_doc(xll_make_doc);
+//Auto<Open> xao_make_doc(xll_make_doc);
 /*
 FUNCTION function
 
