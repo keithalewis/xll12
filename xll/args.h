@@ -223,7 +223,30 @@ namespace xll {
 
 			return *this;
 		}
-		/// Add an individual argument.
+        const OPER& ArgumentHelp(int i) const
+        {
+            return args[ARG::ArgumentHelp + i - 1];
+        }
+        OPER ArgumentText(int i) const
+        {
+            if (i > Arity()) {
+                return OPER(xlerr::NA);
+            }
+
+            xcstr str = args[ARG::ArgumentText].val.str;
+            std::wstring_view text(str + 1, str[0]);
+            size_t b = 0, e = std::wstring_view::npos;
+            while (i--) {
+                e = text.find_first_of(L',', b);
+                if (i) {
+                    b = e + 2;
+                }
+            }
+            auto arg = text.substr(b, e);
+
+            return OPER(arg.data(), arg.size());
+        }
+        /// Add an individual argument.
 		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr, xcstr Default = nullptr)
 		{
 			OPER& Type = args[ARG::TypeText];
@@ -313,6 +336,10 @@ namespace xll {
         xcstr Examples() const
         {
             return examples;
+        }
+        OPER Syntax() const
+        {
+            return FunctionText() & OPER(L"(") & args[ARG::ArgumentText] & OPER(L")");
         }
 
 		/// Register an add-in function or macro

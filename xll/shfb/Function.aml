@@ -17,7 +17,7 @@ LR"shfb(<?xml version="1.0" encoding="utf-8"?>
            zero (0) to limit it to top-level sections only.  -->
       <!-- <autoOutline /> -->
 
-      <para>{{FunctionText}} function</para>
+      <para>{{FunctionHelp}}</para>
     </introduction>
 
     <!-- Add one or more top-level section elements.  These are collapsible.
@@ -34,18 +34,8 @@ LR"shfb(<?xml version="1.0" encoding="utf-8"?>
       <content>
         <!-- Uncomment this to create a sub-section outline
         <autoOutline /> -->
-        <para>FUNCTION(arg1, arg2)</para>
-        <list class="bullet">
-          <listItem>
-            <para>
-              <legacyBold>Arg1</legacyBold> is the first argument.
-            </para>
-          </listItem>
-          <listItem>
-            <para>
-              <legacyBold>Arg2</legacyBold> is the second argument.
-            </para>
-          </listItem>
+        <para>{{Syntax}}</para>
+        <list class="bullet">{{ListItems}}
         </list>
       </content>
     </section>

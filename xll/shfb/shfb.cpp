@@ -112,6 +112,7 @@ OPER template_shfbproj(const OPER& base)
     OPER tp(
 #include "template.shfbproj"
     );
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{Base}}"), base);
     //<None Include = "Reference\FUNCTION.aml" / >
     OPER Pre = OPER(L"\n    <None Include=\"");
     OPER Post = OPER(L".aml\" />");
@@ -134,10 +135,9 @@ OPER documentation_aml(const OPER& name, const Args& args)
 
     OPER TopicId = OPER(make_guid(name.to_string()));
     da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), TopicId);
-    Args a;
-    a = args;
-//    da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), args.Documentation());
-//    da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), args.Documentation());
+    if (args.Documentation()) {
+        da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
+    }
 
     return da;
 }
@@ -150,7 +150,38 @@ OPER function_aml(const OPER& name, const Args& args)
 
     OPER TopicId = OPER(make_guid(name.to_string()));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), TopicId);
-    auto a = args;
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{FunctionHelp}}"), args.FunctionHelp());
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{Syntax}}"), args.Syntax());
+    
+    OPER ListItems;
+    OPER Pre(L"\n    <listItem><para>");
+    OPER Post(L"\n    </para></listItem>");
+    auto Bold = [](const OPER& arg) { return OPER(L"      <legacyBold>") & arg & OPER(L"</legacyBold>"); };
+    for (int i = 1; i <= args.Arity(); ++i) {
+        ListItems = ListItems & Pre
+            & Bold(args.ArgumentText(i)) & OPER(L" ") & args.ArgumentHelp(i) & Post;
+    }
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{ListItems}}"), ListItems);
+    if (args.Remarks()) {
+        OPER Remarks(L"<section address=\"Remarks\"><title>Remarks</title><content><para>");
+        Remarks.append(args.Remarks());
+        Remarks = Remarks & OPER(L"</para></content></section>");
+        fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), Remarks);
+    }
+    else {
+        fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), OPER(L""));
+    }
+    if (args.Examples()) {
+        OPER Examples(L"<section address=\"Examples\"><title>Examples</title><content><para>");
+        Examples.append(args.Examples());
+        Examples = Examples & OPER(L"</para></content></section>");
+        fa = Excel(xlfSubstitute, fa, OPER(L"{{Examples}}"), Examples);
+    }
+    else {
+        fa = Excel(xlfSubstitute, fa, OPER(L"{{Examples}}"), OPER(L""));
+    }
+
 
     return fa;
 }

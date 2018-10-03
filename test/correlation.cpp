@@ -5,10 +5,15 @@
 using namespace xll;
 using namespace fms;
 
+XLL_ENUM_DOC(fms::correlation<>::layout::lower, CORRELATION_LOWER, L"XLL", 
+    L"Lower rectangular correlation matrix", L"DOC");
+XLL_ENUM_DOC(fms::correlation<>::layout::packed, CORRELATION_PACKED, L"XLL", 
+    L"Packed correlation matrix", L"DOC");
+
 AddIn xai_correlation(
     Function(XLL_HANDLE, L"?xll_correlation", L"CORRELATION")
     .Arg(XLL_FP, L"rho", L"is an array of vectors without their last component.")
-    .Arg(XLL_WORD, L"layout", L"is either CORRELATION_LOWER, or CORRELATION_PACKED")
+    .Arg(XLL_WORD, L"layout", L"is either CORRELATION_LOWER(), or CORRELATION_PACKED()")
     .Category(L"XLL")
     .FunctionHelp(L"Return a handle to a correlation object.")
     .Uncalced()

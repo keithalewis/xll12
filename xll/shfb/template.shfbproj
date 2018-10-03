@@ -16,13 +16,11 @@
     <Name>doc</Name>
     <!-- SHFB properties -->
     <OutputPath>.\Help\</OutputPath>
-    <HtmlHelpName>xll12</HtmlHelpName>
+    <HtmlHelpName>{{Base}}</HtmlHelpName>
     <Language>en-US</Language>
     <ApiFilter />
     <ComponentConfigurations />
-    <DocumentationSources>
-      <DocumentationSource sourceFile="..\xll.vcxproj" />
-    </DocumentationSources>
+    <DocumentationSources />
     <HelpAttributes />
     <NamespaceSummaries />
     <PlugInConfigurations>
@@ -53,7 +51,7 @@
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
     <NamingMethod>Guid</NamingMethod>
-    <HelpTitle>The xll12 add-in library</HelpTitle>
+    <HelpTitle>The {{Base}} add-in library</HelpTitle>
     <FeedbackEMailAddress>info%40kalx.net</FeedbackEMailAddress>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <HelpFileVersion>1.0.0.0</HelpFileVersion>
