@@ -20,6 +20,7 @@ inline OPER fwrite(const OPER& file, const OPER& text)
     return Excel(xlfFwrite, file, Excel(xlfMid, text, start, len));
 }
 
+// Read one line at a time.
 inline OPER fread(const OPER& file)
 {
     OPER fd = Excel(xlfFopen, file, OPER(3));
@@ -75,13 +76,6 @@ inline std::wstring make_guid(const std::wstring& s)
 
     return std::wstring(buf);
 }
-
-// Create a function documentation file.
-/*
-void make_function(const OPER& name, const Args& args)
-{
-}
-*/
 
 OPER content_layout(const OPER& base)
 {

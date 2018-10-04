@@ -346,29 +346,23 @@ namespace xll {
 		OPER Register() const
 		{
             if (isDocumentation()) {
-                return OPER(1);
+                return OPER(1); // Do not register if documentation only.
             }
-			if (args[ARG::ModuleText].type() != xltypeStr)
-				args[ARG::ModuleText] = XlGetName();
 
-//            OPER HelpTopic(L"file:///"); // html help file
-//            HelpTopic = HelpTopic & XlGetName();
-//            HelpTopic = Excel(xlfSubstitute, HelpTopic, OPER(L".xll"), OPER(L".chm!"));
-//            args[ARG::HelpTopic] = L"file:///C:/Users/kalx/source/repos/xll12/test/Debug/Help/html/c4189495-0000-0000-0000-00000000000.htm";
-            args[ARG::HelpTopic] 
-                = L"C:/Users/kalx/source/repos/xll12/test/Debug/Help/test.chm!3fb303e6-0000-0000-0000-00000000000";
-                //= L"file:///C:/Users/kalx/source/repos/xll12/test/Debug/Help\test.chm::/html/c4189495-0000-0000-0000-00000000000.htm";
-                //= L"file:///C:/Users/kalx/source/repos/xll12/test/Debug/Help/html/c4189495-0000-0000-0000-00000000000.htm";
+            OPER name = XlGetName();
+            args[ARG::ModuleText] = name;
+            
+            // !!!Should be .chm!topicId
+            OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!0"));
+            args[ARG::HelpTopic] = chm;
 
 			OPER oResult = Excelv(xlfRegister, args);
 			if (oResult.isErr()) {
 				OPER oError(L"Failed to register: ");
-				oError = Excel(xlfConcatenate, oError, args[ARG::FunctionText]);
-				oError = Excel(xlfConcatenate, oError, OPER(L"/"));
-				oError = Excel(xlfConcatenate, oError, args[ARG::Procedure]);
-				oError = Excel(xlfConcatenate, oError, 
-					OPER(L"\nDid you forget to #pragma XLLEXPORT?")
-				);
+				oError = oError & args[ARG::FunctionText];
+				oError = oError & OPER(L"/");
+				oError = oError & args[ARG::Procedure];
+                oError = oError & OPER(L"\nDid you forget to #pragma XLLEXPORT?");
 				Excel(xlcAlert, oError);
 			}
 
