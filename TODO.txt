@@ -1,3 +1,37 @@
 Add #defines for XLL_DOUBLE12/X
 What to do with _T?
 
+Need to add to Help1x.hpp template?
+It is possible to create build process add-ins for Sandcastle.
+
+http://www.helpware.net/FAR/help/dlg_hhpedit_sec.htm#MAP
+Example MAP and ALIAS section
+[ALIAS]
+IDH_HomePage=default.htm
+IDH_TestTopic1=htmlfiles\testtopic1.htm
+IDH_TestTopic2=mychm::htmlfiles\testtopic2.htm
+
+[MAP]
+#define IDH_HomePage 1000     ;comment
+#define IDH_TestTopic1 1001
+#define IDH_TestTopic2 1002
+Example MAP and ALIAS section using #include statements
+
+;Use the #include statement to include an external header file at compile time.
+[ALIAS]
+;#include myhelp.ali
+#include ..\..\..\..\alias.txt
+
+[MAP]
+;#include myhelp.h
+#include ..\..\..\..\map.h
+
+where myhelp.ali is a text file containing
+   IDH_HomePage=default.htm
+   IDH_TestTopic1=htmlfiles\testtopic1.htm
+   IDH_TestTopic2=mychm::htmlfiles\testtopic2.htm
+and myhelp.h is a text file containing
+   #define IDH_HomePage 1000
+   #define IDH_TestTopic1 1001
+   #define IDH_TestTopic2 1002
+
