@@ -359,10 +359,10 @@ namespace xll {
 			OPER oResult = Excelv(xlfRegister, args);
 			if (oResult.isErr()) {
 				OPER oError(L"Failed to register: ");
-				oError = oError & args[ARG::FunctionText];
-				oError = oError & OPER(L"/");
-				oError = oError & args[ARG::Procedure];
-                oError = oError & OPER(L"\nDid you forget to #pragma XLLEXPORT?");
+				oError &= args[ARG::FunctionText];
+				oError &= L"/";
+				oError &= args[ARG::Procedure];
+                oError &= L"\nDid you forget to #pragma XLLEXPORT?";
 				Excel(xlcAlert, oError);
 			}
 

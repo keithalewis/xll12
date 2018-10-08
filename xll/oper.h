@@ -382,12 +382,11 @@ namespace xll {
         {
             return append(str.data(), str.length());
         }
-        /*
         OPER12& operator&=(const OPER12& o)
         {
-            return *this = Excel(xlfConcatenate, *this, o);
+            ensure(o.xltype & xltypeStr);
+            return append(o.val.str + 1, o.val.str[0]);
         }
-        */
         /*
         bool operator==(const XCHAR* str) const
         {
