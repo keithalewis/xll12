@@ -66,6 +66,22 @@ inline OPER dirname(const OPER& path)
     return Excel(xlfLeft, path, off);
 }
 
+inline OPER idh_safename(OPER x)
+{
+    for (int i = 1; i <= x.val.str[0]; ++i)
+        if (!iswalnum(x.val.str[i]))
+            x.val.str[i] = '_';
+
+    return x;
+}
+
+inline size_t make_hash(const std::wstring& s)
+{
+    std::hash<std::wstring> hash;
+
+    return hash(s);
+}
+
 // guids based on strings
 inline std::wstring make_guid(const std::wstring& s)
 {
@@ -157,7 +173,7 @@ OPER function_aml(const OPER& name, const Args& args)
             & Bold(args.ArgumentText(i)) & OPER(L" ") & args.ArgumentHelp(i) & Post;
     }
     fa = Excel(xlfSubstitute, fa, OPER(L"{{ListItems}}"), ListItems);
-    if (args.Remarks()) {
+    if (args.Remarks() && *args.Remarks()) {
         OPER Remarks(L"<section address=\"Remarks\"><title>Remarks</title><content><para>");
         Remarks.append(args.Remarks());
         Remarks = Remarks & OPER(L"</para></content></section>");
@@ -166,10 +182,10 @@ OPER function_aml(const OPER& name, const Args& args)
     else {
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), OPER(L""));
     }
-    if (args.Examples()) {
+    if (args.Examples() && *args.Examples()) {
         OPER Examples(L"<section address=\"Examples\"><title>Examples</title><content><para>");
-        Examples.append(args.Examples());
-        Examples = Examples & OPER(L"</para></content></section>");
+        Examples &= args.Examples();
+        Examples &= L"</para></content></section>";
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Examples}}"), Examples);
     }
     else {
@@ -180,10 +196,19 @@ OPER function_aml(const OPER& name, const Args& args)
     return fa;
 }
 
+OPER alias_txt(const OPER& name, const Args& args)
+{
+}
+
+OPER map_h(const OPER& name, const Args& args)
+{
+}
+
+//!!! turn the Fopen - Fclose into an RAII class
 void make_shfb(const OPER& lib)
 {
     OPER dir = dirname(lib);
-    OPER base = basename(lib, true);
+    OPER base = basename(lib, true); // strip off .xll
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
 
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
@@ -213,6 +238,13 @@ void make_shfb(const OPER& lib)
             fwrite(tp, function_aml(args.first, args.second));
             Excel(xlfFclose, tp);
         }
+        OPER at = Excel(xlfFopen, dir & OPER(L"alias.txt"), OPER(3));
+        ensure(at.isNum());
+        for (const auto& args : AddIn::map()) {
+            Excel(xlfFwrite, at, OPER(L"IDH_"));
+            Excel(xlfFwrite, at, )
+        }
+        Excel(xlfFclose, at);
     }
 }
 
