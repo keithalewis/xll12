@@ -1,4 +1,5 @@
 // shfb.cpp - Sandcastle Help File Builder
+#include <string>
 #include "../xll.h"
 
 using namespace xll;
@@ -170,7 +171,7 @@ OPER function_aml(const OPER& name, const Args& args)
     auto Bold = [](const OPER& arg) { return OPER(L"      <legacyBold>") & arg & OPER(L"</legacyBold>"); };
     for (int i = 1; i <= args.Arity(); ++i) {
         ListItems = ListItems & Pre
-            & Bold(args.ArgumentText(i)) & OPER(L" ") & args.ArgumentHelp(i) & Post;
+            & Bold(args.ArgumentName(i)) & OPER(L" ") & args.ArgumentHelp(i) & Post;
     }
     fa = Excel(xlfSubstitute, fa, OPER(L"{{ListItems}}"), ListItems);
     if (args.Remarks() && *args.Remarks()) {
@@ -192,16 +193,32 @@ OPER function_aml(const OPER& name, const Args& args)
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Examples}}"), OPER(L""));
     }
 
-
     return fa;
 }
 
-OPER alias_txt(const OPER& name, const Args& args)
+inline OPER alias_txt(const OPER& topic)
 {
+    std::wstring s = topic.to_string();
+
+    OPER at(L"IDH_");
+    at &= topic;
+    at &= L"=html\\";
+    at &= OPER(make_guid(s));
+    at &= L".htm";
+
+    return at;
 }
 
-OPER map_h(const OPER& name, const Args& args)
+inline OPER map_h(const OPER& topic)
 {
+    std::wstring s = topic.to_string();
+
+    OPER mh(L"#define IDH_");
+    mh &= topic;
+    mh &= L" ";  
+    mh &= std::to_wstring(make_hash((s)));
+
+    return mh;
 }
 
 //!!! turn the Fopen - Fclose into an RAII class
@@ -224,30 +241,33 @@ void make_shfb(const OPER& lib)
     fwrite(tp, template_shfbproj(base));
     Excel(xlfFclose, tp);
 
+    OPER at = Excel(xlfFopen, dir & OPER(L"alias.txt"), OPER(3));
+    ensure(at.isNum());
+    OPER mh = Excel(xlfFopen, dir & OPER(L"map.h"), OPER(3));
+    ensure(mh.isNum());
     for (const auto& args : AddIn::map()) {
-        if (args.second.isDocumentation()) {
-            ensure(args.first == base);
-            OPER fd = Excel(xlfFopen, dir & args.first & OPER(L".aml"), OPER(3));
-            ensure(tp.isNum());
-            fwrite(tp, documentation_aml(args.first, args.second));
-            Excel(xlfFclose, tp);
+        if (args.second.Documentation() && *args.second.Documentation()) {
+            if (args.second.isDocumentation()) {
+                ensure(args.first == base);
+                OPER fd = Excel(xlfFopen, dir & args.first & OPER(L".aml"), OPER(3));
+                ensure(fd.isNum());
+                fwrite(fd, documentation_aml(args.first, args.second));
+                Excel(xlfFclose, fd);
+            }
+            else if (args.second.isFunction()) {
+                OPER fd = Excel(xlfFopen, dir & args.first & OPER(L".aml"), OPER(3));
+                ensure(fd.isNum());
+                fwrite(fd, function_aml(args.first, args.second));
+                Excel(xlfFclose, fd);
+            }
+            Excel(xlfFwriteln, at, alias_txt(args.first));
+            Excel(xlfFwriteln, mh, map_h(args.first));
         }
-        else if (args.second.Documentation() && args.second.isFunction()) {
-            OPER fd = Excel(xlfFopen, dir & args.first & OPER(L".aml"), OPER(3));
-            ensure(tp.isNum());
-            fwrite(tp, function_aml(args.first, args.second));
-            Excel(xlfFclose, tp);
-        }
-        OPER at = Excel(xlfFopen, dir & OPER(L"alias.txt"), OPER(3));
-        ensure(at.isNum());
-        for (const auto& args : AddIn::map()) {
-            Excel(xlfFwrite, at, OPER(L"IDH_"));
-            Excel(xlfFwrite, at, )
-        }
-        Excel(xlfFclose, at);
     }
+    Excel(xlfFclose, at);
+    Excel(xlfFclose, mh);
 }
-
+ 
 static AddIn xai_make_shfb(
     Macro(XLL_DECORATE(L"xll_make_shfb", 0), L"XLL.MAKE.SHFB")
 );

@@ -19,7 +19,7 @@ namespace xll {
 		ShortcutText, // single character for Ctrl-Shift-char shortcut
 		HelpTopic,    // filepath!HelpContextID or http://host/path!0
 		FunctionHelp, // for function wizard
-		ArgumentHelp, // 1-base index
+		ArgumentHelp, // 1-based index
 	};
 
 	using xcstr = const XCHAR*;
@@ -27,7 +27,8 @@ namespace xll {
 	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
 		mutable OPER12 args;
-        OPER12 ArgumentDefault;
+        OPER12 ArgumentName_;
+        OPER12 ArgumentDefault_;
         xcstr documentation = nullptr;
         xcstr remarks = nullptr;
         xcstr examples = nullptr;
@@ -43,33 +44,17 @@ namespace xll {
 
 			return hModule;
 		}
+		
 		/// <summary>Number of function arguments</summary>
-		/// Detect the number of arguments based on the type text of a function.
-		static int Arity(const OPER12& tt)
+		auto Arity() const
 		{
-			int arity = 0;
-
-			if (tt.type() == xltypeStr)
-			{
-				XCHAR* b = tt.val.str + 1;
-				XCHAR* e = b + tt.val.str[0];
-				arity = static_cast<int>(std::count_if(b, e, 
-					[](const XCHAR& c) { return L'A' <= c && c <= L'U'; }
-				));
-				--arity; // don't count return value
-			}
-
-			return arity;
-		}
-		/// <summary>Number of function arguments</summary>
-		int Arity() const
-		{
-			return Arity(args[ARG::TypeText]);
+			return ArgumentName_.size();
 		}
 		OPER12 RegisterId() const
 		{
-			return Excel(xlfEvaluate, Excel(xlfConcatenate, OPER12(L"="), args[ARG::FunctionText]));
-		}
+			//return Excel(xlfEvaluate, Excel(xlfConcatenate, OPER12(L"="), args[ARG::FunctionText]));
+            return Excel(xlfEvaluate, args[ARG::FunctionText]);
+        }
 		/// For use as Excelv(xlfRegister, Args(....))
 		operator const OPER12&() const
 		{
@@ -128,6 +113,10 @@ namespace xll {
 
 			return *this;
 		}
+        const OPER& Procedure() const
+        {
+            return args[ARG::Procedure];
+        }
 
 		/// Specify the return type and argument types of the function.
 		Args& TypeText(xcstr typeText)
@@ -227,27 +216,16 @@ namespace xll {
         {
             return args[ARG::ArgumentHelp + i - 1];
         }
-        OPER ArgumentText(int i) const
+        OPER ArgumentName(int i) const
         {
             if (i > Arity()) {
                 return OPER(xlerr::NA);
             }
 
-            xcstr str = args[ARG::ArgumentText].val.str;
-            std::wstring_view text(str + 1, str[0]);
-            size_t b = 0, e = std::wstring_view::npos;
-            while (i--) {
-                e = text.find_first_of(L',', b);
-                if (i) {
-                    b = e + 2;
-                }
-            }
-            auto arg = text.substr(b, e);
-
-            return OPER(arg.data(), arg.size());
+            return ArgumentName_[i];
         }
         /// Add an individual argument.
-		Args& Arg(xcstr type, xcstr text, xcstr helpText = nullptr, xcstr Default = nullptr)
+		Args& Arg(xcstr type, xcstr name, xcstr helpText = nullptr, xcstr Default = nullptr)
 		{
 			OPER& Type = args[ARG::TypeText];
 			Type &= type;
@@ -255,15 +233,17 @@ namespace xll {
 			OPER& Text = args[ARG::ArgumentText];
 			if (Arity() > 1)
 				Text &= L", ";
-			Text &= text;
+			Text &= name;
+
+            ArgumentName_.push_back(OPER(name));
 			
             auto n = Arity();
 			if (helpText && *helpText) {
 				ArgumentHelp(n, helpText);
             }
             if (Default && *Default) {
-                ArgumentDefault.resize(n+1,1);
-                ArgumentDefault[n] = Default;
+                ArgumentDefault_.resize(n+1,1);
+                ArgumentDefault_[n] = Default;
             }
 
 			return *this;
@@ -301,9 +281,9 @@ namespace xll {
 		}
 
 		/// Convenience function for number types.
-		Args& Num(xcstr text, xcstr helpText = nullptr)
+		Args& Num(xcstr name, xcstr helpText = nullptr)
 		{
-			return Arg(XLL_DOUBLE, text, helpText);
+			return Arg(XLL_DOUBLE, name, helpText);
 		}
 		// Str ...
 
@@ -362,8 +342,9 @@ namespace xll {
 				oError &= args[ARG::FunctionText];
 				oError &= L"/";
 				oError &= args[ARG::Procedure];
-                oError &= L"\nDid you forget to #pragma XLLEXPORT?";
-				Excel(xlcAlert, oError);
+                oError &= L"\nDid you forget to #pragma XLLEXPORT a function?";
+				
+                Excel(xlcAlert, oError);
 			}
 
 			return oResult;
