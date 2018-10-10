@@ -222,7 +222,7 @@ namespace xll {
                 return OPER(xlerr::NA);
             }
 
-            return ArgumentName_[i];
+            return ArgumentName_[i - 1];
         }
         /// Add an individual argument.
 		Args& Arg(xcstr type, xcstr name, xcstr helpText = nullptr, xcstr Default = nullptr)

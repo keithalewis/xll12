@@ -468,7 +468,15 @@ namespace xll {
         }
         int size() const
         {
-            return type() == xltypeStr ? val.str[0] : rows() * columns();
+            switch (type()) {
+                case xltypeMissing:
+                case xltypeNil:
+                    return 0;
+                case xltypeStr:
+                    return val.str[0];
+                default:
+                    return rows() * columns();
+            }
         }
         OPER12* begin() // xltypeStr???
         {

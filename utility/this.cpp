@@ -9,9 +9,11 @@ static AddIn xai_this(
     .Uncalced()
 	.Category(L"XLL")
 	.FunctionHelp(L"Return the contents of the calling cell.")
+    /*
 	.Documentation(
 		L"The contents are the last calculated value for the cell."
 	)
+    */
 );
 extern "C" __declspec(dllexport) LPXLOPER12 WINAPI
 xll_this(void)

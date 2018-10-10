@@ -208,6 +208,8 @@
     <ClCompile Include="xll\dllmain.cpp" />
     <ClCompile Include="xll\doc.cpp" />
     <ClCompile Include="xll\error.cpp" />
+    <ClCompile Include="xll\GetWorkbook.cpp" />
+    <ClCompile Include="xll\GetWorkspace.cpp" />
     <ClCompile Include="xll\oper.cpp" />
     <ClCompile Include="xll\shfb\shfb.cpp" />
     <ClCompile Include="xll\XLCALL.CPP" />
