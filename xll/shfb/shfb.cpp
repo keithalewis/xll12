@@ -76,42 +76,26 @@ inline OPER idh_safename(OPER x)
     return x;
 }
 
-inline size_t make_hash(const std::wstring& s)
-{
-    std::hash<std::wstring> hash;
 
-    return hash(s);
-}
-
-// guids based on strings
-inline std::wstring make_guid(const std::wstring& s)
-{
-    wchar_t buf[32 + 4 + 1];
-
-    std::hash<std::wstring> hash;
-    swprintf(buf, 36, L"%08zx-0000-0000-0000-000000000000", hash(s));
-
-    return std::wstring(buf);
-}
-
-OPER content_layout(const OPER& base)
+OPER content_layout(const Args& args)
 {
     OPER cl(
 #include "Content Layout.content"
     );
 
-    OPER TopicGUID = OPER(make_guid(base.to_string()));
-    cl = Excel(xlfSubstitute, cl, OPER(L"{{TopicGUID}}"), TopicGUID);
+    cl = Excel(xlfSubstitute, cl, OPER(L"{{TopicGUID}}"), args.Guid());
 
     OPER Topics;
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
-    OPER Pre(L"\n    <Topic id=\"");
-    OPER Post(L"\" visible=\"true\" />");
-    for (const auto& args : AddIn::map()) {
-        if (args.second.Documentation() && args.second.isFunction()) {
-            auto guid = make_guid(args.first.to_string());
-            OPER GUID(guid.data(), guid.length());
-            Topics = Topics & Pre & GUID & Post;
+    for (const auto& arg : AddIn::map()) {
+        if (arg.second.Documentation() && arg.second.isFunction()) {
+            Topics &= L"\n    <Topic id=\"";
+            Topics &= arg.second.Guid();
+            Topics &= L"\" visible=\"true\" title=\"";
+            Topics &= arg.second.FunctionText();
+            Topics &= L" function\" tocTitle=\"";
+            Topics &= arg.second.FunctionText();
+            Topics &= L"\" />";
         }
     }
     cl = Excel(xlfSubstitute, cl, OPER(L"{{Topics}}"), Topics);
@@ -129,8 +113,15 @@ OPER template_shfbproj(const OPER& base)
     OPER Post = OPER(L".aml\" />");
     OPER ItemGroup = Pre & base & Post;
     for (const auto& args : AddIn::map()) {
-        if (args.second.Documentation() && args.second.isFunction())  {
-            ItemGroup = ItemGroup & Pre & args.first & Post;
+        if (args.second.Documentation() && *args.second.Documentation()) {
+            OPER name;
+            if (args.second.isDocumentation()) {
+                name = base;
+            }
+            else if (args.second.isFunction()) {
+                name = args.second.Guid();
+            }
+            ItemGroup = ItemGroup & Pre & name & Post;
         }
     }
     tp = Excel(xlfSubstitute, tp, OPER(L"{{ItemGroup}}"), ItemGroup);
@@ -138,14 +129,13 @@ OPER template_shfbproj(const OPER& base)
     return tp;
 }
 
-OPER documentation_aml(const OPER& name, const Args& args)
+OPER documentation_aml(const Args& args)
 {
     OPER da(
 #include "Documentation.aml"
     );
 
-    OPER TopicId = OPER(make_guid(name.to_string()));
-    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), TopicId);
+    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), args.Guid());
     if (args.Documentation()) {
         da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     }
@@ -153,14 +143,13 @@ OPER documentation_aml(const OPER& name, const Args& args)
     return da;
 }
 
-OPER function_aml(const OPER& name, const Args& args)
+OPER function_aml(const Args& args)
 {
     OPER fa(
 #include "Function.aml"
     );
 
-    OPER TopicId = OPER(make_guid(name.to_string()));
-    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), TopicId);
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), args.Guid());
     fa = Excel(xlfSubstitute, fa, OPER(L"{{FunctionHelp}}"), args.FunctionHelp());
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Syntax}}"), args.Syntax());
@@ -196,29 +185,14 @@ OPER function_aml(const OPER& name, const Args& args)
     return fa;
 }
 
-inline OPER alias_txt(const OPER& topic)
+inline OPER alias_txt(const Args& arg)
 {
-    std::wstring s = topic.to_string();
-
-    OPER at(L"IDH_");
-    at &= topic;
-    at &= L"=html\\";
-    at &= OPER(make_guid(s));
-    at &= L".htm";
-
-    return at;
+    return OPER(L"IDH_") & arg.Key() & OPER(L"=html\\") & arg.Guid() & OPER(L".htm");
 }
 
-inline OPER map_h(const OPER& topic)
+inline OPER map_h(const Args& arg)
 {
-    std::wstring s = topic.to_string();
-
-    OPER mh(L"#define IDH_");
-    mh &= topic;
-    mh &= L" ";  
-    mh &= std::to_wstring(make_hash((s)));
-
-    return mh;
+    return OPER(L"#define IDH_") & arg.Key() & OPER(L" ") & arg.TopicId();
 }
 
 //!!! turn the Fopen - Fclose into an RAII class
@@ -231,16 +205,6 @@ void make_shfb(const OPER& lib)
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
     //OPER o = Excel(xlfEvaluate, s);
 
-    OPER cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"), OPER(3));
-    ensure(cl.isNum());
-    fwrite(cl, content_layout(base));
-    Excel(xlfFclose, cl);
-
-    OPER tp = Excel(xlfFopen, dir & base & OPER(L".shfbproj"), OPER(3));
-    ensure(tp.isNum());
-    fwrite(tp, template_shfbproj(base));
-    Excel(xlfFclose, tp);
-
     OPER at = Excel(xlfFopen, dir & OPER(L"alias.txt"), OPER(3));
     ensure(at.isNum());
     OPER mh = Excel(xlfFopen, dir & OPER(L"map.h"), OPER(3));
@@ -248,20 +212,32 @@ void make_shfb(const OPER& lib)
     for (const auto& args : AddIn::map()) {
         if (args.second.Documentation() && *args.second.Documentation()) {
             if (args.second.isDocumentation()) {
-                ensure(args.first == base);
-                OPER fd = Excel(xlfFopen, dir & args.first & OPER(L".aml"), OPER(3));
+                // Assumes only one documentation add-in.
+
+                OPER cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"), OPER(3));
+                ensure(cl.isNum());
+                fwrite(cl, content_layout(args.second));
+                Excel(xlfFclose, cl);
+
+                OPER tp = Excel(xlfFopen, dir & base & OPER(L".shfbproj"), OPER(3));
+                ensure(tp.isNum());
+                fwrite(tp, template_shfbproj(base));
+                Excel(xlfFclose, tp);
+
+                OPER fd = Excel(xlfFopen, dir & base & OPER(L".aml"), OPER(3));
                 ensure(fd.isNum());
-                fwrite(fd, documentation_aml(args.first, args.second));
+                fwrite(fd, documentation_aml(args.second));
                 Excel(xlfFclose, fd);
             }
             else if (args.second.isFunction()) {
-                OPER fd = Excel(xlfFopen, dir & args.first & OPER(L".aml"), OPER(3));
+                OPER fd = Excel(xlfFopen, dir & args.second.Guid() & OPER(L".aml"), OPER(3));
                 ensure(fd.isNum());
-                fwrite(fd, function_aml(args.first, args.second));
+                fwrite(fd, function_aml(args.second));
                 Excel(xlfFclose, fd);
             }
-            Excel(xlfFwriteln, at, alias_txt(args.first));
-            Excel(xlfFwriteln, mh, map_h(args.first));
+            // else if (args.second.isMacro()) { ...
+            Excel(xlfFwriteln, at, alias_txt(args.second));
+            Excel(xlfFwriteln, mh, map_h(args.second));
         }
     }
     Excel(xlfFclose, at);

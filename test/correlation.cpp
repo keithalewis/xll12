@@ -46,6 +46,7 @@ AddIn xai_correlation_rho(
     .Arg(XLL_WORD, L"j", L"is the second index of the correlation.")
     .Category(L"XLL")
     .FunctionHelp(L"Return the dot product of the i-th and j-th unit vector.")
+    .Documentation(LR"(Every correlation matrix correponds to a set of unit vectors.)")
 );
 double WINAPI xll_correlation_rho(HANDLEX h, WORD i, WORD j)
 {

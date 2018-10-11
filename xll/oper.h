@@ -545,7 +545,8 @@ namespace xll {
         {
             if (type() != xltypeMulti) {
                 resize(1, 1);
-                return push_back(o);
+                operator[](0) = o;
+                return *this;
             }
             else {
                 auto size = rows() * columns();

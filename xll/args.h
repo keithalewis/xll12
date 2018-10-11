@@ -2,6 +2,7 @@
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
 #include <algorithm>
+#include <string>
 #include "defines.h"
 #include "excel.h"
 
@@ -95,6 +96,8 @@ namespace xll {
         Args(xcstr _documentation)
             : Args()
         {
+            // needed for Key()
+            args[ARG::Procedure] = L"*";
             documentation = _documentation;
             args[ARG::MacroType] = OPER(-1);
         }
@@ -231,7 +234,7 @@ namespace xll {
 			Type &= type;
 			
 			OPER& Text = args[ARG::ArgumentText];
-			if (Arity() > 1)
+			if (Text.isStr())
 				Text &= L", ";
 			Text &= name;
 
@@ -322,6 +325,33 @@ namespace xll {
             return FunctionText() & OPER(L"(") & args[ARG::ArgumentText] & OPER(L")");
         }
 
+        OPER Key() const
+        {
+            OPER proc = Procedure();
+
+            if (proc.xltype == xltypeStr) {
+                for (int i = 1; i <= proc.val.str[0]; ++i) {
+                    if (!std::iswalnum(proc.val.str[i])) {
+                        proc.val.str[i] = L'_';
+                    }
+                }
+            }
+
+            return proc;
+        }
+
+        OPER TopicId() const 
+        {
+            std::hash<std::wstring> hash;
+
+            return OPER(std::to_wstring(hash(Key().to_string())));
+        }
+
+        OPER Guid() const 
+        {
+            return Excel(xlfDec2hex, TopicId()) & OPER(L"-0000-0000-0000-000000000000");
+        }
+
 		/// Register an add-in function or macro
 		OPER Register() const
 		{
@@ -332,9 +362,10 @@ namespace xll {
             OPER name = XlGetName();
             args[ARG::ModuleText] = name;
             
-            // !!!Should be .chm!topicId
-            OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!0"));
-            args[ARG::HelpTopic] = chm;
+            if (documentation && *documentation) {
+                OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!") & TopicId());
+                args[ARG::HelpTopic] = chm;
+            }
 
 			OPER oResult = Excelv(xlfRegister, args);
 			if (oResult.isErr()) {
