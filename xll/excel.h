@@ -11,10 +11,13 @@ namespace xll {
 		OPER12 o;
 
         try {
-		    int ret = ::Excel12(xlf, &o, sizeof...(args), &args...);
+            XLOPER12 o_;
+		    int ret = ::Excel12(xlf, &o_, sizeof...(args), &args...);
 		    ensure (ret == xlretSuccess);
-		    if (!o.isScalar())
-			    o.xltype |= xlbitXLFree;
+            o = o_;
+		    if (!o.isScalar()) {
+                ::Excel12(xlFree, 0, 1, &o_);
+            }
         }
         catch (const std::exception& ex) {
             XLL_ERROR(ex.what());

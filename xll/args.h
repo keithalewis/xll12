@@ -363,7 +363,9 @@ namespace xll {
             args[ARG::ModuleText] = name;
             
             if (documentation && *documentation) {
-                OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!") & TopicId());
+                OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
+                chm &= OPER(L"0");
+                // !!! chm &= TopicId();
                 args[ARG::HelpTopic] = chm;
             }
 
