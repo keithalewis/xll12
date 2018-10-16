@@ -14,7 +14,7 @@ static AddIn xai_base(
     .Uncalced() // must specify for handles
     .Category(L"XLL")
     .FunctionHelp(L"Handle example")
-    .Documentation(L"Documentation.")
+    .Documentation(L"Return handle to base class.")
 );
 HANDLEX WINAPI
 xll_base(short b)
@@ -41,6 +41,7 @@ static AddInX xai_base_value(
     Function(XLL_LONG, L"?xll_base_value", L"XLL.BASE.VALUE")
     .Arg(XLL_HANDLE, L"Handle", L"is a handle")
     .Category(L"XLL")
+    .Documentation(L"Return base value.")
 );
 LONG WINAPI
 xll_base_value(HANDLEX h)
@@ -70,6 +71,7 @@ static AddInX xai_derived(
     .Arg(XLL_SHORT, L"int2", L"is an int")
     .Uncalced()
     .Category(L"XLL")
+    .Documentation(L"Return handle to derived class.")
 );
 HANDLEX WINAPI
 xll_derived(short b, short d)
@@ -97,6 +99,7 @@ static AddIn xai_derived_value(
     Function(XLL_LONG , L"?xll_derived_value", L"XLL.DERIVED.VALUE2")
     .Arg(XLL_HANDLE, L"handle", L"is a handle")
     .Category(L"XLL")
+    .Documentation(L"Return derived second value.")
 );
 LONG WINAPI
 xll_derived_value(HANDLEX h)

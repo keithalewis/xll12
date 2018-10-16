@@ -89,13 +89,11 @@ OPER content_layout(const Args& args)
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
     for (const auto& arg : AddIn::map()) {
         if (arg.second.Documentation() && arg.second.isFunction()) {
-            Topics &= L"\n    <Topic id=\"";
-            Topics &= arg.second.Guid();
-            Topics &= L"\" visible=\"true\" title=\"";
-            Topics &= arg.second.FunctionText();
-            Topics &= L" function\" tocTitle=\"";
-            Topics &= arg.second.FunctionText();
-            Topics &= L"\" />";
+            OPER id(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
+            id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), arg.second.Guid());
+            id = Excel(xlfSubstitute, id, OPER(L"{{Text}}"), arg.second.FunctionText());
+            Topics &= L"\n    ";
+            Topics &= id;
         }
     }
     cl = Excel(xlfSubstitute, cl, OPER(L"{{Topics}}"), Topics);
@@ -119,7 +117,7 @@ OPER template_shfbproj(const OPER& base)
                 name = base;
             }
             else if (args.second.isFunction()) {
-                name = args.second.Guid();
+                name = args.second.FunctionText();
             }
             ItemGroup = ItemGroup & Pre & name & Post;
         }
@@ -230,7 +228,7 @@ void make_shfb(const OPER& lib)
                 Excel(xlfFclose, fd);
             }
             else if (args.second.isFunction()) {
-                OPER fd = Excel(xlfFopen, dir & args.second.Guid() & OPER(L".aml"), OPER(3));
+                OPER fd = Excel(xlfFopen, dir & args.second.FunctionText() & OPER(L".aml"), OPER(3));
                 ensure(fd.isNum());
                 fwrite(fd, function_aml(args.second));
                 Excel(xlfFclose, fd);
