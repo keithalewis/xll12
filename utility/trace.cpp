@@ -13,18 +13,18 @@ static AddIn xai_trace(
 extern "C" __declspec(dllexport) LPXLOPER12 WINAPI 
 xll_trace(LPXLOPER12 px)
 {
-    std::wstring s;
-    s = L"Reference: ";
-    OPER o = Excel(xlfReftext, *px, OPER(true));
-    s.append(o.val.str + 1, o.val.str[0]);
-    s.append(L"\nFormula: ");
-    o = Excel(xlfGetCell, OPER(6), *px);
-    s.append(o.val.str + 1, o.val.str[0]);
-    s.append(L"\nContents: ");
-    o = Excel(xlfText, Excel(xlfGetCell, OPER(5), *px), OPER(L"General"));
-    s.append(o.val.str + 1, o.val.str[0]);
-
-    MessageBoxW(0, s.c_str(), L"XLL.TRACE", MB_OK);
+    if (px->xltype == xltypeSRef) {
+        std::wstring s = L"Reference: ";
+        OPER o = Excel(xlfReftext, *px, OPER(true));
+        s.append(o.val.str + 1, o.val.str[0]);
+        s.append(L"\nFormula: ");
+        o = Excel(xlfGetCell, OPER(6), *px);
+        s.append(o.val.str + 1, o.val.str[0]);
+        s.append(L"\nContents: ");
+        o = Excel(xlfText, Excel(xlfGetCell, OPER(5), *px), OPER(L"General"));
+        s.append(o.val.str + 1, o.val.str[0]);
+        MessageBoxW(0, s.c_str(), L"XLL.TRACE", MB_OK);
+    }
 
     return px;
 }
