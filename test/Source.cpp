@@ -4,7 +4,6 @@ using namespace xll;
 
 AddIn xai_test(
     Documentation(LR"(This is documentation for the test add-in.)")
-    .FunctionText(L"test")
 );
 
 // construct C++ object in Excel
@@ -121,98 +120,3 @@ xll_derived_value(HANDLEX h)
 
     return value2;
 }
-
-#ifdef _DEBUG
-
-void
-test_base_derived(void)
-{
-    base b(1);
-    ensure(1 == b.value());
-
-    derived d(2, 3);
-    ensure(2 == d.value());
-    ensure(3 == d.value2());
-
-    handle<base> hb(new base(1));
-    HANDLEX xhb = hb.get();
-    handle<base> bb(xhb);
-    ensure(bb);
-    ensure(1 == bb->value());
-
-    handle<derived> hd(new derived(2, 3));
-    HANDLEX xhd = hd.get();
-    handle<derived> dd(xhd);
-    ensure(2 == dd->value());
-    ensure(3 == dd->value2());
-     
-}
-/*
-struct foo {
-    char* s_;
-};
-foo* foo_new(const char* s)
-{
-    foo* pf = new foo;
-    pf->s_ = new char[strlen(s) + 1];
-    strcpy(pf->s_, s);
-
-    return pf;
-}
-void foo_delete(foo* pf)
-{
-    delete[] pf->s_;
-    delete pf;
-}
-void
-test_delete(void)
-{
-    handle<foo> h1(new foo());
-    //	handle<foo> h2(foo_new("abc")); // leaks
-    handle<foo, void(*)(foo*)> h3(foo_new("def"), foo_delete);
-}
-static AddIn xai_test_foo(
-    "?xll_test_foo", XLL_HANDLE XLL_CSTRING XLL_UNCALCED,
-    "TEST.FOO", "Str"
-);
-HANDLEX WINAPI
-xll_test_foo(const char* s)
-{
-#pragma XLLEXPORT
-    handle<foo, void(*)(foo*)> h(foo_new(s), foo_delete);
-
-    return h.get();
-}
-static AddIn xai_test_foo_get(
-    "?xll_test_foo_get", XLL_CSTRING XLL_HANDLE,
-    "TEST.FOO.GET", "Str"
-);
-const char* WINAPI
-xll_test_foo_get(HANDLEX h)
-{
-#pragma XLLEXPORT
-    // handle<foo> h_(h); is different bucket
-    handle<foo, void(*)(foo*)> h_(h);
-
-    return h_ ? h_->s_ : 0;
-}
-*/
-int
-test_handles(void)
-{
-    try {
-        //		_crtBreakAlloc = 1289;
-        test_base_derived();
-        //test_delete();
-    }
-    catch (const std::exception& ex) {
-        XLL_ERROR(ex.what());
-
-        return 0;
-    }
-
-    return 1;
-}
-static Auto<Open> xao_handles(test_handles);
-
-#endif // _DEBUG

@@ -24,7 +24,7 @@ namespace Reg {
         DWORD disp;
 	public: 
         Key()
-            : disp{ 0 }
+            : key{}, disp{0}
         { }
 		Key(HKEY hkey, LPCTSTR subkey, REGSAM sam = KEY_ALL_ACCESS)
 		{ 
@@ -117,7 +117,7 @@ namespace Reg {
     template<class T>
     inline LSTATUS QueryValue(HKEY hkey, LPCTSTR name, T& value)
     {
-        DWORD size;
+        DWORD size{0};
         DWORD type = entry_traits<T>::type;
 
         if constexpr (entry_traits<T>::type == REG_SZ) {
