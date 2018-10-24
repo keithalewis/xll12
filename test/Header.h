@@ -3,7 +3,7 @@
 
 namespace xll {
 
-    /*__declspec(align(8))*/ class base {
+    class base {
         int data_;
     public:
         base(int data = 0)
@@ -17,7 +17,7 @@ namespace xll {
         }
     };
 
-    /*__declspec(align(8))*/ class derived : public base {
+    class derived : public base {
         int data_;
     public:
         derived(int bdata = 0, int ddata = 0)

@@ -63,7 +63,7 @@
           You can specify the arguments your function takes using the
           <externalLink>
             <linkText>named parameter idiom</linkText>
-            <linkUri>http://www.parashift.com/c++-faq/named-parameter-idiom.html</linkUri>
+            <linkUri>https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Named_Parameter</linkUri>
             <linkTarget>_blank</linkTarget>
           </externalLink>.
 
