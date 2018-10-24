@@ -4,7 +4,6 @@ using namespace xll;
 
 AddIn xai_test(
     Documentation(LR"(This is documentation for the test add-in.)")
-    .FunctionText(L"test")
 );
 
 // construct C++ object in Excel
