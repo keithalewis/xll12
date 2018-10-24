@@ -47,7 +47,7 @@ namespace xll {
 		}
 		
 		/// <summary>Number of function arguments</summary>
-		auto Arity() const
+		int Arity() const
 		{
 			return ArgumentName_.size();
 		}
@@ -69,7 +69,7 @@ namespace xll {
 			std::fill(args.begin(), args.end(), OPER12(xltype::Nil));
 		}
 		Args(const Args&) = default;
-		Args& operator=(const Args&) = default;
+ 		Args& operator=(const Args&) = default;
 		~Args()
 		{ }
 
@@ -203,7 +203,7 @@ namespace xll {
             return args[ARG::FunctionHelp];
         }
         /// Specify individual argument help in the Function Wizard.
-		Args& ArgumentHelp(int i, xcstr argumentHelp)
+		Args& ArgumentHelp(COL i, xcstr argumentHelp)
 		{
 			ensure (i != 0);
 
@@ -240,7 +240,7 @@ namespace xll {
 
             ArgumentName_.push_back(OPER(name));
 			
-            auto n = Arity();
+            RW n = Arity();
 			if (helpText && *helpText) {
 				ArgumentHelp(n, helpText);
             }
@@ -330,7 +330,7 @@ namespace xll {
             OPER proc = Procedure();
 
             if (proc.xltype == xltypeStr) {
-                for (int i = 1; i <= proc.val.str[0]; ++i) {
+                for (size_t i = 1; i <= proc.val.str[0]; ++i) {
                     if (!std::iswalnum(proc.val.str[i])) {
                         proc.val.str[i] = L'_';
                     }

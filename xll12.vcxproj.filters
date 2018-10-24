@@ -89,9 +89,6 @@
     <ClCompile Include="xll\error.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="xll\oper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="xll\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -102,9 +99,6 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="utility\paste_function.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="xll\doc.cpp">
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="xll\shfb\shfb.cpp">

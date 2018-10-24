@@ -65,7 +65,7 @@ namespace xll {
     /// </summary>
     struct OPER12 : public XLOPER12
     {
-        friend void swap(OPER12& a, OPER12& b)
+        friend void swap(OPER12& a, OPER12& b) noexcept
         {
             using std::swap;
 
@@ -135,7 +135,7 @@ namespace xll {
                 val = o.val;
             }
         }
-        OPER12(OPER12&& o)
+        OPER12(OPER12&& o) noexcept
         {
             xltype = o.xltype;
             val = o.val;
@@ -427,42 +427,26 @@ namespace xll {
         }
 
         // Multi
-        OPER12(RW rw, COL col)
+        OPER12(int rw, int col)
         {
             allocate_multi(rw, col);
             uninitialized_fill_multi(OPER12());
         }
         OPER12(std::initializer_list<OPER12> o)
-            : OPER12(1, static_cast<COL>(o.size()))
+            : OPER12(1, static_cast<int>(o.size()))
         {
             std::copy(o.begin(), o.end(), stdext::checked_array_iterator<OPER12*>(begin(), o.size()));
-        }
-        OPER12(std::initializer_list<std::initializer_list<OPER12>> o)
-            : OPER12(static_cast<RW>(o.size()), static_cast<COL>(o.begin()->size()))
-        {
-            size_t cols = columns();
-            for (const auto& r : o)
-                if (r.size() > cols)
-                    cols = r.size();
-            if (cols > static_cast<size_t>(columns()))
-                resize(rows(), static_cast<COL>(cols));
-
-            size_t i = 0;
-            for (const auto& r : o) {
-                std::copy(r.begin(), r.end(), stdext::checked_array_iterator<OPER12*>(begin() + i * cols, r.size()));
-                ++i;
-            }
         }
         int isMulti() const
         {
             return type() == xltypeMulti ? TRUE : FALSE;
         }
 
-        RW rows() const
+        int rows() const
         {
             return type() == xltypeMulti ? val.array.rows : 1;
         }
-        COL columns() const
+        int columns() const
         {
             return type() == xltypeMulti ? val.array.columns : 1;
         }
@@ -494,7 +478,7 @@ namespace xll {
         {
             return type() == xltypeMulti ? static_cast<const OPER12*>(val.array.lparray + size()) : this + 1;
         }
-        OPER12& operator[](size_t i)
+        OPER12& operator[](int i)
         {
             if (type() != xltypeMulti) {
                 ensure(i == 0);
@@ -503,7 +487,7 @@ namespace xll {
 
             return static_cast<OPER12&>(val.array.lparray[i]);
         }
-        const OPER12& operator[](size_t i) const
+        const OPER12& operator[](int i) const
         {
             if (type() != xltypeMulti) {
                 ensure(i == 0);
@@ -512,18 +496,18 @@ namespace xll {
 
             return static_cast<const OPER12&>(val.array.lparray[i]);
         }
-        OPER12& operator()(RW i, COL j)
+        OPER12& operator()(int i, int j)
         {
             auto n = i * columns() + j;
             return operator[](n);
         }
-        const OPER12& operator()(RW i, COL j) const
+        const OPER12& operator()(int i, int j) const
         {
             auto n = i * columns() + j;
             return operator[](n);
         }
 
-        OPER12& resize(RW rw, COL col)
+        OPER12& resize(int rw, int col)
         {
             if (rw == 0 || col == 0) {
                 this->~OPER12();
@@ -640,7 +624,7 @@ namespace xll {
 
             ::free(val.str);
         }
-        void allocate_multi(RW rw, COL col)
+        void allocate_multi(int rw, int col)
         {
             // check rw, col size?
             auto size = rw * col;
@@ -650,7 +634,7 @@ namespace xll {
             val.array.columns = col;
             xltype = xltypeMulti;
         }
-        void reallocate_multi(RW rw, COL col)
+        void reallocate_multi(int rw, int col)
         {
             ensure(xltype == xltypeMulti);
             auto size = rw * col;

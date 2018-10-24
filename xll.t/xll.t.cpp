@@ -287,16 +287,6 @@ void test_multi()
 		ensure (o[0] == 1.23);
 		ensure (o[1] == L"foo");
 	}
-	{
-		OPER12 o{{OPER12(1.23)},{OPER12(L"foo"), OPER12(true)}};
-		ensure (o.xltype == xltypeMulti);
-		ensure (o.rows() == 2);
-		ensure (o.columns() == 2);
-		ensure (o(0,0) == 1.23);
-		ensure (o(0,1) == OPER12());
-		ensure (o(1,0) == L"foo");
-		ensure (o(1,1) == true);
-	}
 }
 void test_int()
 {

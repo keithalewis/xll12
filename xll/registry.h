@@ -20,7 +20,7 @@ namespace Reg {
 
     class Key  
 	{
-		HKEY key;
+        HKEY key;
         DWORD disp;
 	public: 
         Key()
@@ -126,7 +126,7 @@ namespace Reg {
             if (status != ERROR_SUCCESS) {
                 return status;
             }
-            value.resize(size + 1);
+            value.resize(static_cast<size_t>(size) + 1);
         }
 
         return RegQueryValueEx(hkey, name, 0, &type, entry_traits<T>::data(value), &size);

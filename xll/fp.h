@@ -369,10 +369,10 @@ namespace xll {
 		}
 		void realloc(RW r, COL c)
 		{
-			if (!buf || size() != r*c) {
+			if (buf == nullptr || size() != r*c) {
 				auto size = r * c;
 				buf = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
-				ensure (buf != 0);
+				ensure (buf != nullptr);
 			}
 //			memset(buf, 0, sizeof(_FP12) + r*c*sizeof(double));
 			// check size
