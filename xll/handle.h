@@ -71,6 +71,7 @@ namespace xll {
 		}
 		T* pt;
     public:
+        //!!! use ptr sink
         handle(T* p)
             : pt(p)
         {

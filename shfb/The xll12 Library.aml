@@ -19,7 +19,7 @@
       	</externalLink> add-in library
       	makes it easy to call C/C++ or even Fortran code from
       	from Microsoft Excel. Just write a function and register
-      	it with Excel.
+      	it with Excel by creating an <codeInline>xll::AddIn</codeInline> object.
       	</para>
     </introduction>
     <!-- Add one or more top-level section elements.  These are collapsible.
@@ -45,7 +45,7 @@
           makes it possible for you extend Excel with
           functions and macros written in native code. The xll library
           provides C++ classes that make using their Software Development 
-          Kit much easier.
+          Kit much easier to use.
         </para>
         <para>
           The xll12 library works with all versions of Windows since XP and

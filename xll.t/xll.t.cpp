@@ -70,6 +70,12 @@ void test_sref()
 	ensure (r3 == r4);
 	r2 = r3;
 	ensure (r2 == r3);
+    ensure (r3.rows() == 3);
+    ensure (rows(r3) == 3);
+    ensure (r3.columns() == 4);
+    ensure (columns(r3) == 4);
+    ensure (r3.size() == 12);
+    ensure (size(r3) == 12);
 
 	OPER12 o1(r2);
 	ensure (o1.type() == xltypeSRef);
@@ -307,7 +313,7 @@ void test_handle()
 	handle<std::vector<int>> h(pi);
 	auto pi2 = h.ptr();
 	ensure (pi == pi2);
-	delete pi;
+	//delete pi;
 }
 
 void test_arity()

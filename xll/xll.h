@@ -5,11 +5,12 @@
 #define NOMINMAX
 #define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
+//#define RC_INVOKED
 #include <Windows.h>
 
 // Module handle from DllMain
-extern HMODULE xll_hModule;
-extern HMODULE xll_Instance;
+extern HINSTANCE xll_hModule;
+extern HINSTANCE xll_Instance;
 
 #include "fp.h"
 #include "error.h"

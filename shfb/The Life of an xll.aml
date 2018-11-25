@@ -12,9 +12,9 @@
            a specific number of sub-topics when creating the outline.  Specify
            zero (0) to limit it to top-level sections only.  -->
       <!-- <autoOutline /> -->
-      <para>An Excel add-in is a dynamic-link library (<c>.dll</c>) that
+      <para>An Excel add-in is a dynamic-link library (<codeInline>.dll</codeInline>) that
       contains some well-known functions. If you rename the suffix to
-      <c>.xll</c> it will show up in the Excel file open filter.</para>
+      <codeInline>.xll</codeInline> it will show up in the Excel file open filter.</para>
     </introduction>
     <!-- Add one or more top-level section elements.  These are collapsible.
          If using <autoOutline />, add an address attribute to identify it
@@ -25,23 +25,27 @@
         <!-- Uncomment this to create a sub-section outline
         <autoOutline /> -->
         <para>
-        When Excel opens an <c>.xll</c> it calls
+        When Excel opens an <codeInline>.xll</codeInline> it calls
         <externalLink>
-        <linkText><c>LoadLibrary</c></linkText>
+        <linkText><codeInline>LoadLibrary</codeInline></linkText>
         <linkUri>https://msdn.microsoft.com/en-us/library/windows/desktop/ms684175(v=vs.85).aspx</linkUri>
         <linkTarget>_blank</linkTarget>
         </externalLink>
         and
         <externalLink>
-        <linkText><c>GetProcAddress</c></linkText>
+        <linkText><codeInline>GetProcAddress</codeInline></linkText>
         <linkUri>https://msdn.microsoft.com/en-us/library/windows/desktop/ms683212(v=vs.85).aspx</linkUri>
         <linkTarget>_blank</linkTarget>
         </externalLink>
-        to find <c>xlAutoOpen</c> and then calls it.
+        to find <codeInline>xlAutoOpen</codeInline> and then calls it. You can write your own
+        <codeInline>xlAutoOpen</codeInline> to register functions with Excel but this library
+        implements that for you. All you need to do is instanciate an <codeInline>xll::AddIn</codeInline>
+        object that tells Excel how to call the C/C++ function that you implement.
         </para>
         <para>
-        You can use <c>xll::Auto&lt;Open&gt;</c> to have your functions called
-        as long as they take no arguments and return an <c>int</c>.
+        You can also use <codeInline>xll::Auto&lt;Open&gt;</codeInline> to have your functions called
+        as long as they take no arguments and return an <codeInline>int</codeInline>, just
+        like <codeInline>xlAutoOpen</codeInline>.
         
         </para>
       </content>
