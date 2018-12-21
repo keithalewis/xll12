@@ -97,7 +97,7 @@ namespace xll {
             : Args()
         {
             // needed for Key()
-            args[ARG::Procedure] = L"*";
+            args[ARG::FunctionText] = L"*";
             documentation = _documentation;
             args[ARG::MacroType] = OPER(-1);
         }
@@ -325,26 +325,17 @@ namespace xll {
             return FunctionText() & OPER(L"(") & args[ARG::ArgumentText] & OPER(L")");
         }
 
-        OPER Key() const
+        const OPER& Key() const
         {
-            OPER proc = Procedure();
-
-            if (proc.xltype == xltypeStr) {
-                for (size_t i = 1; i <= proc.val.str[0]; ++i) {
-                    if (!std::iswalnum(proc.val.str[i])) {
-                        proc.val.str[i] = L'_';
-                    }
-                }
-            }
-
-            return proc;
+			return FunctionText();
         }
-
+		// Integer hash used in help files.
         OPER TopicId() const 
         {
-            std::hash<std::wstring> hash;
+			auto key = Key();
+			std::wstring str(key.val.str + 1, key.val.str[0]);
 
-            return OPER(std::to_wstring(hash(Key().to_string())));
+			return OPER(std::to_wstring(std::hash<std::wstring>{}(str)));
         }
 
         OPER Guid() const 

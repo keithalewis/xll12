@@ -274,12 +274,17 @@ namespace xll {
         }
 
         // Num
-        explicit OPER12(const double& num)
+        explicit OPER12(double num)
         {
             xltype = xltypeNum;
             val.num = num;
         }
-        /*
+		explicit OPER12(size_t num)
+		{
+			xltype = xltypeNum;
+			val.num = num;
+		}
+		/*
         OPER12& operator=(const double& num)
         {
             return *this = OPER12(num);
@@ -339,6 +344,7 @@ namespace xll {
         {
             return type() == xltypeStr ? TRUE : FALSE;
         }
+		/*
         const std::wstring_view to_string_view() const
         {
             return std::wstring_view(val.str + 1, val.str[0]);
@@ -349,6 +355,7 @@ namespace xll {
 
             return std::wstring(sv.begin(), sv.end());
         }
+		*/
         /*
         OPER12& operator=(const XCHAR* str)
         {
