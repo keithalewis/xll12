@@ -3,6 +3,7 @@
 
 using namespace xll;
 
+// !!!Use https://github.com/herumi/xbyak
 // must use compiler intrinsics for x64
 #ifndef _M_X64 
 AddIn xai_asm(

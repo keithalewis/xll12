@@ -371,7 +371,11 @@ namespace xll {
 		{
 			if (buf == nullptr || size() != r*c) {
 				auto size = r * c;
-				buf = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
+				const auto tmp = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
+				if (tmp == nullptr) {
+					free(buf);
+				}
+				buf = tmp;
 				ensure (buf != nullptr);
 			}
 //			memset(buf, 0, sizeof(_FP12) + r*c*sizeof(double));
