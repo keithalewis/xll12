@@ -456,8 +456,6 @@ namespace xll {
                 case xltypeMissing:
                 case xltypeNil:
                     return 0;
-                case xltypeStr:
-                    return val.str[0];
                 default:
                     return rows() * columns();
             }
