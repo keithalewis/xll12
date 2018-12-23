@@ -31,7 +31,7 @@
         <!-- Uncomment this to create a sub-section outline
         <autoOutline /> -->
         <para>
-          If you want to use VBA or C# to extend Excel you don't need this library.
+          If you want to use VBA, C#, or JavaScript to extend Excel you don't need this library.
           If you know C++ and want a simple way to get the highest possible 
           performance from Excel, this library is for you.
         </para>
@@ -43,9 +43,8 @@
             <linkTarget>_blank</linkTarget>
           </externalLink>
           makes it possible for you extend Excel with
-          functions and macros written in native code. The xll library
-          provides C++ classes that make using their Software Development 
-          Kit much easier to use.
+          functions and macros written in native code. The xll12 library
+          provides C++ classes that make using Microsoft's SDK much easier to use.
         </para>
         <para>
           The xll12 library works with all versions of Windows since XP and

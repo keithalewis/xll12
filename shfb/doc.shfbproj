@@ -93,7 +93,7 @@
     <None Include="Reference\Reference.aml" />
     <None Include="Reference\AddIn.aml" />
     <None Include="Documentation.aml" />
-    <None Include="Installation.aml" />
+    <None Include="Quick Start.aml" />
     <None Include="Example.aml" />
     <None Include="The xll12 Library.aml" />
   </ItemGroup>

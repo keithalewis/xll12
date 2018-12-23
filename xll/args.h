@@ -327,6 +327,7 @@ namespace xll {
 
         const OPER& Key() const
         {
+			//??? Add prefix???
 			return FunctionText();
         }
 		// Integer hash used in help files.

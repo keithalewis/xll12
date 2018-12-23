@@ -3,7 +3,7 @@
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
   <!-->
     <summary>
-      <para>Installation</para>
+      <para>Quick Start</para>
     </summary>
     -->
     <introduction>
@@ -22,7 +22,7 @@
       </para>
       <para>
       	Open <codeInline>xlltemplate.sln</codeInline> and build (F5). This will create
-        <codeInline>xlltemplate.xll</codeInline> that can be opened in Excel. As you
+        <codeInline>xlltemplate.xll</codeInline> and open Excel with the add-in loaded. As you
         type <codeInline>=XLL.FUNCTION</codeInline> in a cell you should see it
         appear in intellisense.
       </para>
@@ -61,7 +61,7 @@
     </section>
     <relatedTopics>
       <!-- One or more of the following:
-           - A local link
+           - A local links
            - An external link
            - A code entity reference
 

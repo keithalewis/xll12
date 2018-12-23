@@ -279,11 +279,6 @@ namespace xll {
             xltype = xltypeNum;
             val.num = num;
         }
-		explicit OPER12(size_t num)
-		{
-			xltype = xltypeNum;
-			val.num = num;
-		}
 		/*
         OPER12& operator=(const double& num)
         {
@@ -463,8 +458,6 @@ namespace xll {
                 case xltypeMissing:
                 case xltypeNil:
                     return 0;
-                case xltypeStr:
-                    return val.str[0];
                 default:
                     return rows() * columns();
             }
