@@ -174,7 +174,7 @@
   <ItemGroup>
     <ClCompile Include="asm.cpp" />
     <ClCompile Include="sample.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="handle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
