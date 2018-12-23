@@ -176,6 +176,10 @@ namespace xll {
 
 			return *this;
 		}
+		const OPER& Category() const
+		{
+			return args[ARG::Category];
+		}
 		/// Specify the shortcut text for calling the function.
 		Args& ShortcutText(XCHAR shortcutText)
 		{
@@ -325,7 +329,7 @@ namespace xll {
             return FunctionText() & OPER(L"(") & args[ARG::ArgumentText] & OPER(L")");
         }
 
-        const OPER& Key() const
+        OPER Key() const
         {
 			//??? Add prefix???
 			return FunctionText();

@@ -1,47 +1,48 @@
-// sample.cpp - AddIn example
+// sample.cpp - Simple example of using AddIn.
 #include <cmath>
-#include "../xll/xll.h"
+#include "Header.h"
 
 using namespace xll;
 
-// Register an add-in with Excel.
-AddIn xai_square(
-    // Return a double from xll_square and call it XLL.SQUARE
-    Function(XLL_DOUBLE, L"?xll_square", L"XLL.SQUARE")
-    // Take a double argument called x and provide Function Wizard help.  
-    .Arg(XLL_DOUBLE, L"x", L"is the number to be doubled.")
-    .FunctionHelp(L"Double a number.")
-    .Category(L"XLL")
+AddIn xai_template(
+	Documentation(LR"(
+This object will generate a Sandcastle Helpfile Builder project file.
+)"));
+
+// Information Excel needs to register add-in.
+AddIn xai_function(
+	// Function returning a pointer to an OPER with C++ name xll_function and Excel name XLL.FUNCTION.
+	// Don't forget prepend a question mark to the C++ name.
+	//                     |
+	//                     v
+	Function(XLL_LPOPER, L"?xll_function", L"XLL.FUNCTION")
+	// First argument is a double called x with an argument description.
+	.Arg(XLL_DOUBLE, L"x", L"is the first double argument.")
+	// Paste function category.
+	.Category(L"Sample")
+	// Insert Function description.
+	.FunctionHelp(L"Help on XLL.FUNCTION goes here.")
+	// Create entry for this function in Sandcastle Help File Builder project file.
+	.Documentation(LR"(
+Documentation on XLL.FUNCTION goes here.
+    )")
 );
-// WINAPI specifies the calling convention Excel uses.
-double WINAPI xll_square(double x)
+// Calling convention *must* be WINAPI (aka __stdcall) for Excel.
+LPOPER WINAPI xll_function(double x)
 {
-// Required boilerplate to make xll_square visible to Excel.
+	// Be sure to export your function.
 #pragma XLLEXPORT
+	static OPER result;
 
-    return x*x;
-}
+	try {
+		ensure(x >= 0);
+		result = sqrt(x); // OPER's act like Excel cells.
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
 
-AddIn xai_sqrt(
-    Function(XLL_LPOPER, L"?xll_sqrt", L"XLL.SQRT")
-    .Arg(XLL_DOUBLE, L"x", L"is the number for which you want the square root.")
-    .FunctionHelp(L"Returns the square root of a number.")
-    .Category(L"XLL")
-);
-LPOPER WINAPI xll_sqrt(double x)
-{
-#pragma XLLEXPORT
-    static OPER result;
+		result = OPER(xlerr::Num);
+	}
 
-    try {
-        ensure(x >= 0); // like assert but throws runtime_exception
-        result = sqrt(x);
-    }
-    catch (const std::exception& ex) {
-        XLL_ERROR(ex.what());
-
-        result = OPER(xlerr::Num);
-    }
-
-    return &result;
+	return &result;
 }
