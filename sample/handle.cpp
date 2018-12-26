@@ -1,16 +1,47 @@
-#include "Header.h"
+// handle.cpp - Using handles to embed C++ objects in Excel.
+#include "../xll/xll.h"
 
 using namespace xll;
 
-AddIn xai_test(
-    Documentation(LR"(This is documentation for the test add-in.)")
-);
+namespace xll {
 
-// construct C++ object in Excel
+	// Simple base class.
+	class base {
+		int data_;
+	public:
+		base(int data = 0)
+			: data_(data)
+		{ }
+		virtual ~base() // for RTTI
+		{ }
+		int value(void) const
+		{
+			return data_;
+		}
+	};
+
+	// Simple derived class.
+	class derived : public base {
+		int data_;
+	public:
+		derived(int bdata = 0, int ddata = 0)
+			: base(bdata), data_(ddata)
+		{ }
+		~derived()
+		{ }
+		int value2(void) const
+		{
+			return data_;
+		}
+	};
+
+}
+
+// Construct C++ object in Excel
 static AddIn xai_base(
     Function(XLL_HANDLE, L"?xll_base", L"XLL.BASE")
     .Arg(XLL_SHORT, L"int", L"is an int")
-    .Uncalced() // must specify for handles
+    .Uncalced() // Must specify when creating handles.
     .Category(L"XLL")
     .FunctionHelp(L"Handle example")
     .Documentation(L"Return handle to base class.")
@@ -19,7 +50,7 @@ HANDLEX WINAPI
 xll_base(short b)
 {
 #pragma XLLEXPORT
-    handlex h; // lower case defaults to #NUM!
+    handlex h; // lower case handlex defaults to #NUM!
     
     try {
         handle<base> h_(new base(b));
@@ -29,8 +60,6 @@ xll_base(short b)
     }
     catch (const std::exception& ex) {
         ex.what();
-
-        return 0;
     }
 
     return h;
@@ -46,7 +75,7 @@ LONG WINAPI
 xll_base_value(HANDLEX h)
 {
 #pragma XLLEXPORT
-    int value;
+    int value = 0;
 
     try {
         handle<base> b_(h);
@@ -56,14 +85,12 @@ xll_base_value(HANDLEX h)
     }
     catch (const std::exception& ex) {
         XLL_ERROR(ex.what());
-
-        return 0;
     }
 
     return value;
 }
 
-// BASE.VALUE(DERIVED(i1,i2)) returns i2.
+// XLL.BASE.VALUE(XLL.DERIVED(b,d)) returns b.
 static AddInX xai_derived(
     Function(XLL_HANDLE, L"?xll_derived", L"XLL.DERIVED")
     .Arg(XLL_SHORT, L"int", L"is an int") 
@@ -87,8 +114,6 @@ xll_derived(short b, short d)
     }
     catch (const std::exception& ex) {
         XLL_ERROR(ex.what());
-
-        return 0;
     }
 
     return h;
@@ -104,7 +129,7 @@ LONG WINAPI
 xll_derived_value(HANDLEX h)
 {
 #pragma XLLEXPORT
-    int value2;
+    int value2 = 0;
 
     try {
         // use RTTI
@@ -114,8 +139,6 @@ xll_derived_value(HANDLEX h)
     }
     catch (const std::exception& ex) {
         XLL_ERROR(ex.what());
-
-        return 0;
     }
 
     return value2;

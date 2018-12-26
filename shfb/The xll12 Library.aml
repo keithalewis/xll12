@@ -42,9 +42,10 @@
             <linkUri>http://www.microsoft.com/en-us/download/details.aspx?id=35567</linkUri>
             <linkTarget>_blank</linkTarget>
           </externalLink>
-          makes it possible for you extend Excel with
+          makes it possible for you exte
+          nd Excel with
           functions and macros written in native code. The xll12 library
-          provides C++ classes that make using Microsoft's SDK much easier to use.
+          provides C++ classes that make Microsoft's SDK much easier to use.
         </para>
         <para>
           The xll12 library works with all versions of Windows since XP and
@@ -53,8 +54,8 @@
           asynchronous functions.
         </para>
         <para>
-          Use this library to create an add-in and help file documenting how
-          to use your handiwork.
+          Use this library to create an add-in and help file integrated into
+          Excel documenting how to use your handiwork.
         </para>
         <para>
             <link xlink:href="d7e05719-f06e-4480-8f4a-e3ce3aeef4e0">Get started</link>!

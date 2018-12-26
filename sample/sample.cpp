@@ -1,10 +1,10 @@
 // sample.cpp - Simple example of using AddIn.
 #include <cmath>
-#include "Header.h"
+#include "../xll/xll.h"
 
 using namespace xll;
 
-AddIn xai_template(
+AddIn xai_sample(
 	Documentation(LR"(
 This object will generate a Sandcastle Helpfile Builder project file.
 )"));

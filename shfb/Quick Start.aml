@@ -19,12 +19,12 @@
 		<linkTarget>_blank</linkTarget>
 		</externalLink>
 		using git.
-      </para>
-      <para>
       	Open <codeInline>xlltemplate.sln</codeInline> and build (F5). This will create
         <codeInline>xlltemplate.xll</codeInline> and open Excel with the add-in loaded. As you
         type <codeInline>=XLL.FUNCTION</codeInline> in a cell you should see it
-        appear in intellisense.
+        appear in intellisense. You can press <literal>TAB</literal> to complete
+        the function name and <literal>Ctrl-Shift-A</literal> to insert the
+        argument text.
       </para>
     </introduction>
     <!-- Add one or more top-level section elements.  These are collapsible.
@@ -36,10 +36,17 @@
         <!-- Uncomment this to create a sub-section outline
         <autoOutline /> -->
         <para>
-          The xll add-in library is open source so you can download it and build it yourself. etc...
+        
+          The 
+        <externalLink>
+		<linkText>xll add-in library</linkText>
+		<linkUri>https://github.com/keithalewis/xll12.git</linkUri>
+		<linkTarget>_blank</linkTarget>
+		</externalLink>
+		is open source so you can download it and build it yourself.
         </para>
         <para>
-          <link xlink:href="26d5677f-2e60-4c43-affc-fa9e2da39c1a">Dig in!</link>
+          See an <link xlink:href="1ca4c146-05e0-4c23-83af-81e46d7fea68">example</link> of how to create an add-in
         </para>
       </content>
       <!-- If a section contains a sections element, its content creates
