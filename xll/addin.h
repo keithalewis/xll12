@@ -7,26 +7,16 @@
 #include "args.h"
 
 namespace xll {
+
+	inline std::map<OPER, Args> AddInMap;
+
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
     public:
-        // Map of all AddIns.
-        static std::map<OPER12, Args>& map()
-        {
-            static std::map<OPER12, Args> map_;
-
-            return map_;
-        }
-		/*
-		const Args& RegId(double regid)
-		{
-
-		}
-		*/
 		/// Register and Unregister an add-in when Excel calls xlAutoOpen and xlAutoClose.
 		AddIn(const Args& args)
 		{
-            map()[args.Key()] = args;
+            AddInMap[args.Key()] = args;
 
 			Auto<Open> ao([args]() { 
 				return args.Register().isNum();

@@ -37,6 +37,32 @@ inline OPER fread(const OPER& file)
     return text;
 }
 
+class xlfFile {
+	OPER h; // file handle
+public:
+	xlfFile(const OPER& file)
+		: h(Excel(xlfFopen, file, OPER(3)))
+	{ }
+	xlfFile(const xlfFile&) = delete;
+	xlfFile& operator=(const xlfFile&) = delete;
+	~xlfFile()
+	{
+		Excel(xlfFclose, h);
+	}
+	OPER read() const
+	{
+		return fread(h);
+	}
+	OPER write(const OPER& text) const
+	{
+		return fwrite(h, text);
+	}
+	OPER writeln(const OPER& text) const
+	{
+		return Excel(xlfFwriteln, h, text);
+	}
+};
+
 inline OPER find_last_of(const OPER& find, const OPER& within)
 {
     OPER off{ 0 };
@@ -87,11 +113,11 @@ OPER content_layout(const Args& args)
 
     OPER Topics;
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
-    for (const auto& arg : AddIn::map()) {
-        if (arg.second.Documentation() && arg.second.isFunction()) {
+    for (const auto& [key,arg] : AddInMap) {
+        if (arg.Documentation() && arg.isFunction()) {
             OPER id(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
-            id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), arg.second.Guid());
-            id = Excel(xlfSubstitute, id, OPER(L"{{Text}}"), arg.second.FunctionText());
+            id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), arg.Guid());
+            id = Excel(xlfSubstitute, id, OPER(L"{{Text}}"), arg.FunctionText());
             Topics &= L"\n    ";
             Topics &= id;
         }
@@ -110,14 +136,14 @@ OPER template_shfbproj(const OPER& base)
     OPER Pre = OPER(L"\n    <None Include=\"");
     OPER Post = OPER(L".aml\" />");
     OPER ItemGroup = Pre & base & Post;
-    for (const auto& args : AddIn::map()) {
-        if (args.second.Documentation() && *args.second.Documentation()) {
+    for (const auto& [key,arg] : AddInMap) {
+        if (arg.Documentation() && *arg.Documentation()) {
             OPER name;
-            if (args.second.isDocumentation()) {
+            if (arg.isDocumentation()) {
                 name = base;
             }
-            else if (args.second.isFunction()) {
-                name = args.second.FunctionText();
+            else if (arg.isFunction()) {
+                name = arg.FunctionText();
             }
             ItemGroup = ItemGroup & Pre & name & Post;
         }
@@ -203,43 +229,31 @@ void make_shfb(const OPER& lib)
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
     //OPER o = Excel(xlfEvaluate, s);
 
-    OPER at = Excel(xlfFopen, dir & OPER(L"alias.txt"), OPER(3));
-    ensure(at.isNum());
-    OPER mh = Excel(xlfFopen, dir & OPER(L"map.h"), OPER(3));
-    ensure(mh.isNum());
-    for (const auto& args : AddIn::map()) {
-        if (args.second.Documentation() && *args.second.Documentation()) {
-            if (args.second.isDocumentation()) {
+	xlfFile at(dir & OPER(L"alias.txt"));
+    xlfFile mh(dir & OPER(L"map.h"));
+    for (const auto& [key,arg] : AddInMap) {
+        if (arg.Documentation() && *arg.Documentation()) {
+            if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
 
-                OPER cl = Excel(xlfFopen, dir & OPER(L"Content Layout.content"), OPER(3));
-                ensure(cl.isNum());
-                fwrite(cl, content_layout(args.second));
-                Excel(xlfFclose, cl);
+                xlfFile cl(dir & OPER(L"Content Layout.content"));
+                cl.write(content_layout(arg));
 
-                OPER tp = Excel(xlfFopen, dir & base & OPER(L".shfbproj"), OPER(3));
-                ensure(tp.isNum());
-                fwrite(tp, template_shfbproj(base));
-                Excel(xlfFclose, tp);
+                xlfFile tp(dir & base & OPER(L".shfbproj"));
+                tp.write(template_shfbproj(base));
 
-                OPER fd = Excel(xlfFopen, dir & base & OPER(L".aml"), OPER(3));
-                ensure(fd.isNum());
-                fwrite(fd, documentation_aml(args.second));
-                Excel(xlfFclose, fd);
+                xlfFile fd(dir & base & OPER(L".aml"));
+                fd.write(documentation_aml(arg));
             }
-            else if (args.second.isFunction()) {
-                OPER fd = Excel(xlfFopen, dir & args.second.FunctionText() & OPER(L".aml"), OPER(3));
-                ensure(fd.isNum());
-                fwrite(fd, function_aml(args.second));
-                Excel(xlfFclose, fd);
-            }
-            // else if (args.second.isMacro()) { ...
-            Excel(xlfFwriteln, at, alias_txt(args.second));
-            Excel(xlfFwriteln, mh, map_h(args.second));
+			else if (arg.isFunction()) {
+				xlfFile fd(dir & arg.FunctionText() & OPER(L".aml"));
+				fd.write(function_aml(arg));
+			}
+            // else if (arg.isMacro()) { ...
+            at.writeln(alias_txt(arg));
+            mh.writeln(map_h(arg));
         }
     }
-    Excel(xlfFclose, at);
-    Excel(xlfFclose, mh);
 }
  
 static AddIn xai_make_shfb(
