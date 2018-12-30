@@ -72,9 +72,6 @@
     <ClInclude Include="xll\ref.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xll\registry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xll\locus.h">
       <Filter>Header Files</Filter>
     </ClInclude>

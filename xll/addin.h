@@ -9,6 +9,7 @@
 namespace xll {
 
 	inline std::map<OPER, Args> AddInMap;
+	inline std::map<double, OPER> RegIdMap; // register id to Key
 
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
@@ -19,10 +20,28 @@ namespace xll {
             AddInMap[args.Key()] = args;
 
 			Auto<Open> ao([args]() { 
-				return args.Register().isNum();
+				try {
+					RegIdMap[args.Register().val.num] = args.Key();
+				}
+				catch (const std::exception& ex) {
+					XLL_ERROR(ex.what());
+
+					return FALSE;
+				}
+
+				return TRUE;
 			});
 			Auto<Close> ac([args]() {
-				return args.Unregister();
+				try {
+					args.Unregister();
+				}
+				catch (const std::exception& ex) {
+					XLL_ERROR(ex.what());
+
+					return FALSE;
+				}
+
+				return TRUE;
 			});
 		}
     };

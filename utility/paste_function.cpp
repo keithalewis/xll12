@@ -11,10 +11,13 @@ xll_paste_function()
 {
     try {
 		OPER regid = Excel(xlCoerce, Excel(xlfSelection));
-		ensure(regid.isNum());
+		ensure(regid.isNum() && false);
 		// find addin corresponding to registerId in active cell
-
-        // paste default args in rows below active cell
+		//const Args& args = AddInMap[RegIdMap[regid.val.num]];
+        // function text
+		//OPER text(L"=");
+		//text &= args.FunctionText();
+		//text &= L"(";
         // create function text
         // paste into original active cell
     }
