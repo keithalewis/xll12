@@ -59,6 +59,8 @@ public:
 	}
 	OPER writeln(const OPER& text) const
 	{
+		ensure(Excel(xlfLen, text) < 256);
+
 		return Excel(xlfFwriteln, h, text);
 	}
 };
@@ -102,7 +104,6 @@ inline OPER idh_safename(OPER x)
     return x;
 }
 
-
 OPER content_layout(const Args& args)
 {
     OPER cl(
@@ -126,6 +127,7 @@ OPER content_layout(const Args& args)
 
     return cl;
 }
+
 OPER template_shfbproj(const OPER& base)
 {
     OPER tp(
