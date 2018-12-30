@@ -225,13 +225,17 @@ namespace xll {
         }
         OPER ArgumentName(int i) const
         {
-            if (i > Arity()) {
-                return OPER(xlerr::NA);
-            }
+			ensure(i <= Arity());
 
             return ArgumentName_[i - 1];
         }
-        /// Add an individual argument.
+		OPER ArgumentDefault(int i) const
+		{
+			ensure(i <= Arity());
+
+			return ArgumentDefault_[i - 1];
+		}
+		/// Add an individual argument.
 		Args& Arg(xcstr type, xcstr name, xcstr helpText = nullptr, xcstr Default = nullptr)
 		{
 			OPER& Type = args[ARG::TypeText];
@@ -249,8 +253,8 @@ namespace xll {
 				ArgumentHelp(n, helpText);
             }
             if (Default && *Default) {
-                ArgumentDefault_.resize(n+1,1);
-                ArgumentDefault_[n] = Default;
+                ArgumentDefault_.resize(n,1);
+                ArgumentDefault_[n - 1] = Default;
             }
 
 			return *this;

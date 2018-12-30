@@ -10,16 +10,30 @@ extern "C" __declspec(dllexport) int WINAPI
 xll_paste_function()
 {
     try {
-		OPER regid = Excel(xlCoerce, Excel(xlfSelection));
-		ensure(regid.isNum() && false);
+		OPER selection = Excel(xlfSelection);
+		ensure(selection.size() == 1);
+		OPER regid = Excel(xlCoerce, selection);
 		// find addin corresponding to registerId in active cell
-		//const Args& args = AddInMap[RegIdMap[regid.val.num]];
+		auto key = RegIdMap.find(regid);
+		ensure(key != RegIdMap.end());
+		const Args& args = AddInMap[key->second];
         // function text
-		//OPER text(L"=");
-		//text &= args.FunctionText();
-		//text &= L"(";
-        // create function text
-        // paste into original active cell
+		OPER text(L"=");
+		text &= args.FunctionText();
+		text &= L"(";
+        // args
+		auto n =args.Arity();
+		OPER sep(L"");
+		for (decltype(n) i = 1; i <= n; ++i) {
+			text &= sep;
+			text &= args.ArgumentDefault(i);
+			sep = OPER(L", ");
+		}
+		text &= L")";
+		// double quote text
+		text = Excel(xlfSubstitute, text, OPER(L"\""), OPER(L"\"\""));
+		// paste into original active cell
+		Excel(xlcFormula, text, selection);
     }
     catch (const std::exception& ex) {
         XLL_ERROR(ex.what());

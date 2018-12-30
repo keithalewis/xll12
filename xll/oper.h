@@ -358,11 +358,9 @@ namespace xll {
         }
         */
         ///  Append a string
-        OPER12& append(const XCHAR* str, size_t len = 0)
+        OPER12& append(const XCHAR* str, size_t len)
         {
             if (xltype == xltypeStr) {
-                if (!len)
-                    len = wcslen(str);
                 auto end = 1 + val.str[0];
                 reallocate_str(val.str[0] + len);
                 wmemcpy(val.str + end, str, len);
@@ -378,7 +376,7 @@ namespace xll {
         }
         OPER12& operator&=(const XCHAR* str)
         {
-            return append(str);
+            return append(str, wcslen(str));
         }
         OPER12& operator&=(const std::wstring& str)
         {

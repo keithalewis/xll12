@@ -16,8 +16,8 @@ AddIn xai_function(
 	//                     |
 	//                     v
 	Function(XLL_LPOPER, L"?xll_function", L"XLL.FUNCTION")
-	// First argument is a double called x with an argument description.
-	.Arg(XLL_DOUBLE, L"x", L"is the first double argument.")
+	// First argument is a double called x with an argument description and default value of 2
+	.Arg(XLL_DOUBLE, L"x", L"is the first double argument.", L"2")
 	// Paste function category.
 	.Category(L"Sample")
 	// Insert Function description.

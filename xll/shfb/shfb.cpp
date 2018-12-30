@@ -191,7 +191,7 @@ OPER function_aml(const Args& args)
     fa = Excel(xlfSubstitute, fa, OPER(L"{{ListItems}}"), ListItems);
     if (args.Remarks() && *args.Remarks()) {
         OPER Remarks(L"<section address=\"Remarks\"><title>Remarks</title><content><para>");
-        Remarks.append(args.Remarks());
+        Remarks.append(args.Remarks(), wcslen(args.Remarks()));
         Remarks = Remarks & OPER(L"</para></content></section>");
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), Remarks);
     }
