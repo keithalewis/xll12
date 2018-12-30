@@ -27,7 +27,7 @@
     <!-- <requirements>Optional requirements section</requirements> -->
     <!-- <demonstrates>Optional info about what is demonstrated</demonstrates> -->
     <codeExample>
-      <code source="../test/sample.cpp" numberLines="true" />
+      <code source="../sample/sample.cpp" numberLines="true" />
     </codeExample>
     <!-- Add one or more top-level section elements.  These are collapsible.
          If using <autoOutline />, add an address attribute to identify it

@@ -17,6 +17,12 @@ namespace xll {
 
             return map_;
         }
+		/*
+		const Args& RegId(double regid)
+		{
+
+		}
+		*/
 		/// Register and Unregister an add-in when Excel calls xlAutoOpen and xlAutoClose.
 		AddIn(const Args& args)
 		{

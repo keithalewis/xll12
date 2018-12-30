@@ -22,7 +22,7 @@ extern HINSTANCE xll_Instance;
 #ifndef _LIB
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_this", 0))
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_trace", 4))
-//#pragma comment(linker, "/include:" XLL_DECORATE("xll_paste_function", 0))
+#pragma comment(linker, "/include:" XLL_DECORATE("xll_paste_function", 0))
 //#pragma comment(linker, "/include:" XLL_DECORATE("xll_make_doc", 0))
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_make_shfb", 0))
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_get_workbook", 4))

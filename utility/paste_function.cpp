@@ -10,7 +10,10 @@ extern "C" __declspec(dllexport) int WINAPI
 xll_paste_function()
 {
     try {
-        // find addin corresponding to registerId in active cell
+		OPER regid = Excel(xlCoerce, Excel(xlfSelection));
+		ensure(regid.isNum());
+		// find addin corresponding to registerId in active cell
+
         // paste default args in rows below active cell
         // create function text
         // paste into original active cell
@@ -23,5 +26,4 @@ xll_paste_function()
 
     return TRUE;
 }
-
-// connect to Ctrl-Shift-B 
+On<Key> xlo_paste_function(ON_CTRL ON_SHIFT L"B", L"XLL.PASTE.FUNCTION");

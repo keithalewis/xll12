@@ -6,3 +6,9 @@ Figure out how to do links in SHFB.
 Group by Category level in documentation.
 
 Alphabetical ordering of functino names. 
+
+Build the help files:
+%ProgramFiles(x86)%\MSBuild\14.0\bin\MSBuild.exe
+    /p:CopyrightText="Copyright \xa9 2006-2011"
+    /p:FeedbackEMailAdress="Eric@EWoodruff.us"
+    HelpFile.shfbproj
