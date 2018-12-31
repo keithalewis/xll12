@@ -12,3 +12,6 @@ Build the help files:
     /p:CopyrightText="Copyright \xa9 2006-2011"
     /p:FeedbackEMailAdress="Eric@EWoodruff.us"
     HelpFile.shfbproj
+
+Suppose the name TempAverage refers to a cell containing the formula AVERAGE(Temp1, Temp2, Temp3). The following formula assigns the value 99 to this cell, even if the average of the arguments is not 99, without changing the formula in TempAverage: 
+SET.VALUE(TempAverage, 99). TempAverage is restored to its correct value as soon as it is recalculated
