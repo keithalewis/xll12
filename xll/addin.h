@@ -8,23 +8,38 @@
 
 namespace xll {
 
-	inline std::map<OPER, Args> AddInMap;
-	inline std::map<double, OPER> RegIdMap; // register id to Key
-
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
     public:
-		/// Register and Unregister an add-in when Excel calls xlAutoOpen and xlAutoClose.
+        static std::map<OPER, Args>& AddInMap() {
+            static std::map<OPER, Args> map;
+
+            return map;
+        }
+        static std::map<double, OPER>& RegIdMap() { // register id to Key
+            static std::map<double, OPER> map;
+
+            return map;
+        }
+
+
+        /// Register and Unregister an add-in when Excel calls xlAutoOpen and xlAutoClose.
 		AddIn(const Args& args)
 		{
-            AddInMap[args.Key()] = args;
+            auto kv = std::make_pair(args.Key(), args);
+            if (!AddInMap().insert(kv).second) {
+                //OPER key = args.Key();
+                //MessageBoxW(GetForegroundWindow(), ex.what(), L"AddIn Auto<Open> failed", MB_OKCANCEL| MB_ICONWARNING);
+            }
 
 			Auto<Open> ao([args]() { 
 				try {
-					RegIdMap[args.Register().val.num] = args.Key();
+                    if (!RegIdMap().insert(std::make_pair(args.Register().val.num, args.Key())).second) {
+                        //RegIdMap[args.Register().val.num] = args.Key();
+                    }
 				}
 				catch (const std::exception& ex) {
-					XLL_ERROR(ex.what());
+                    MessageBoxA(GetForegroundWindow(), ex.what(), "AddIn Auto<Open> failed", MB_OKCANCEL| MB_ICONERROR);
 
 					return FALSE;
 				}
@@ -36,7 +51,7 @@ namespace xll {
 					args.Unregister();
 				}
 				catch (const std::exception& ex) {
-					XLL_ERROR(ex.what());
+                    MessageBoxA(GetForegroundWindow(), ex.what(), "AddIn Auto<Close> failed", MB_OKCANCEL| MB_ICONERROR);
 
 					return FALSE;
 				}

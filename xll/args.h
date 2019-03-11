@@ -23,7 +23,7 @@ namespace xll {
 		ArgumentHelp, // 1-based index
 	};
 
-	using xcstr = const XCHAR*;
+	using xcstr = const wchar_t*;
 
 	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
@@ -181,7 +181,7 @@ namespace xll {
 			return args[ARG::Category];
 		}
 		/// Specify the shortcut text for calling the function.
-		Args& ShortcutText(XCHAR shortcutText)
+		Args& ShortcutText(wchar_t shortcutText)
 		{
 			args[ARG::ShortcutText] = OPER(&shortcutText, 1);
 
@@ -458,9 +458,9 @@ namespace xll {
 
 	/*
 	// Convert __FUNCDNAME__ to arguments for xlfRegister
-	inline Args Demangle(const XCHAR* F)
+	inline Args Demangle(const wchar_t* F)
 	{
-		static std::map<XCHAR,const OPER12> arg_map = {
+		static std::map<wchar_t,const OPER12> arg_map = {
 			{ L'F', OPER12(XLL_SHORT) },
 			{ L'G', OPER12(XLL_WORD) }, // also USHORT
 			{ L'H', OPER12(XLL_BOOL) },

@@ -424,8 +424,8 @@ int main()
 	test_bool();
 	test_multi();
 	test_int();
-//	test_handle();
-    test_base_derived();
+//    test_handle();
+//    test_base_derived();
 	test_arity();
 	test_fp();
 	test_error();

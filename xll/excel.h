@@ -20,7 +20,7 @@ namespace xll {
             }
         }
         catch (const std::exception& ex) {
-            XLL_ERROR(ex.what());
+            MessageBoxA(GetForegroundWindow(), ex.what(), "Excel failed", MB_OKCANCEL| MB_ICONERROR);
         }
 		return o;
 	}
@@ -41,7 +41,7 @@ namespace xll {
 			    o.xltype |= xlbitXLFree;
         }
         catch (const std::exception& ex) {
-            XLL_ERROR(ex.what());
+            MessageBoxA(GetForegroundWindow(), ex.what(), "Excelv failed", MB_OKCANCEL| MB_ICONERROR);
         }
 
         return o;

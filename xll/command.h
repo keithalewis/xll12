@@ -45,7 +45,7 @@ enum MENU {
 };
 
 struct Command : public OPER12 {
-	using xcstr = const XCHAR*;
+	using xcstr = const wchar_t*;
     using OPER12::push_back;
     using OPER12::operator[];
 	/// command ref item

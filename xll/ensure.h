@@ -29,9 +29,9 @@
 #define ENSURE_LINE "\nline: " ENSURE_STRZ_(__LINE__)
 #define ENSURE_SPOT ENSURE_FILE ENSURE_LINE ENSURE_FUNC
 
-#define ensure(e) if (!(e)) \
+#define ensure(e) if (!(e)) { \
 		throw std::runtime_error(ENSURE_SPOT "\nensure: \"" #e "\" failed"); \
-		else (void)0;
+		} else (void)0;
 
 #endif // ensure
 

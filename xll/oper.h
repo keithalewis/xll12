@@ -313,15 +313,15 @@ namespace xll {
         }
 
         // Str
-        explicit OPER12(const XCHAR* str)
+        explicit OPER12(const wchar_t* str)
             : OPER12(str, str ? wcslen(str) : 0)
         {
         }
         template<int n>
-        OPER12(const XCHAR(&str)[n])
+        OPER12(const wchar_t(&str)[n])
             : OPER12(str, n - 1) // char arrays have termniating null
         { }
-        OPER12(const XCHAR* str, size_t len)
+        OPER12(const wchar_t* str, size_t len)
         {
             if (!str) {
                 xltype = xltypeMissing;
@@ -352,13 +352,13 @@ namespace xll {
         }
 		*/
         /*
-        OPER12& operator=(const XCHAR* str)
+        OPER12& operator=(const wchar_t* str)
         {
             return operator=(OPER12(str));
         }
         */
         ///  Append a string
-        OPER12& append(const XCHAR* str, size_t len)
+        OPER12& append(const wchar_t* str, size_t len)
         {
             if (xltype == xltypeStr) {
                 auto end = 1 + val.str[0];
@@ -374,7 +374,7 @@ namespace xll {
 
             return *this;
         }
-        OPER12& operator&=(const XCHAR* str)
+        OPER12& operator&=(const wchar_t* str)
         {
             return append(str, wcslen(str));
         }
@@ -388,7 +388,7 @@ namespace xll {
             return append(o.val.str + 1, o.val.str[0]);
         }
         /*
-        bool operator==(const XCHAR* str) const
+        bool operator==(const wchar_t* str) const
         {
             return 0 == wcsncmp(str, val.str + 1, val.str[0]);
         }
@@ -596,23 +596,23 @@ namespace xll {
     private:
         void allocate_str(size_t len)
         {
-            ensure(1 + len < std::numeric_limits<XCHAR>::max());
-            val.str = static_cast<XCHAR*>(::malloc((1 + len) * sizeof(XCHAR)));
+            ensure(1 + len < std::numeric_limits<wchar_t>::max());
+            val.str = static_cast<wchar_t*>(::malloc((1 + len) * sizeof(wchar_t)));
             ensure(val.str != nullptr);
             if (val.str)
-                val.str[0] = static_cast<XCHAR>(len);
+                val.str[0] = static_cast<wchar_t>(len);
             xltype = xltypeStr;
         }
         void reallocate_str(size_t len)
         {
             ensure(xltype == xltypeStr);
-            ensure(1 + len < std::numeric_limits<XCHAR>::max());
-            val.str = static_cast<XCHAR*>(::realloc(val.str, (1 + len) * sizeof(XCHAR)));
+            ensure(1 + len < std::numeric_limits<wchar_t>::max());
+            val.str = static_cast<wchar_t*>(::realloc(val.str, (1 + len) * sizeof(wchar_t)));
             ensure(val.str);
             if (val.str)
-                val.str[0] = static_cast<XCHAR>(len);
+                val.str[0] = static_cast<wchar_t>(len);
         }
-        void copy_str(const XCHAR* str)
+        void copy_str(const wchar_t* str)
         {
             wmemcpy(val.str + 1, str, val.str[0]);
         }
