@@ -10,6 +10,8 @@
       	makes it easy to call C/C++ or even Fortran code from
       	from Microsoft Excel. Just write a function and register
       	it with Excel by creating an <codeInline>xll::AddIn</codeInline> object.
+      	</para>
+      	<para>
       	The library also creates documentation that is integrated with Excel.
       	</para>
     </introduction>
