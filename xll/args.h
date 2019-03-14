@@ -338,13 +338,29 @@ namespace xll {
 			//??? Add prefix???
 			return FunctionText();
         }
-		// Integer hash used in help files.
-        OPER TopicId() const 
-        {
-			auto key = Key();
-			std::wstring str(key.val.str + 1, key.val.str[0]);
 
-			return OPER(std::to_wstring(std::hash<std::wstring>{}(str)));
+        // Simple hash function
+        static OPER hash_string(const wchar_t* s, unsigned n)
+        {
+            static int A = 54059; /* a prime */
+            static int B = 76963; /* another prime */
+            static int C = 86969; /* yet another prime */
+            static int FIRST = 37; /* also prime */
+            int h = FIRST;
+            while (n--) {
+                h = (h * A) ^ (s[0] * B);
+                s++;
+            }
+
+            return Excel(xlfText, OPER(abs(h)), OPER(L"General")); // or return h % C;
+        }
+
+        // Integer hash used in help files.
+        OPER TopicId() const
+        {
+            auto key = Key();
+
+            return hash_string(key.val.str + 1, key.val.str[0]);
         }
 
         OPER Guid() const 
