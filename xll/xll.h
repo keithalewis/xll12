@@ -20,11 +20,11 @@ extern HINSTANCE xll_Instance;
 #include "test.h"
 
 #ifndef _LIB
-#pragma comment(linker, "/include:" XLL_DECORATE("xll_this", 0))
-#pragma comment(linker, "/include:" XLL_DECORATE("xll_trace", 4))
+//#pragma comment(linker, "/include:" XLL_DECORATE("xll_this", 0))
+//#pragma comment(linker, "/include:" XLL_DECORATE("xll_trace", 4))
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_paste_function", 0))
 //#pragma comment(linker, "/include:" XLL_DECORATE("xll_make_doc", 0))
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_make_shfb", 0))
-#pragma comment(linker, "/include:" XLL_DECORATE("xll_get_workbook", 4))
-#pragma comment(linker, "/include:" XLL_DECORATE("xll_get_workspace", 4))
+//#pragma comment(linker, "/include:" XLL_DECORATE("xll_get_workbook", 4))
+//#pragma comment(linker, "/include:" XLL_DECORATE("xll_get_workspace", 4))
 #endif // _LIB

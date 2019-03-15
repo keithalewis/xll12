@@ -5,26 +5,25 @@
 using namespace xll;
 
 // xlfFwrite only writes 255 chars at a time.
-inline OPER fwrite(const OPER& file, const OPER& text)
+inline OPER fwrite(const OPER& fd, const OPER& text)
 {
     OPER start{ 1 };
     OPER len = Excel(xlfLen, text);
 
     while (len > 255) {
         const OPER& mid = Excel(xlfMid, text, start, OPER(255));
-        auto result = Excel(xlfFwrite, file, mid);
+        auto result = Excel(xlfFwrite, fd, mid);
         ensure(result == 255);
         start = start + 255;
         len = len - 255;
     }
 
-    return Excel(xlfFwrite, file, Excel(xlfMid, text, start, len));
+    return Excel(xlfFwrite, fd, Excel(xlfMid, text, start, len));
 }
 
 // Read one line at a time.
-inline OPER fread(const OPER& file)
+inline OPER fread(const OPER& fd)
 {
-    OPER fd = Excel(xlfFopen, file, OPER(3));
     ensure(fd.isNum());
 
     OPER text;
@@ -32,16 +31,15 @@ inline OPER fread(const OPER& file)
         text = text & line;
     }
 
-    Excel(xlfFclose, fd);
-
     return text;
 }
 
 class xlfFile {
 	OPER h; // file handle
 public:
-	xlfFile(const OPER& file)
-		: h(Excel(xlfFopen, file, OPER(3)))
+    // 1 = read/write 2 = readonly 3 = create read/write
+	xlfFile(const OPER& file, int access = 3)
+		: h(Excel(xlfFopen, file, OPER(access)))
 	{ }
 	xlfFile(const xlfFile&) = delete;
 	xlfFile& operator=(const xlfFile&) = delete;
@@ -49,6 +47,10 @@ public:
 	{
 		Excel(xlfFclose, h);
 	}
+    operator bool() const
+    {
+        return h.isNum();
+    }
 	OPER read() const
 	{
 		return fread(h);
@@ -134,6 +136,13 @@ OPER template_shfbproj(const OPER& base)
 #include "template.shfbproj"
     );
     tp = Excel(xlfSubstitute, tp, OPER(L"{{Base}}"), base);
+    xlfFile ct(OPER(L"CopyrightText.txt"), 2);
+    if (ct) {
+        OPER org(L"<CopyrightText>Copyright &amp;#169%3b {{Organization}}</CopyrightText>");
+        org = Excel(xlfSubstitute, org, OPER(L"{{Organization}}"), ct.read());
+        tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), org);
+    }
+ 
     //<None Include = "Reference\FUNCTION.aml" / >
     OPER Pre = OPER(L"\n    <None Include=\"");
     OPER Post = OPER(L".aml\" />");

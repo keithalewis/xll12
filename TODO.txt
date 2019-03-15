@@ -1,6 +1,8 @@
 Add #defines for XLL_DOUBLE12/X
 What to do with _T?
 
+Move GetWorkspace and other utilities out of xll.
+
 Figure out how to do links in SHFB.
 
 Group by Category level in documentation.

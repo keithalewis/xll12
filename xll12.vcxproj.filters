@@ -92,23 +92,11 @@
     <ClCompile Include="xll\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utility\this.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="utility\trace.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
     <ClCompile Include="utility\paste_function.cpp">
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="xll\shfb\shfb.cpp">
       <Filter>shfb</Filter>
-    </ClCompile>
-    <ClCompile Include="xll\GetWorkbook.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="xll\GetWorkspace.cpp">
-      <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
