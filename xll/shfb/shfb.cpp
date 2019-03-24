@@ -4,6 +4,12 @@
 
 using namespace xll;
 
+// Replace with appropriate values or OPER() to remove.
+static std::map<OPER,OPER> shfb_map = {
+    { OPER(L"Organization"), OPER(L"KALX, LLC") },
+    { OPER(L"FeedbackEMailAddress"), OPER(L"info%40kalx.net") }
+};
+
 // xlfFwrite only writes 255 chars at a time.
 inline OPER fwrite(const OPER& fd, const OPER& text)
 {
@@ -136,11 +142,21 @@ OPER template_shfbproj(const OPER& base)
 #include "template.shfbproj"
     );
     tp = Excel(xlfSubstitute, tp, OPER(L"{{Base}}"), base);
-    xlfFile ct(OPER(L"CopyrightText.txt"), 2);
-    if (ct) {
-        OPER org(L"<CopyrightText>Copyright &amp;#169%3b {{Organization}}</CopyrightText>");
-        org = Excel(xlfSubstitute, org, OPER(L"{{Organization}}"), ct.read());
-        tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), org);
+
+    for (const auto& [k,v] : shfb_map) {
+        if (k == OPER(L"Organization")) {
+            OPER org(L"<CopyrightText>Copyright &amp;#169%3b {{Organization}}</CopyrightText>");
+            org = Excel(xlfSubstitute, org, OPER(L"{{Organization}}"), v);
+            tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), org);
+        }
+        else {
+            OPER q = Excel(xlfConcatenate, OPER(L"{{"), k, OPER(L"}}"));
+            OPER r = OPER(L"");
+            if (!v.isMissing()) {
+                r = Excel(xlfConcatenate, OPER(L"<"), k, OPER(L">"), v, OPER(L"</"), k, OPER(L">"));
+            }
+            tp = Excel(xlfSubstitute, tp, q, r);
+        }
     }
  
     //<None Include = "Reference\FUNCTION.aml" / >
