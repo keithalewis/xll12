@@ -338,18 +338,8 @@ namespace xll {
 			//??? Add prefix???
 			return FunctionText();
         }
-<<<<<<< HEAD
-        // Simple hash function
-        static OPER hash_string(const wchar_t* s, unsigned n)
-        {
-            static UINT32 A = 54059; /* a prime */
-            static UINT32 B = 76963; /* another prime */
-            static UINT32 C = 86969; /* yet another prime */
-            static UINT32 FIRST = 37; /* also prime */
-            UINT32 h = FIRST;
-=======
 
-        // Simple hash function
+	// Simple hash function
         static OPER hash_string(const wchar_t* s, unsigned n)
         {
             static int A = 54059; /* a prime */
