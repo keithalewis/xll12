@@ -87,4 +87,4 @@ xll_insert_function()
 
 	return TRUE;
 }
-On<Key> xlo_insert_function(ON_CTRL ON_SHIFT L"B", L"XLL.INSERT.FUNCTION");
+On<Key> xlo_insert_function(ON_CTRL ON_SHIFT L"C", L"XLL.INSERT.FUNCTION");

@@ -185,7 +185,15 @@ namespace xll {
             case xltypeBool:
                 return val.xbool == o.val.xbool;
             case xltypeRef:
-                return false; //! compare sub references
+                if (val.mref.idSheet != o.val.mref.idSheet)
+                    return false;
+                if (val.mref.lpmref->count != o.val.mref.lpmref->count)
+                    return false;
+                for (WORD i = 0; i < val.mref.lpmref->count; ++i)
+                    if (val.mref.lpmref->reftbl[i] != o.val.mref.lpmref->reftbl[i])
+                        return false;
+
+                return true; 
             case xltypeErr:
                 return val.err == o.val.err; //? false like NaN
             case xltypeFlow:

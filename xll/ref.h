@@ -11,6 +11,10 @@ inline bool operator==(const XLREF12& r, const XLREF12& s)
 		&& r.rwFirst == s.rwFirst
 		&& r.rwLast == s.rwLast;
 }
+inline bool operator!=(const XLREF12& r, const XLREF12& s)
+{
+    return !operator==(r, s);
+}
 // strict weak ordering
 inline bool operator<(const XLREF12& r, const XLREF12& s)
 {
