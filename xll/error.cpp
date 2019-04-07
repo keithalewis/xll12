@@ -84,6 +84,15 @@ public:
 	}
 } xll_alert_level;
 
+DWORD XLL_ALERT_LEVEL(DWORD level)
+{
+    DWORD olevel = xll_alert_level;
+    
+    xll_alert_level = level;
+
+    return olevel;
+}
+
 int 
 XLL_ALERT(const char* text, const char* caption, DWORD level, UINT type, bool force)
 {

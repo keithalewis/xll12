@@ -14,9 +14,9 @@ xll_paste_function()
 		ensure (selection.size() == 1 || !"Selection must be a single cell.");
 		OPER regid = Excel(xlCoerce, selection);
 		// find addin corresponding to registerId in active cell
-		auto key = RegIdMap.find(regid);
-		ensure (key != RegIdMap.end());
-		const Args& args = AddInMap[key->second];
+		auto key = AddIn::RegIdMap().find(regid);
+		ensure (key != AddIn::RegIdMap().end());
+		const Args& args = AddIn::AddInMap()[key->second];
         // function text
 		OPER text(L"=");
 		text &= args.FunctionText();
@@ -58,9 +58,9 @@ xll_insert_function()
 		ensure(selection.xltype == xltypeSRef);
 		OPER regid = Excel(xlCoerce, selection);
 		// find addin corresponding to registerId in active cell
-		auto key = RegIdMap.find(regid);
-		ensure(key != RegIdMap.end());
-		const Args& args = AddInMap[key->second];
+		auto key = AddIn::RegIdMap().find(regid);
+		ensure(key != AddIn::RegIdMap().end());
+		const Args& args = AddIn::AddInMap()[key->second];
 		// function text
 		OPER text(L"=");
 		text &= args.FunctionText();

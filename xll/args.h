@@ -23,7 +23,7 @@ namespace xll {
 		ArgumentHelp, // 1-based index
 	};
 
-	using xcstr = const XCHAR*;
+	using xcstr = const wchar_t*;
 
 	/// <summary>Prepare an array suitible for <c>xlfRegister</c></summary>
 	class Args {
@@ -181,7 +181,7 @@ namespace xll {
 			return args[ARG::Category];
 		}
 		/// Specify the shortcut text for calling the function.
-		Args& ShortcutText(XCHAR shortcutText)
+		Args& ShortcutText(wchar_t shortcutText)
 		{
 			args[ARG::ShortcutText] = OPER(&shortcutText, 1);
 
@@ -338,13 +338,29 @@ namespace xll {
 			//??? Add prefix???
 			return FunctionText();
         }
-		// Integer hash used in help files.
-        OPER TopicId() const 
-        {
-			auto key = Key();
-			std::wstring str(key.val.str + 1, key.val.str[0]);
 
-			return OPER(std::to_wstring(std::hash<std::wstring>{}(str)));
+	// Simple hash function
+        static OPER hash_string(const wchar_t* s, unsigned n)
+        {
+            static int A = 54059; /* a prime */
+            static int B = 76963; /* another prime */
+            static int C = 86969; /* yet another prime */
+            static int FIRST = 37; /* also prime */
+            int h = FIRST;
+            while (n--) {
+                h = (h * A) ^ (s[0] * B);
+                s++;
+            }
+
+            return Excel(xlfText, OPER(abs(h)), OPER(L"General")); // or return h % C;
+        }
+
+        // Integer hash used in help files.
+        OPER TopicId() const
+        {
+            auto key = Key();
+
+            return hash_string(key.val.str + 1, key.val.str[0]);
         }
 
         OPER Guid() const 
@@ -458,9 +474,9 @@ namespace xll {
 
 	/*
 	// Convert __FUNCDNAME__ to arguments for xlfRegister
-	inline Args Demangle(const XCHAR* F)
+	inline Args Demangle(const wchar_t* F)
 	{
-		static std::map<XCHAR,const OPER12> arg_map = {
+		static std::map<wchar_t,const OPER12> arg_map = {
 			{ L'F', OPER12(XLL_SHORT) },
 			{ L'G', OPER12(XLL_WORD) }, // also USHORT
 			{ L'H', OPER12(XLL_BOOL) },
