@@ -69,7 +69,7 @@ namespace xll {
 			std::fill(args.begin(), args.end(), OPER12(xltype::Nil));
 		}
 		Args(const Args&) = default;
- 		Args& operator=(const Args&) = default;
+		Args& operator=(const Args&) = default;
 		~Args()
 		{ }
 
