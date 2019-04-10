@@ -166,8 +166,8 @@ void test_num()
 	ensure (num == num2);
 
     OPER12 o3{ 0 };
-    ensure(o3.xltype == xltypeNum);
-    ensure(o3.val.num == 0);
+    ensure(o3.xltype == xltypeInt);
+    ensure(o3.val.w == 0);
 //    OPER12 o4 = 0; // calls OPER12(const XCHAR*) !!!
 //    ensure(o4.xltype == xltypeNum);
 //    ensure(o4.val.num == 0);
@@ -298,13 +298,13 @@ void test_int()
 {
 	{
 		OPER o(1);
-		ensure (o.xltype == xltypeNum);
-		ensure (o.val.num == 1);
+		ensure (o.xltype == xltypeInt);
+		ensure (o.val.w == 1);
 	}
 	{
 		OPER o(1l);
-		ensure (o.xltype == xltypeNum);
-		ensure (o.val.num == 1);
+		ensure (o.xltype == xltypeInt);
+		ensure (o.val.w == 1);
 	}
 }
 void test_handle()

@@ -310,8 +310,8 @@ namespace xll {
                 return val.xbool;
             if (type() == xltypeErr)
                 return false;
-            if (type() == xltypeStr)
-                return val.str[0] != 0 && val.str[1] != 0;
+//            if (type() == xltypeStr)
+//                return val.str[0] != 0 && val.str[1] != 0;
 
             throw std::runtime_error("OPER12::operator double() only used for num, int, bool, and err");
         }
@@ -578,9 +578,16 @@ namespace xll {
         // Int
         explicit OPER12(int w)
         {
+            xltype = xltypeInt; // just like Excel
+            val.w = w;
+        }
+        /*
+        explicit OPER12(int w)
+        {
             xltype = xltypeNum; // just like Excel
             val.num = w;
         }
+        */
         /*
         OPER12& operator=(const int& w)
         {
