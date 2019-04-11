@@ -30,7 +30,7 @@ AddIn xai_foo_function(
 HANDLEX WINAPI xll_foo_function()
 {
 #pragma XLLEXPORT
-    xll::handle<std::function<double(double)>> h(new std::function<double(double)>(foo));
+    xll::handle<std::function<double(double)>> h(new std::function{foo});
 
     return h.get();
 }

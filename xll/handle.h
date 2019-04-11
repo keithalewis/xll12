@@ -33,22 +33,45 @@ namespace xll {
 	template<class T>
 	class handle {
     public:
-        using uptr = std::unique_ptr<T>;
+        union ph {
+            T* p;
+            int32_t i[2];
+            HANDLEX h;
+        };
         static HANDLEX p2h(T* p)
         {
-            return static_cast<HANDLEX>(PtrToUint(p));
+            ph h;
+
+            h.p = p;
+#ifdef _WIN64
+            std::swap(h.i[0], h.i[1]);
+#endif
+            return h.h;
         }
-        // h = p0 - p, p = p0 - h
         static T* h2p(HANDLEX h)
         {
-            return static_cast<T*>(UintToPtr(static_cast<unsigned long>(h)));
+            ph p;
+
+            p.h = h;
+#ifdef _WIN64
+            std::swap(p.i[0], p.i[1]);
+#endif
+            return p.p;
         }
 
-        static std::set<uptr>& handles()
+        static std::set<T*>& handles()
 		{
-			static std::set<uptr> handles_;
+            struct set_ {
+                std::set<T*> h;
+                ~set_()
+                {
+                    for (auto p : h)
+                        delete p;
+                }
+            };
+			static set_ h;
 
-			return handles_;
+			return h.h;;
 		}
 
         static void insert(T* p)
@@ -61,13 +84,14 @@ namespace xll {
 			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
 			{
                 double n = coerce.val.num;
-                auto i = std::find_if(hs.begin(), hs.end(), [n](const uptr& h) { return n == p2h(h.get()); });
+                auto i = hs.find(h2p(n)); // h2p(coerce) ???
 				if (i != hs.end()) {
+                    delete *i;
 					hs.erase(i);
 				}
 			}
 
-            hs.insert(std::move(uptr(p)));
+            hs.insert(p);
 		}
 		T* pt;
     public:
