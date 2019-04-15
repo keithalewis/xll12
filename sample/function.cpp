@@ -64,9 +64,8 @@ AddIn xai_foo_member(
 HANDLEX WINAPI xll_foo_member()
 {
 #pragma XLLEXPORT
-    Foo bar(4);
-
-    xll::handle<std::function<double(double)>> h(new std::function{[&bar](double x) { return bar(x); }});
+ 
+    xll::handle<std::function<double(double)>> h(new std::function{Foo(4)});
 
     return h.get();
 }
