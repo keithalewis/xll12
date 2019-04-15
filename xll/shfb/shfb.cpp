@@ -1,13 +1,14 @@
 // shfb.cpp - Sandcastle Help File Builder
 #include <string>
+#include "shfb.h"
 #include "../xll.h"
 
 using namespace xll;
 
 // Replace with appropriate values or OPER() to remove.
 static std::map<OPER,OPER> shfb_map = {
-    { OPER(L"Organization"), OPER(L"KALX, LLC") },
-    { OPER(L"FeedbackEMailAddress"), OPER(L"info%40kalx.net") }
+    { OPER(L"Organization"), OPER(SHFB_ORGANIZATION) },
+    { OPER(L"FeedbackEMailAddress"), OPER(SHFB_FEEDBACKEMAILADDRESS) }
 };
 
 // xlfFwrite only writes 255 chars at a time.
@@ -142,22 +143,21 @@ OPER template_shfbproj(const OPER& base)
 #include "template.shfbproj"
     );
     tp = Excel(xlfSubstitute, tp, OPER(L"{{Base}}"), base);
-
-    for (const auto& [k,v] : shfb_map) {
-        if (k == OPER(L"Organization")) {
-            OPER org(L"<CopyrightText>Copyright &amp;#169%3b {{Organization}}</CopyrightText>");
-            org = Excel(xlfSubstitute, org, OPER(L"{{Organization}}"), v);
-            tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), org);
-        }
-        else {
-            OPER q = Excel(xlfConcatenate, OPER(L"{{"), k, OPER(L"}}"));
-            OPER r = OPER(L"");
-            if (!v.isMissing()) {
-                r = Excel(xlfConcatenate, OPER(L"<"), k, OPER(L">"), v, OPER(L"</"), k, OPER(L">"));
-            }
-            tp = Excel(xlfSubstitute, tp, q, r);
-        }
-    }
+#ifdef SHFB_ORGANIZATION
+    OPER org(L"<CopyrightText>Copyright &amp;#169%3b {{Organization}}</CopyrightText>");
+    org = Excel(xlfSubstitute, org, OPER(L"{{Organization}}"), OPER(SHFB_ORGANIZATION));
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), org);
+#else
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), OPER(L""));
+#endif
+#ifdef SHFB_FEEDBACKEMAILADDRESS
+    OPER email = OPER(L"<FeedbackEMailAddress>");
+    email = email & OPER(SHFB_FEEDBACKEMAILADDRESS);
+    email = email & OPER(L"</FeedbackEMailAddress>");
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{FeedbackEMailAddress}}"), email);
+#else
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{FeedbackEMailAddress}}"), OPER(L""));
+#endif
  
     //<None Include = "Reference\FUNCTION.aml" / >
     OPER Pre = OPER(L"\n    <None Include=\"");
@@ -251,6 +251,11 @@ void make_shfb(const OPER& lib)
 {
     OPER dir = dirname(lib);
     OPER base = basename(lib, true); // strip off .xll
+#ifdef SHFB_DOCS
+    dir = dir & SHFB_DOCS;
+    dir = dir & base;
+    dir = dir & L"\\";
+#endif
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
 
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
