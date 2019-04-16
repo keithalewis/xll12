@@ -9,8 +9,11 @@ versions of Excel 12 or greater. See
 To debug an add-in you must tell Visual Studio the full path to the Excel executable and what add-in to load.  
 In the project `Properties` in the `Debugging` tab the `Command` should be 
 
-> `$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\excel.exe)`.  
+> `$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\excel.exe)`
 
-To have Excel open your add in when debugging specify `Command Arguments` to be `"$(TargetPath)"`.  
-You may want to also specify `/p $(ProjectDir)` so Excel will default to opening files in your project directory.
+To have Excel open your add in when debugging and specify the default directory set `Command Arguments` to be 
+
+> `"$(TargetPath)" /p "$(ProjectDir)"`
+
+
 
