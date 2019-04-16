@@ -11,7 +11,7 @@ In the project `Properties` in the `Debugging` tab the `Command` should be
 
 > `$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\excel.exe)`
 
-To have Excel open your add in when debugging and specify the default directory set `Command Arguments` to be 
+To have Excel open your add-in when debugging and specify the default directory set `Command Arguments` to be 
 
 > `"$(TargetPath)" /p "$(ProjectDir)"`
 
