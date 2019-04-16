@@ -11,6 +11,8 @@
 #define I_(x) T_("<legacyItalic>") S_(x) _T("</legacyItalic>")
 #define U_(x) T_("<legacyUnderline>") S_(x) _T("</legacyUnderline>")
 
+#undef S_
+
 #define Aacute_ T_("&#193;")
 #define aacute_ T_("&#225;")
 #define Acirc_ T_("&#194;")
@@ -270,3 +272,7 @@
 #define zeta_ T_("&#950;")
 #define zwj_ T_("&#8205;")
 #define zwnj_ T_("&#8204;")
+
+#ifdef T_
+#undef T_
+#endif
