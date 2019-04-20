@@ -195,6 +195,8 @@
     <ClInclude Include="xll\oper.h" />
     <ClInclude Include="xll\args.h" />
     <ClInclude Include="xll\ref.h" />
+    <ClInclude Include="xll\shfb\entities.h" />
+    <ClInclude Include="xll\shfb\shfb.h" />
     <ClInclude Include="xll\test.h" />
     <ClInclude Include="xll\XLCALL.H" />
     <ClInclude Include="xll\xll.h" />

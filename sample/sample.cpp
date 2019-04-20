@@ -1,6 +1,7 @@
 // sample.cpp - Simple example of using AddIn.
 #include <cmath>
 #include "../xll/xll.h"
+#include "../xll/shfb/entities.h"
 
 using namespace xll;
 
@@ -23,9 +24,21 @@ AddIn xai_function(
 	// Insert Function description.
 	.FunctionHelp(L"Help on XLL.FUNCTION goes here.")
 	// Create entry for this function in Sandcastle Help File Builder project file.
-	.Documentation(LR"(
-Documentation on XLL.FUNCTION goes here.
-    )")
+	.Documentation(LR"zzz(
+Free-form documentation on XLL.FUNCTION goes here.
+
+Newlines are ignored when building documentation with Sandcastle Help File Builder.
+<para>
+But you can include MAML directives.
+</para>
+    )zzz"
+    L"We can also use C prepocessor string pasting "
+    L"to write documentation.\n This newline is also ignored."
+    L"Here is " B_(L"bold") L", " I_(L"italic") L", and " U_(L"underlined") L" text."
+    L"<para>"
+        int_ SUB_(minus_ infin_) SUP_(infin_) I_(L"e") SUP_(L"-x" SUP_(L"2") L"/2") L" dx"
+    L"</para>"
+    )
 );
 // Calling convention *must* be WINAPI (aka __stdcall) for Excel.
 LPOPER WINAPI xll_function(double x)

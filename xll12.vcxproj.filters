@@ -75,6 +75,12 @@
     <ClInclude Include="xll\locus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xll\shfb\shfb.h">
+      <Filter>shfb</Filter>
+    </ClInclude>
+    <ClInclude Include="xll\shfb\entities.h">
+      <Filter>shfb</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="xll\XLCALL.CPP">
