@@ -36,7 +36,7 @@ But you can include MAML directives.
     L"to write documentation.\n This newline is also ignored."
     L"Here is " B_(L"bold") L", " I_(L"italic") L", and " U_(L"underlined") L" text."
     L"<para>"
-        int_ SUB_(minus_ infin_) SUP_(infin_) I_(L"e") SUP_(L"-x" SUP_(L"2") L"/2") L" dx"
+        int_ SUB_(minus_ infin_) SUP_(infin_) I_(L"e") SUP_(L"-" I_(L"x") sup2_ L"/2") L" " I_(L"dx")
     L"</para>"
     )
 );

@@ -9,7 +9,9 @@
 #define SHFB_FEEDBACKEMAILADDRESS L"info%40kalx.net"
 #endif
 
+// Put in docs directory for GitHub if defined
 #ifdef SHFB_DOCS
+#undef SHFB_DOCS
 #ifdef _WIN64
 #define SHFB_DOCS L"..\\..\\docs\\"
 #else
