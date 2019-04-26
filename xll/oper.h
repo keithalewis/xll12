@@ -517,7 +517,7 @@ namespace xll {
         {
             if (rw == 0 || col == 0) {
                 this->~OPER12();
-                operator=(OPER12{});
+                xltype = xltypeNil; // empty range
             }
             else if (type() == xltypeMulti) {
                 reallocate_multi(rw, col);
