@@ -163,6 +163,8 @@ namespace xll {
                 destroy_multi();
                 deallocate_multi();
             }
+
+            xltype = xltypeNil;
         }
 
         bool operator==(const OPER12& o) const
@@ -180,7 +182,7 @@ namespace xll {
             switch (type()) {
             case xltypeNum:
                 return val.num == o.val.num;
-            case xltypeStr:
+            case xltypeStr: // case insensitive
                 return val.str[0] == o.val.str[0] && 0 == _wcsnicmp(val.str + 1, o.val.str + 1, val.str[0]);
             case xltypeBool:
                 return val.xbool == o.val.xbool;
@@ -235,27 +237,22 @@ namespace xll {
             case xltypeErr:
                 return val.err < o.val.err;
             case xltypeMulti:
-                return false; // !!! for now
+                if (val.array.rows < o.val.array.rows)
+                    return true;
+                if (val.array.rows == o.val.array.rows && val.array.columns < o.val.array.columns)
+                    return true;
+                if (val.array.rows == o.val.array.rows && val.array.columns == o.val.array.columns) {
+                    for (int i = 0; i < size(); ++i) {
+                        if (operator[](i) < o[i])
+                            return true;
+                    }
+                }
+                return false;
             case xltypeMissing:
             case xltypeNil:
                 return false;
             case xltypeSRef:
-                if (val.sref.ref.rwFirst < o.val.sref.ref.rwFirst)
-                    return true;
-                if (val.sref.ref.rwFirst == o.val.sref.ref.rwFirst
-                    && val.sref.ref.rwLast < o.val.sref.ref.rwLast)
-                    return true;
-                if (val.sref.ref.rwFirst == o.val.sref.ref.rwFirst
-                    && val.sref.ref.rwLast == o.val.sref.ref.rwLast
-                    && val.sref.ref.colFirst < o.val.sref.ref.colFirst)
-                    return true;
-                if (val.sref.ref.rwFirst == o.val.sref.ref.rwFirst
-                    && val.sref.ref.rwLast == o.val.sref.ref.rwLast
-                    && val.sref.ref.colFirst == o.val.sref.ref.colFirst
-                    && val.sref.ref.colLast < o.val.sref.ref.colLast)
-                    return true;
-
-                return false;
+                return val.sref.ref < o.val.sref.ref;
             case xltypeInt:
                 return val.w < o.val.w;
             }

@@ -9,6 +9,56 @@ using namespace xll;
 
 static std::default_random_engine dre;
 
+template<class O>
+inline bool irreflexive(const O& a)
+{
+    return !(a < a);
+}
+template<class O>
+inline bool asymmetric(const O& a, const O& b)
+{
+    return (a < b) ? !(b < a) : true;
+}
+template<class O>
+inline bool incomparable(const O& a, const O& b)
+{
+    return !(a < b) && !(b < a);
+}
+template<class O>
+inline bool transitive(const O& a, const O& b, const O& c)
+{
+    return a < b && b < c ? a < c : true;
+}
+template<class O>
+inline bool incomparable_transitive(const O& a, const O& b, const O& c)
+{
+    return incomparable(a,b) && incomparable(b,c) ? incomparable(a,c) : true;
+}
+template<class O>
+inline bool strict_weak(const O& a, const O& b, const O& c)
+{
+    ensure(irreflexive(a));
+    ensure(irreflexive(b));
+    ensure(irreflexive(c));
+    ensure(asymmetric(a, b));
+    ensure(asymmetric(b, c));
+    ensure(asymmetric(c, a));
+    ensure(transitive(a, b, c));
+    ensure(transitive(a, c, b));
+    ensure(transitive(b, a, c));
+    ensure(transitive(b, c, a));
+    ensure(transitive(c, b, a));
+    ensure(transitive(c, a, b));
+    ensure(incomparable_transitive(a, b, c));
+    ensure(incomparable_transitive(a, c, b));
+    ensure(incomparable_transitive(b, a, c));
+    ensure(incomparable_transitive(b, c, a));
+    ensure(incomparable_transitive(c, b, a));
+    ensure(incomparable_transitive(c, a, b));
+
+    return true;
+}
+
 class base {
     int data_;
 public:
@@ -276,15 +326,16 @@ void test_multi()
 	ensure (m0.columns() == 1);
 	ensure (m0[0] == L"foo");
 
-	std::uniform_int_distribution<RW> u(1, 100);
+	std::uniform_int_distribution<RW> u(1, 10);
 	for (int j = 0; j < 100; ++j) {
-		OPER12 a(u(dre), u(dre)), b(u(dre), u(dre));
+		OPER12 a(u(dre), u(dre)), b(u(dre), u(dre)), c(u(dre));
 		if (a.columns() == b.columns()) {
 			if (a.rows() == 1 && b.rows() != 1)
 				b.resize(1, b.size());
 			a.push_back(b);
 		}
-	}
+        ensure (strict_weak(a,b,c));
+    }
 
 	{
 		OPER12 o{OPER12(1.23), OPER12(L"foo")};
