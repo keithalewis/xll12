@@ -655,8 +655,8 @@ namespace xll {
                 std::uninitialized_fill(val.array.lparray + this->size(), val.array.lparray + size, OPER12{});
             }
             if (dsize < 0) {
-                for (auto pe = end(); pe + dsize < end(); ++pe) {
-                    pe->~OPER12();
+                for (auto pi = begin() + size; pi != end(); ++pi) {
+                    pi->~OPER12();
                 }
             }
             val.array.rows = rw;
