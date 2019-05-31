@@ -531,8 +531,8 @@ namespace xll {
         OPER12& push_back(const OPER12& o)
         {
             if (type() != xltypeMulti) {
-                resize(1, 1);
-                operator[](0) = o;
+                ensure (o.size() == 0);
+                operator=(o); // overwrite
                 return *this;
             }
             else {
