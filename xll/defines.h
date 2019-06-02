@@ -25,11 +25,11 @@
 #endif 
 
 // Excel C data types for Excel4 xlfRegister/AddIn.
-#define XLL_CSTRING4  "C"  // char * to C style NULL terminated string (up to 255 characters)
-#define XLL_PSTRING4  "D"  // unsigned char * to Pascal style byte counted string (up to 255 characters)
-#define XLL_CSTRING4_ "F"  // reference to a null terminated string
-#define XLL_PSTRING4_ "G"  // reference to a byte counted string
-#define XLL_FP4       "K"  // pointer to struct FP
+#define XLL_CSTRING4  L"C"  // char * to C style NULL terminated string (up to 255 characters)
+#define XLL_PSTRING4  L"D"  // unsigned char * to Pascal style byte counted string (up to 255 characters)
+#define XLL_CSTRING4_ L"F"  // reference to a null terminated string
+#define XLL_PSTRING4_ L"G"  // reference to a byte counted string
+#define XLL_FP4       L"K"  // pointer to struct FP
 
 // Excel C data types for Excel12 xlfRegister/AddIn.
 #define XLL_BOOL     L"A"  // short int used as logical
