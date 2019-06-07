@@ -32,79 +32,63 @@ namespace xll {
     // because 64-bit pointers are not always valid doubles.
 	template<class T>
 	class handle {
-    public:
-        union ph {
-            T* p;
-            int32_t i[2];
-            HANDLEX h;
-        };
-        static HANDLEX p2h(T* p)
-        {
-            ph h;
+        class set {
+            static std::map<HANDLEX,T*>& handle_map()
+            {
+                struct map_ {
+                    std::map<HANDLEX,T*> m;
+                    ~map_()
+                    {
+                        //for (auto p : m) delete p.second;
+                    }
+                };
+                static map_ m;
 
-            h.p = p;
-#ifdef _WIN64
-            std::swap(h.i[0], h.i[1]);
-#endif
-            return h.h;
-        }
-        static T* h2p(HANDLEX h)
-        {
-            ph p;
-
-            p.h = h;
-#ifdef _WIN64
-            std::swap(p.i[0], p.i[1]);
-#endif
-            return p.p;
-        }
-
-        static std::set<T*>& handles()
-		{
-            struct set_ {
-                std::set<T*> h;
-                ~set_()
-                {
-                    for (auto p : h)
-                        delete p;
+                return m.m;
+            }
+        public:
+            static HANDLEX insert(T* p, bool lookup = false)
+            {
+                static T* base = nullptr;
+                if (base == nullptr) {
+                    base = p - 1;
                 }
-            };
-			static set_ h;
+                HANDLEX h = static_cast<HANDLEX>(p - base);
+                if (lookup) {
+                    return h;
+                }
 
-			return h.h;;
-		}
+                // delete if old handle in cell points at something
+                OPER oldh = Excel(xlCoerce, Excel(xlfCaller));
+                if (oldh.isNum() && oldh.val.num != 0) {
+                    T* oldp = find(oldh.val.num);
+                    if (oldp != nullptr)
+                        delete oldp;
+                }
 
-        static void insert(T* p)
-		{
-			auto& hs = handles();
-            const auto& caller = Excel(xlfCaller);
-			const auto& coerce = Excel(xlCoerce, caller);
+                handle_map().insert(std::make_pair(h, p));
 
-            // Delete value in cell if it is an existing pointer.
-			if (coerce.xltype == xltypeNum && coerce.val.num != 0)
-			{
-                double n = coerce.val.num;
-                auto i = hs.find(h2p(n)); // h2p(coerce) ???
-				if (i != hs.end()) {
-                    delete *i;
-					hs.erase(i);
-				}
-			}
+                return h;
+            }
+            static T* find(HANDLEX h)
+            {
+                auto i = handle_map().find(h);
 
-            hs.insert(p);
-		}
+                return i == handle_map().end() ? nullptr : i->second;
+            }
+        };
 		T* pt;
     public:
         //!!! use ptr sink
         handle(T* p)
             : pt(p)
         {
-            insert(p);
+            set::insert(p);
         }
 		handle(HANDLEX h)
 		{
             //!!! check if h in handles
-			pt = h2p(h);
+			pt = set::find(h);
 		}
 		handle(const handle&) = delete;
 		handle& operator=(const handle&) = delete;
@@ -117,7 +101,7 @@ namespace xll {
         }
 		HANDLEX get() const
 		{
-			return p2h(pt);
+			return set::insert(pt, true);
 		}
 		operator HANDLEX()
 		{
