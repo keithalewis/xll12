@@ -39,7 +39,8 @@ namespace xll {
                     std::map<HANDLEX,T*> m;
                     ~map_()
                     {
-                        //for (auto p : m) delete p.second;
+                        for (auto& p : m) 
+                            delete p.second;
                     }
                 };
                 static map_ m;
@@ -47,28 +48,30 @@ namespace xll {
                 return m.m;
             }
         public:
-            static HANDLEX insert(T* p, bool lookup = false)
+            // Convert pointer to (small) number based on first allocation.
+            static HANDLEX lookup(T* p)
             {
                 static T* base = nullptr;
                 if (base == nullptr) {
-                    base = p - 1;
+                    base = p - 1729;
                 }
-                HANDLEX h = static_cast<HANDLEX>(p - base);
-                if (lookup) {
-                    return h;
-                }
+                return static_cast<HANDLEX>(p - base);
+            }
+            static void insert(T* p)
+            {
+                HANDLEX h = lookup(p);
 
                 // delete if old handle in cell points at something
                 OPER oldh = Excel(xlCoerce, Excel(xlfCaller));
                 if (oldh.isNum() && oldh.val.num != 0) {
-                    T* oldp = find(oldh.val.num);
-                    if (oldp != nullptr)
-                        delete oldp;
+                    auto i = handle_map().find(h);
+                    if (i != handle_map().end()) {
+                        handle_map().erase(i);
+                        delete i->second;
+                    }
                 }
 
                 handle_map().insert(std::make_pair(h, p));
-
-                return h;
             }
             static T* find(HANDLEX h)
             {
@@ -101,7 +104,7 @@ namespace xll {
         }
 		HANDLEX get() const
 		{
-			return set::insert(pt, true);
+			return set::lookup(pt);
 		}
 		operator HANDLEX()
 		{
