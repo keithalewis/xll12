@@ -531,28 +531,22 @@ namespace xll {
         OPER12& push_back(const OPER12& o)
         {
             if (type() != xltypeMulti) {
-                resize(1, 1);
-                operator[](0) = o;
+                ensure (size() == 0);
+                operator=(o); // overwrite
+                if (type() != xltypeMulti) {
+                    resize(1,1);
+                }
+
                 return *this;
             }
             else {
-                auto size = rows() * columns();
-
-                if (rows() == 1) {
-                    ensure(o.rows() == 1);
-                    resize(1, columns() + o.rows() * o.columns());
-                }
-                else if (columns() == 1) {
-                    ensure(o.columns() == 1);
-                    resize(rows() + o.rows(), 1);
-                }
-                else {
-                    ensure(columns() == o.columns());
-                    resize(rows() + o.rows(), columns());
-                }
-                for (auto i = size; i < this->size(); ++i) {
-                    auto i_size = i - size;
-                    operator[](i) = o[i_size];
+                ensure(columns() == o.columns());
+                int n = size();
+                resize(rows() + o.rows(), columns());
+                int n_ = size();
+                for (int i = n; i < n_; ++i) {
+                    int i_ = i - n;
+                    operator[](i) = o[i_];
                 }
             }
 
