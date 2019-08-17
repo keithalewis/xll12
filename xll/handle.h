@@ -53,7 +53,7 @@ namespace xll {
             {
                 static T* base = nullptr;
                 if (base == nullptr) {
-                    base = p - 8888888;
+                    base = p;
                 }
                 return static_cast<HANDLEX>(p - base);
             }
@@ -92,6 +92,7 @@ namespace xll {
 		{
             //!!! check if h in handles
 			pt = set::find(h);
+            ensure(pt != nullptr || !"invalid handle");
 		}
 		handle(const handle&) = delete;
 		handle& operator=(const handle&) = delete;
