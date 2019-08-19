@@ -292,11 +292,60 @@ namespace xll {
 		}
 
 		/// Convenience function for number types.
-		Args& Num(xcstr name, xcstr helpText = nullptr)
+        Args& Boolean(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_BOOL, name, helpText, default);
+        }
+		Args& Number(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
 		{
-			return Arg(XLL_DOUBLE, name, helpText);
+			return Arg(XLL_DOUBLE, name, helpText, default);
 		}
-		// Str ...
+        Args& Handle(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_DOUBLE, name, helpText, default);
+        }
+        Args& UShort(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_USHORT, name, helpText, default);
+        }
+        Args& Short(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_SHORT, name, helpText, default);
+        }
+        Args& Word(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_WORD, name, helpText, default);
+        }
+        Args& Long(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_LONG, name, helpText, default);
+        }
+
+        // Convenience function for strings
+        Args& String(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_CSTRING, name, helpText, default);
+        }
+        Args& PString(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_PSTRING, name, helpText, default);
+        }
+
+        // Two dimensional array of doubles.
+        Args& Array(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_FP, name, helpText, default);
+        }
+
+        // Convenience function for OPERS
+        Args& Range(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_LPOPER, name, helpText, default);
+        }
+        Args& Reference(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        {
+            return Arg(XLL_LPXLOPER, name, helpText, default);
+        }
 
 		Args& Documentation(xcstr _documentation)
 		{
@@ -393,7 +442,7 @@ namespace xll {
 				oError &= args[ARG::Procedure];
                 oError &= L"\nDid you forget to #pragma XLLEXPORT a function?";
 				
-                Excel(xlcAlert, oError);
+                ensure (xlretSuccess == Excel(xlcAlert, oError));
 			}
 
 			return oResult;

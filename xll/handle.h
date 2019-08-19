@@ -53,7 +53,7 @@ namespace xll {
             {
                 static T* base = nullptr;
                 if (base == nullptr) {
-                    base = p;
+                    base = -1111111111 + p;
                 }
                 return static_cast<HANDLEX>(p - base);
             }
@@ -66,8 +66,8 @@ namespace xll {
                 if (oldh.isNum() && oldh.val.num != 0) {
                     auto i = handle_map().find(h);
                     if (i != handle_map().end()) {
-                        handle_map().erase(i);
                         delete i->second;
+                        handle_map().erase(i);
                     }
                 }
 

@@ -54,8 +54,7 @@ xll_base(short b)
     
     try {
         handle<base> h_(new base(b));
-        ensure(h_);
-
+ 
         h = h_.get();
     }
     catch (const std::exception& ex) {
@@ -79,7 +78,6 @@ xll_base_value(HANDLEX h)
 
     try {
         handle<base> b_(h);
-        ensure(b_);
 
         value = b_->value();
     }
@@ -108,7 +106,6 @@ xll_derived(short b, short d)
     try {
         // put pointer in the base bucket
         handle<base> h_(new derived(b, d));
-        ensure(h_);
 
         h = h_.get();
     }
@@ -134,7 +131,8 @@ xll_derived_value(HANDLEX h)
     try {
         // use RTTI
         derived *pd = dynamic_cast<derived*>(handle<base>(h).ptr());
-        ensure(pd);
+        ensure(pd != nullptr || !"dynamic_cast failed");
+
         value2 = pd->value2();
     }
     catch (const std::exception& ex) {

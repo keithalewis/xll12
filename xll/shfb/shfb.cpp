@@ -6,9 +6,9 @@
 using namespace xll;
 
 // Replace with appropriate values or OPER() to remove.
-static std::map<OPER,OPER> shfb_map = {
+static std::map<OPER, OPER> shfb_map = {
     { OPER(L"Organization"), OPER(SHFB_ORGANIZATION) },
-    { OPER(L"FeedbackEMailAddress"), OPER(SHFB_FEEDBACKEMAILADDRESS) }
+{ OPER(L"FeedbackEMailAddress"), OPER(SHFB_FEEDBACKEMAILADDRESS) }
 };
 
 // xlfFwrite only writes 255 chars at a time.
@@ -42,36 +42,36 @@ inline OPER fread(const OPER& fd)
 }
 
 class xlfFile {
-	OPER h; // file handle
+    OPER h; // file handle
 public:
     // 1 = read/write 2 = readonly 3 = create read/write
-	xlfFile(const OPER& file, int access = 3)
-		: h(Excel(xlfFopen, file, OPER(access)))
-	{ }
-	xlfFile(const xlfFile&) = delete;
-	xlfFile& operator=(const xlfFile&) = delete;
-	~xlfFile()
-	{
-		Excel(xlfFclose, h);
-	}
+    xlfFile(const OPER& file, int access = 3)
+        : h(Excel(xlfFopen, file, OPER(access)))
+    { }
+    xlfFile(const xlfFile&) = delete;
+    xlfFile& operator=(const xlfFile&) = delete;
+    ~xlfFile()
+    {
+        Excel(xlfFclose, h);
+    }
     operator bool() const
     {
         return h.isNum();
     }
-	OPER read() const
-	{
-		return fread(h);
-	}
-	OPER write(const OPER& text) const
-	{
-		return fwrite(h, text);
-	}
-	OPER writeln(const OPER& text) const
-	{
-		ensure(Excel(xlfLen, text) < 256);
+    OPER read() const
+    {
+        return fread(h);
+    }
+    OPER write(const OPER& text) const
+    {
+        return fwrite(h, text);
+    }
+    OPER writeln(const OPER& text) const
+    {
+        ensure(Excel(xlfLen, text) < 256);
 
-		return Excel(xlfFwriteln, h, text);
-	}
+        return Excel(xlfFwriteln, h, text);
+    }
 };
 
 inline OPER find_last_of(const OPER& find, const OPER& within)
@@ -89,7 +89,7 @@ inline OPER basename(const OPER& path, bool strip = false)
 {
     OPER off = find_last_of(OPER(L"\\"), path);
     OPER base = Excel(xlfRight, path, OPER(Excel(xlfLen, path) - off));
-    
+
     if (strip) {
         base = Excel(xlfLeft, base, OPER(find_last_of(OPER(L"."), base) - 1));
     }
@@ -100,7 +100,7 @@ inline OPER basename(const OPER& path, bool strip = false)
 inline OPER dirname(const OPER& path)
 {
     OPER off = find_last_of(OPER(L"\\"), path);
-    
+
     return Excel(xlfLeft, path, off);
 }
 
@@ -123,7 +123,7 @@ OPER content_layout(const Args& args)
 
     OPER Topics;
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
-    for (const auto& [key,arg] : AddIn::AddInMap()) {
+    for (const auto& [key, arg] : AddIn::AddInMap()) {
         if (arg.Documentation() && arg.isFunction()) {
             OPER id(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
             id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), arg.Guid());
@@ -158,12 +158,12 @@ OPER template_shfbproj(const OPER& base)
 #else
     tp = Excel(xlfSubstitute, tp, OPER(L"{{FeedbackEMailAddress}}"), OPER(L""));
 #endif
- 
+
     //<None Include = "Reference\FUNCTION.aml" / >
     OPER Pre = OPER(L"\n    <None Include=\"");
     OPER Post = OPER(L".aml\" />");
     OPER ItemGroup = Pre & base & Post;
-    for (const auto& [key,arg] : AddIn::AddInMap()) {
+    for (const auto& [key, arg] : AddIn::AddInMap()) {
         if (arg.Documentation() && *arg.Documentation()) {
             OPER name;
             if (arg.isDocumentation()) {
@@ -204,7 +204,7 @@ OPER function_aml(const Args& args)
     fa = Excel(xlfSubstitute, fa, OPER(L"{{FunctionHelp}}"), args.FunctionHelp());
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Syntax}}"), args.Syntax());
-    
+
     OPER ListItems;
     OPER Pre(L"\n    <listItem><para>");
     OPER Post(L"\n    </para></listItem>");
@@ -261,9 +261,9 @@ void make_shfb(const OPER& lib)
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
     //OPER o = Excel(xlfEvaluate, s);
 
-	xlfFile at(dir & OPER(L"alias.txt"));
+    xlfFile at(dir & OPER(L"alias.txt"));
     xlfFile mh(dir & OPER(L"map.h"));
-    for (const auto& [key,arg] : AddIn::AddInMap()) {
+    for (const auto& [key, arg] : AddIn::AddInMap()) {
         if (arg.Documentation() && *arg.Documentation()) {
             if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
@@ -277,17 +277,17 @@ void make_shfb(const OPER& lib)
                 xlfFile fd(dir & base & OPER(L".aml"));
                 fd.write(documentation_aml(arg));
             }
-			else if (arg.isFunction()) {
-				xlfFile fd(dir & arg.FunctionText() & OPER(L".aml"));
-				fd.write(function_aml(arg));
-			}
+            else if (arg.isFunction()) {
+                xlfFile fd(dir & arg.FunctionText() & OPER(L".aml"));
+                fd.write(function_aml(arg));
+            }
             // else if (arg.isMacro()) { ...
             at.writeln(alias_txt(arg));
             mh.writeln(map_h(arg));
         }
     }
 }
- 
+
 static AddIn xai_make_shfb(
     Macro(XLL_DECORATE(L"xll_make_shfb", 0), L"XLL.MAKE.SHFB")
 );
