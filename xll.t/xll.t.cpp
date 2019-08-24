@@ -328,12 +328,7 @@ void test_multi()
 
 	std::uniform_int_distribution<RW> u(1, 10);
 	for (int j = 0; j < 100; ++j) {
-		OPER12 a(u(dre), u(dre)), b(u(dre), u(dre)), c(u(dre));
-		if (a.columns() == b.columns()) {
-			if (a.rows() == 1 && b.rows() != 1)
-				b.resize(1, b.size());
-			a.push_back(b);
-		}
+		OPER12 a(u(dre), u(dre)), b(u(dre), u(dre)), c(u(dre), u(dre));
         ensure (strict_weak(a,b,c));
     }
 
@@ -371,7 +366,7 @@ void test_arity()
 {
 	Args args(XLL_DOUBLE, L"?proc", L"Proc");
 	ensure (args.Arity() == 0);
-	args.Num(L"x", L"is an x");
+	args.Number(L"x", L"is an x");
 	ensure (args.Arity() == 1);
 	args.Arg(XLL_CSTRING, L"s", L"is a string");
 	ensure (args.Arity() == 2);
