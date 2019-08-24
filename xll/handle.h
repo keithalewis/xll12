@@ -53,7 +53,7 @@ namespace xll {
             {
                 static T* base = nullptr;
                 if (base == nullptr) {
-                    base = -1111111111 + p;
+                    base = 8 + p;
                 }
                 return static_cast<HANDLEX>(p - base);
             }

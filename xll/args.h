@@ -236,7 +236,7 @@ namespace xll {
 			return ArgumentDefault_[i - 1];
 		}
 		/// Add an individual argument.
-		Args& Arg(xcstr type, xcstr name, xcstr helpText = nullptr, xcstr Default = nullptr)
+		Args& Arg(xcstr type, xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
 		{
 			OPER& Type = args[ARG::TypeText];
 			Type &= type;
@@ -252,9 +252,9 @@ namespace xll {
 			if (helpText && *helpText) {
 				ArgumentHelp(n, helpText);
             }
-            if (Default && *Default) {
+            if (default_ && *default_) {
                 ArgumentDefault_.resize(n,1);
-                ArgumentDefault_[n - 1] = Default;
+                ArgumentDefault_[n - 1] = default_;
             }
 
 			return *this;
@@ -292,59 +292,59 @@ namespace xll {
 		}
 
 		/// Convenience function for number types.
-        Args& Boolean(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Boolean(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_BOOL, name, helpText, default);
+            return Arg(XLL_BOOL, name, helpText, default_);
         }
-		Args& Number(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+		Args& Number(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
 		{
-			return Arg(XLL_DOUBLE, name, helpText, default);
+			return Arg(XLL_DOUBLE, name, helpText, default_);
 		}
-        Args& Handle(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Handle(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_DOUBLE, name, helpText, default);
+            return Arg(XLL_DOUBLE, name, helpText, default_);
         }
-        Args& UShort(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& UShort(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_USHORT, name, helpText, default);
+            return Arg(XLL_USHORT, name, helpText, default_);
         }
-        Args& Short(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Short(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_SHORT, name, helpText, default);
+            return Arg(XLL_SHORT, name, helpText, default_);
         }
-        Args& Word(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Word(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_WORD, name, helpText, default);
+            return Arg(XLL_WORD, name, helpText, default_);
         }
-        Args& Long(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Long(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_LONG, name, helpText, default);
+            return Arg(XLL_LONG, name, helpText, default_);
         }
 
         // Convenience function for strings
-        Args& String(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& String(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_CSTRING, name, helpText, default);
+            return Arg(XLL_CSTRING, name, helpText, default_);
         }
-        Args& PString(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& PString(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_PSTRING, name, helpText, default);
+            return Arg(XLL_PSTRING, name, helpText, default_);
         }
 
         // Two dimensional array of doubles.
-        Args& Array(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Array(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_FP, name, helpText, default);
+            return Arg(XLL_FP, name, helpText, default_);
         }
 
         // Convenience function for OPERS
-        Args& Range(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Range(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_LPOPER, name, helpText, default);
+            return Arg(XLL_LPOPER, name, helpText, default_);
         }
-        Args& Reference(xcstr name, xcstr helpText = nullptr, xcstr default = nullptr)
+        Args& Reference(xcstr name, xcstr helpText = nullptr, xcstr default_ = nullptr)
         {
-            return Arg(XLL_LPXLOPER, name, helpText, default);
+            return Arg(XLL_LPXLOPER, name, helpText, default_);
         }
 
 		Args& Documentation(xcstr _documentation)
