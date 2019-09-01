@@ -12,29 +12,17 @@
 
 namespace xll {
 
-	// 1x1 NaN indicates empty array
-	inline bool 
-	is_empty(const _FP12& fp)
+	inline INT32 rows(const _FP12& fp)
 	{
-		return fp.rows == 1
-			&& fp.columns == 1
-			&& _isnan(fp.array[0]);
+		return fp.rows;
 	}
-
-	inline RW
-	rows(const _FP12& fp)
+	inline INT32 columns(const _FP12& fp)
 	{
-		return is_empty(fp) ? 0 : fp.rows;
+		return fp.columns;
 	}
-	inline COL
-	columns(const _FP12& fp)
+	inline INT32 size(const _FP12& fp)
 	{
-		return is_empty(fp) ? 0 : fp.columns;
-	}
-	inline INT32
-	size(const _FP12& fp)
-	{
-		return is_empty(fp) ? 0 : fp.rows * fp.columns;
+		return fp.rows * fp.columns;
 	}
 	// cyclic index
 	inline INT32 cyclic(INT32 i, INT32 n)
@@ -43,44 +31,36 @@ namespace xll {
 
 		return i >= 0 ? i : i + n;
 	}
-	inline double&
-	index(_FP12& fp, INT32 i)
+	inline double& index(_FP12& fp, INT32 i)
 	{
 		return fp.array[cyclic(i, size(fp))];
 	}
-	inline const double&
-	index(const _FP12& fp, INT32 i)
+	inline const double& index(const _FP12& fp, INT32 i)
 	{
 		return fp.array[cyclic(i, size(fp))];
 	}
-	inline double&
-	index(_FP12& fp, RW i, COL j)
+	inline double& index(_FP12& fp, RW i, COL j)
 	{
 		return fp.array[cyclic(i, fp.rows)*fp.columns + cyclic(j, fp.columns)];
 	}
-	inline const double&
-	index(const _FP12& fp, RW i, COL j)
+	inline const double& index(const _FP12& fp, RW i, COL j)
 	{
 		return fp.array[cyclic(i, fp.rows)*fp.columns + cyclic(j, fp.columns)];
 	}
-	inline double*
-	begin(_FP12& fp)
+	inline double* begin(_FP12& fp)
 	{
 		return &fp.array[0];
 	}
-	inline double*
-	end(_FP12& fp)
+	inline double* end(_FP12& fp)
 	{
 		return &fp.array[0] + size(fp);
 	}
 
-	inline const double*
-	begin(const _FP12& fp)
+	inline const double* begin(const _FP12& fp)
 	{
 		return &fp.array[0];
 	}
-	inline const double*
-	end(const _FP12& fp)
+	inline const double* end(const _FP12& fp)
 	{
 		return &fp.array[0] + size(fp);
 	}
@@ -88,43 +68,34 @@ namespace xll {
 	class FP12 {
 	public:
 		FP12()
-			: buf(0)
+			: buf(nullptr)
 		{
 			realloc(0,0);
 		}
 		FP12(RW r, COL c) 
-			: buf(0) 
+			: buf(nullptr) 
 		{
 			realloc(r, c);
 		}
-		FP12(const FP12& x) 
-			: buf(0)
+		FP12(const xll::FP12& x) 
+			: buf(nullptr)
 		{
 			realloc(x.rows(), x.columns());
 			copy(x.get());
 		}
 		FP12(const _FP12& x)
-			: buf(0)
+			: buf(nullptr)
 		{
 			realloc(x.rows, x.columns);
 			copy(&x);
 		}
 		FP12(std::initializer_list<double> a)
-			: buf(0)
+			: buf(nullptr)
 		{
-			realloc(1, static_cast<COL>(a.size()));
+			realloc(static_cast<RW>(a.size()), 1);
 			copy(a.begin());
 		}
-		FP12(std::initializer_list<std::initializer_list<double>> a)
-			: FP12()
-		{
-			for (const auto& r : a) {
-				if (!is_empty() && columns() < static_cast<INT32>(r.size()))
-					resize(rows(), static_cast<COL>(r.size()));
-				push_down(r.begin(), r.end());
-			}
-		}
-		FP12& operator=(const FP12& x)
+		FP12& operator=(const xll::FP12& x)
 		{
 			if (&x != this) {
 				realloc(x.rows(), x.columns());
@@ -147,11 +118,10 @@ namespace xll {
 
 		bool operator==(const _FP12& x) const
 		{
-			auto size = x.rows * x.columns;
 			return rows() == x.rows && columns() == x.columns
-				&& std::equal(begin(), end(), stdext::checked_array_iterator<const double*>(&x.array[0], size));
+				&& std::equal(begin(), end(), &x.array[0]);
 		}
-		bool operator==(const FP12& x) const
+		bool operator==(const xll::FP12& x) const
 		{
             return operator==(*x.get());
         }
@@ -159,7 +129,7 @@ namespace xll {
 		{
 			return !operator==(x);
 		}
-		bool operator!=(const FP12& x) const
+		bool operator!=(const xll::FP12& x) const
 		{
 			return !operator==(x);
 		}
@@ -170,7 +140,7 @@ namespace xll {
 		// use when returning to Excel
 		const _FP12* get(void) const
 		{
-            return reinterpret_cast<_FP12*>(buf);
+            return reinterpret_cast<const _FP12*>(buf);
         }
 		double* array()
 		{
@@ -180,17 +150,17 @@ namespace xll {
 		{
 			return get()->array;
 		}
-		RW rows() const
+        INT32 rows() const
 		{
 			return get()->rows;
 		}
-		COL columns() const
+        INT32 columns() const
 		{
 			return get()->columns;
 		}
-		INT32 size() const
+        INT32 size() const
 		{
-			return buf ? (is_empty() ? 0 : get()->rows * get()->columns) : 0;
+			return buf ? get()->rows * get()->columns : 0;
 		}
 
 		void resize(RW r, COL c = 1)
@@ -258,7 +228,7 @@ namespace xll {
 		{
 			INT32 n = static_cast<INT32>(std::distance(b, e));
 
-			if (is_empty()) {
+			if (size() == 0) {
 				resize(1, n);
 			}
 			else if (rows() == 1) {
@@ -286,7 +256,7 @@ namespace xll {
 		{
 			INT32 n = static_cast<INT32>(std::distance(b, e));
 
-			if (is_empty()) {
+			if (size() == 0) {
 				resize(n, 1);
 			}
 			else if (columns() == 1) {
@@ -312,7 +282,7 @@ namespace xll {
 		{
 			INT32 c = static_cast<INT32>(std::distance(b, e));
 
-			if (is_empty() || n == -1) {
+			if (size() == 0 || n == -1) {
 				push_back(b, e, true);
 			}
 			// push_front
@@ -349,15 +319,10 @@ namespace xll {
 			return *this;
 		}
 
-		bool is_empty(void) const
-		{
-			return xll::is_empty(*get());
-		}
 	private:
 		void copy(const double* p)
 		{
-			get()->array[0] = p[0]; // could be empty array
-			for (auto i = 1; i < size(); ++i)
+			for (INT32 i = 0; i < size(); ++i)
 				get()->array[i] = p[i];
 		}
 		void copy(const _FP12* p)
@@ -371,27 +336,12 @@ namespace xll {
 		{
 			if (buf == nullptr || size() != r*c) {
 				auto size = r * c;
-				const auto tmp = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
-				if (tmp == nullptr) {
-					free(buf);
-				}
-				buf = tmp;
+				buf = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
 				ensure (buf != nullptr);
 			}
-//			memset(buf, 0, sizeof(_FP12) + r*c*sizeof(double));
 			// check size
 			get()->rows = r;
 			get()->columns = c;
-
-			// empty array
-			if (r*c == 0) {
-				get()->rows = 1;
-				get()->columns = 1;
-				get()->array[0] = std::numeric_limits<double>::quiet_NaN();
-			}
-			else if (is_empty()) {
-				get()->array[0] = 0; // so resize(1,1) on empty array is not empty
-			}
 		}
 		char* buf;
 	};

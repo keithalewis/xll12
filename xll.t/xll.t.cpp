@@ -379,8 +379,7 @@ void test_arity()
 void test_fp()
 {
 	xll::FP12 a;
-	ensure (a.is_empty());
-	ensure (a[0] != a[0]);
+	ensure (a.size() == 0);
 	a.resize(2,3);
 	ensure (a.size() == 6);
 	ensure (a.rows() == 2);
@@ -428,8 +427,8 @@ void test_fp()
 	a2.resize(1, 2);
 	ensure (a2.rows() == 1);
 	ensure (a2.columns() == 2);
-	ensure (a2[0] = 1.23);
-	ensure (a2[1] = 4.56);
+	ensure (a2[0] == 1.23);
+	ensure (a2[1] == 4.56);
 	ensure (a2(0,1) == 4.56);
 	a2.push_down({7,8});
 	ensure (a2.rows() == 2);
@@ -438,16 +437,8 @@ void test_fp()
 	ensure (a2(1,1) == 8);
 
 	xll::FP12 a3{1,2};
-	ensure (a3.rows() == 1);
-	ensure (a3.columns() == 2);
-
-	xll::FP12 a4{{0},{1,2}};
-	ensure (a4.rows() == 2);
-	ensure (a4.columns() == 2);
-	ensure (a4(0,0) == 0);
-//	ensure (a4(0,1) == 0); // uninitialized
-	ensure (a4(1,0) == 1);
-	ensure (a4(1,1) == 2);
+	ensure (a3.rows() == 2);
+	ensure (a3.columns() == 1);
 }
 
 void test_error()
