@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <numeric>
 #include <iterator>
+#include <stdexcept>
 #include <Windows.h>
 #include "XLCALL.H"
 #include "ensure.h"
@@ -336,7 +337,11 @@ namespace xll {
 		{
 			if (buf == nullptr || size() != r*c) {
 				auto size = r * c;
-				buf = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
+				auto tmp = static_cast<char*>(::realloc(buf, sizeof(_FP12) + size*sizeof(double)));
+                if (tmp == nullptr) {
+                    free(buf);
+                }
+                buf = tmp;
 				ensure (buf != nullptr);
 			}
 			// check size
