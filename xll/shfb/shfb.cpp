@@ -123,7 +123,7 @@ OPER content_layout(const Args& args)
 
     OPER Topics;
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
-    for (const auto& [key, arg] : AddIn::AddInMap()) {
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (arg.Documentation() && arg.isFunction()) {
             OPER id(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
             id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), arg.Guid());
@@ -163,7 +163,7 @@ OPER template_shfbproj(const OPER& base)
     OPER Pre = OPER(L"\n    <None Include=\"");
     OPER Post = OPER(L".aml\" />");
     OPER ItemGroup = Pre & base & Post;
-    for (const auto& [key, arg] : AddIn::AddInMap()) {
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (arg.Documentation() && *arg.Documentation()) {
             OPER name;
             if (arg.isDocumentation()) {
@@ -263,7 +263,7 @@ void make_shfb(const OPER& lib)
 
     xlfFile at(dir & OPER(L"alias.txt"));
     xlfFile mh(dir & OPER(L"map.h"));
-    for (const auto& [key, arg] : AddIn::AddInMap()) {
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (arg.Documentation() && *arg.Documentation()) {
             if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
