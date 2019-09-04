@@ -379,6 +379,10 @@ namespace xll {
 
             return *this;
         }
+        OPER12& append(const std::wstring& str)
+        {
+            return append(str.c_str(), str.length());
+        }
         OPER12& operator&=(const wchar_t* str)
         {
             return append(str, wcslen(str));

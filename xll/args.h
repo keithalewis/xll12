@@ -30,9 +30,9 @@ namespace xll {
 		mutable OPER12 args;
         OPER12 ArgumentName_;
         OPER12 ArgumentDefault_;
-        xcstr documentation = nullptr;
-        xcstr remarks = nullptr;
-        xcstr examples = nullptr;
+        std::wstring documentation;
+        std::wstring remarks;
+        std::wstring examples;
 	public:
 		/// Name of Excel add-in
 		static OPER12& XlGetName()
@@ -347,33 +347,33 @@ namespace xll {
             return Arg(XLL_LPXLOPER, name, helpText, default_);
         }
 
-		Args& Documentation(xcstr _documentation)
+		Args& Documentation(const std::wstring& _documentation)
 		{
             documentation = _documentation;
 
 			return *this;
 		}
-        xcstr Documentation() const
+        const std::wstring& Documentation() const
         {
             return documentation;
         }
-        Args& Remarks(xcstr _remarks)
+        Args& Remarks(const std::wstring& _remarks)
         {
             remarks = _remarks;
 
             return *this;
         }
-        xcstr Remarks() const
+        const std::wstring& Remarks() const
         {
             return remarks;
         }
-        Args& Examples(xcstr _examples)
+        Args& Examples(const std::wstring& _examples)
         {
             examples = _examples;
 
             return *this;
         }
-        xcstr Examples() const
+        const std::wstring& Examples() const
         {
             return examples;
         }
@@ -427,7 +427,7 @@ namespace xll {
             OPER name = XlGetName();
             args[ARG::ModuleText] = name;
             
-            if (documentation && *documentation) {
+            if (!documentation.empty()) {
                 OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
                 //chm &= OPER(L"0");
                 chm &= TopicId();
