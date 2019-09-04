@@ -1,9 +1,11 @@
 // sample.cpp - Simple example of using AddIn.
 #include <cmath>
 #include "../xll/xll.h"
+#include "../xll/shfb/shfb.h"
 #include "../xll/shfb/entities.h"
 
 using namespace xll;
+using namespace shfb;
 
 AddIn xai_sample(
 	Documentation(LR"(
@@ -24,20 +26,17 @@ AddIn xai_function(
 	// Insert Function description.
 	.FunctionHelp(L"Help on XLL.FUNCTION goes here.")
 	// Create entry for this function in Sandcastle Help File Builder project file.
-	.Documentation(LR"zzz(
-Free-form documentation on XLL.FUNCTION goes here.
-
-Newlines are ignored when building documentation with Sandcastle Help File Builder.
-<para>
-But you can include MAML directives.
-</para>
-    )zzz"
-    L"We can also use C prepocessor string pasting "
-    L"to write documentation.\n This newline is also ignored."
-    L"Here is " B_(L"bold") L", " I_(L"italic") L", and " U_(L"underlined") L" text."
-    L"<para>"
-        int_ SUB_(minus_ infin_) SUP_(infin_) I_(L"e") SUP_(L"-" I_(L"x") sup2_ L"/2") L" " I_(L"dx")
-    L"</para>"
+	.Documentation(maml()
+        .para(
+            maml()._(L"Free-form documentation on ").c(L"XLL.FUNCTION")._(L" goes here.")
+        )
+        .para(L"But you can include MAML directives.")
+        .para(maml()
+            ._(L"This is ").bold(L"bold")._(L" and so is <legacyBold>this</legacyBold>")
+        )
+        .para(maml()
+            ._(L"Math: ").math(int_).sub(minus_ infin_).sup(infin_)._(L"e").sup(minus_ L"x" sup2_ L"/2")._(L" dx")
+        )
     )
 );
 // Calling convention *must* be WINAPI (aka __stdcall) for Excel.
