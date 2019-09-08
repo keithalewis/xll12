@@ -9,6 +9,7 @@ AddIn xai_call_function(
     .Arg(XLL_HANDLE, L"handle", L"is a handle to a function.")
     .Arg(XLL_DOUBLE, L"arg", L"is the function argument.")
     .FunctionHelp(L"Call a function")
+    .Documentation(L"")
 );
 double WINAPI xll_call_function(HANDLEX h, double arg)
 {

@@ -164,7 +164,7 @@ OPER template_shfbproj(const OPER& base)
     OPER Post = OPER(L".aml\" />");
     OPER ItemGroup = Pre & base & Post;
     for (const auto& [key, arg] : AddIn::AddInMap()) {
-        if (arg.Documentation() && *arg.Documentation()) {
+        if (arg.Documentation()) {
             OPER name;
             if (arg.isDocumentation()) {
                 name = base;
@@ -264,7 +264,7 @@ void make_shfb(const OPER& lib)
     xlfFile at(dir & OPER(L"alias.txt"));
     xlfFile mh(dir & OPER(L"map.h"));
     for (const auto& [key, arg] : AddIn::AddInMap()) {
-        if (arg.Documentation() && *arg.Documentation()) {
+        if (arg.Documentation()) {
             if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
 
