@@ -11,30 +11,21 @@ namespace xll {
 	/// Manage the lifecycle of an Excel add-in.
 	class AddIn {
     public:
-        static std::map<OPER, Args>& AddInMap() {
-            static std::map<OPER, Args> map;
-
-            return map;
-        }
-        static std::map<double, OPER>& RegIdMap() { // register id to Key
-            static std::map<double, OPER> map;
-
-            return map;
-        }
-
+        static inline std::map<OPER, Args> KeyArgsMap;
+        static inline std::map<double, OPER> RegIdKeyMap;
 
         /// Register and Unregister an add-in when Excel calls xlAutoOpen and xlAutoClose.
 		AddIn(const Args& args)
 		{
             auto kv = std::make_pair(args.Key(), args);
-            if (!AddInMap().insert(kv).second) {
+            if (!KeyArgsMap.insert(kv).second) {
                 //OPER key = args.Key();
                 //MessageBoxW(GetForegroundWindow(), ex.what(), L"AddIn Auto<Open> failed", MB_OKCANCEL| MB_ICONWARNING);
             }
 
 			Auto<Open> ao([args]() { 
 				try {
-                    if (!RegIdMap().insert(std::make_pair(args.Register().val.num, args.Key())).second) {
+                    if (!RegIdKeyMap.insert(std::make_pair(args.Register().val.num, args.Key())).second) {
                         //RegIdMap[args.Register().val.num] = args.Key();
                     }
 				}

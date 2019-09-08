@@ -123,8 +123,8 @@ OPER content_layout(const Args& args)
 
     OPER Topics;
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
-    for (const auto& [key, arg] : AddIn::AddInMap()) {
-        if (arg.Documentation() && arg.isFunction()) {
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
+        if (!arg.Documentation().empty() && arg.isFunction()) {
             OPER id(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
             id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), arg.Guid());
             id = Excel(xlfSubstitute, id, OPER(L"{{Text}}"), arg.FunctionText());
@@ -163,8 +163,8 @@ OPER template_shfbproj(const OPER& base)
     OPER Pre = OPER(L"\n    <None Include=\"");
     OPER Post = OPER(L".aml\" />");
     OPER ItemGroup = Pre & base & Post;
-    for (const auto& [key, arg] : AddIn::AddInMap()) {
-        if (arg.Documentation()) {
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
+        if (!arg.Documentation().empty()) {
             OPER name;
             if (arg.isDocumentation()) {
                 name = base;
@@ -187,7 +187,7 @@ OPER documentation_aml(const Args& args)
     );
 
     da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), args.Guid());
-    if (args.Documentation()) {
+    if (!args.Documentation().empty()) {
         da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     }
 
@@ -214,16 +214,16 @@ OPER function_aml(const Args& args)
             & Bold(args.ArgumentName(i)) & OPER(L" ") & args.ArgumentHelp(i) & Post;
     }
     fa = Excel(xlfSubstitute, fa, OPER(L"{{ListItems}}"), ListItems);
-    if (args.Remarks() && *args.Remarks()) {
+    if (!args.Remarks().empty()) {
         OPER Remarks(L"<section address=\"Remarks\"><title>Remarks</title><content><para>");
-        Remarks.append(args.Remarks(), wcslen(args.Remarks()));
+        Remarks.append(args.Remarks());
         Remarks = Remarks & OPER(L"</para></content></section>");
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), Remarks);
     }
     else {
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), OPER(L""));
     }
-    if (args.Examples() && *args.Examples()) {
+    if (!args.Examples().empty()) {
         OPER Examples(L"<section address=\"Examples\"><title>Examples</title><content><para>");
         Examples &= args.Examples();
         Examples &= L"</para></content></section>";
@@ -263,8 +263,8 @@ void make_shfb(const OPER& lib)
 
     xlfFile at(dir & OPER(L"alias.txt"));
     xlfFile mh(dir & OPER(L"map.h"));
-    for (const auto& [key, arg] : AddIn::AddInMap()) {
-        if (arg.Documentation()) {
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
+        if (!arg.Documentation().empty()) {
             if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
 
