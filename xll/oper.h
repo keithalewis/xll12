@@ -344,6 +344,12 @@ namespace xll {
         {
             return type() == xltypeStr ? TRUE : FALSE;
         }
+        std::wstring toStr() const
+        {
+            ensure(isStr());
+
+            return std::wstring(val.str + 1, val.str[0]);
+        }
 		/*
         const std::wstring_view to_string_view() const
         {

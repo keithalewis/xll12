@@ -26,7 +26,8 @@ AddIn xai_function(
 	// Insert Function description.
 	.FunctionHelp(L"Help on XLL.FUNCTION goes here.")
 	// Create entry for this function in Sandcastle Help File Builder project file.
-	.Documentation(maml()
+	.Alias(L"XLL.FUNCTION.ALIAS") // alternate name
+    .Documentation(maml()
         .para(
             maml()._(L"Free-form documentation on ").c(L"XLL.FUNCTION")._(L" goes here.")
         )

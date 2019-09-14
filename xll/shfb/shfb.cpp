@@ -113,21 +113,29 @@ inline OPER idh_safename(OPER x)
     return x;
 }
 
-OPER content_layout(const Args& args)
+OPER content_layout_topic(const OPER& key)
 {
+    OPER topic(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
+    topic = Excel(xlfSubstitute, topic, OPER(L"{{Guid}}"), Args::Guid(key));
+    topic = Excel(xlfSubstitute, topic, OPER(L"{{Text}}"), key);
+    topic &= L"\n    ";
+
+    return topic;
+}
+#if 0
     OPER cl(
 #include "Content Layout.content"
     );
 
-    cl = Excel(xlfSubstitute, cl, OPER(L"{{TopicGUID}}"), args.Guid());
+    cl = Excel(xlfSubstitute, cl, OPER(L"{{TopicGUID}}"), Args::Guid(key));
 
     OPER Topics;
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
     for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (!arg.Documentation().empty() && arg.isFunction()) {
             OPER id(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
-            id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), arg.Guid());
-            id = Excel(xlfSubstitute, id, OPER(L"{{Text}}"), arg.FunctionText());
+            id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), Args::Guid(key));
+            id = Excel(xlfSubstitute, id, OPER(L"{{Text}}"), key);
             Topics &= L"\n    ";
             Topics &= id;
         }
@@ -136,6 +144,7 @@ OPER content_layout(const Args& args)
 
     return cl;
 }
+#endif
 
 OPER template_shfbproj(const OPER& base)
 {
@@ -186,7 +195,7 @@ OPER documentation_aml(const Args& args)
 #include "Documentation.aml"
     );
 
-    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), args.Guid());
+    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), Args::Guid(args.FunctionText()));
     if (!args.Documentation().empty()) {
         da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     }
@@ -194,13 +203,13 @@ OPER documentation_aml(const Args& args)
     return da;
 }
 
-OPER function_aml(const Args& args)
+OPER function_aml(const Args& args, const OPER& key)
 {
     OPER fa(
 #include "Function.aml"
     );
 
-    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), args.Guid());
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), Args::Guid(key));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{FunctionHelp}}"), args.FunctionHelp());
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Syntax}}"), args.Syntax());
@@ -238,12 +247,24 @@ OPER function_aml(const Args& args)
 
 inline OPER alias_txt(const Args& arg)
 {
-    return OPER(L"IDH_") & arg.Key() & OPER(L"=html\\") & arg.Guid() & OPER(L".htm");
+    OPER at;
+
+    for (const OPER& key : arg.Key()) {
+        at.push_back(OPER(L"IDH_") & key & OPER(L"=html\\") & Args::Guid(key) & OPER(L".htm"));
+    }
+        
+    return at;
 }
 
 inline OPER map_h(const Args& arg)
 {
-    return OPER(L"#define IDH_") & arg.Key() & OPER(L" ") & arg.TopicId();
+    OPER mh;
+
+    for (const OPER& key : arg.Key()) {
+        mh.push_back(OPER(L"#define IDH_") & key & OPER(L" ") & Args::TopicId(key));
+    }
+
+    return mh;
 }
 
 //!!! turn the Fopen - Fclose into an RAII class
@@ -261,29 +282,38 @@ void make_shfb(const OPER& lib)
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
     //OPER o = Excel(xlfEvaluate, s);
 
+    xlfFile tp(dir & base & OPER(L".shfbproj"));
+    tp.write(template_shfbproj(base));
+
+    xlfFile xcl(dir & OPER(L"Content Layout.content"));
+    OPER cl(
+#include "Content Layout.content"
+    );
+
+    cl = Excel(xlfSubstitute, cl, OPER(L"{{TopicGUID}}"), Args::Guid(base));
+
     xlfFile at(dir & OPER(L"alias.txt"));
     xlfFile mh(dir & OPER(L"map.h"));
     for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (!arg.Documentation().empty()) {
             if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
-
-                xlfFile cl(dir & OPER(L"Content Layout.content"));
-                cl.write(content_layout(arg));
-
-                xlfFile tp(dir & base & OPER(L".shfbproj"));
-                tp.write(template_shfbproj(base));
-
                 xlfFile fd(dir & base & OPER(L".aml"));
                 fd.write(documentation_aml(arg));
             }
             else if (arg.isFunction()) {
-                xlfFile fd(dir & arg.FunctionText() & OPER(L".aml"));
-                fd.write(function_aml(arg));
+                for (const OPER& key : arg.Key()) {
+                    xlfFile fd(dir & key & OPER(L".aml"));
+                    fd.write(function_aml(arg, key));
+                }
             }
             // else if (arg.isMacro()) { ...
-            at.writeln(alias_txt(arg));
-            mh.writeln(map_h(arg));
+            for (const OPER& i : alias_txt(arg)) {
+                at.writeln(i);
+            }
+            for (const OPER& i : map_h(arg)) {
+                mh.writeln(i);
+            }
         }
     }
 }

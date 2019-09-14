@@ -30,6 +30,7 @@ namespace xll {
 		mutable OPER12 args;
         OPER12 ArgumentName_;
         OPER12 ArgumentDefault_;
+        OPER12 Alias_; // alternate names
         std::wstring documentation;
         std::wstring remarks;
         std::wstring examples;
@@ -79,7 +80,7 @@ namespace xll {
 		{
 			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
-			args[ARG::FunctionText] = FunctionText;
+			Alias_ = args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(2);
 		}
 		/// Function
@@ -89,7 +90,7 @@ namespace xll {
 			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = TypeText;
-			args[ARG::FunctionText] = FunctionText;
+            Alias_ = args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(1);
 		}
         /// Documentation
@@ -382,10 +383,9 @@ namespace xll {
             return FunctionText() & OPER(L"(") & args[ARG::ArgumentText] & OPER(L")");
         }
 
-        OPER Key() const
+        const OPER& Key() const
         {
-			//??? Add prefix???
-			return FunctionText();
+			return Alias_;
         }
 
 	// Simple hash function
@@ -405,46 +405,71 @@ namespace xll {
         }
 
         // Integer hash used in help files.
-        OPER TopicId() const
+        static OPER TopicId(const OPER& key)
         {
-            auto key = Key();
-
             return hash_string(key.val.str + 1, key.val.str[0]);
         }
 
-        OPER Guid() const 
+        static OPER Guid(const OPER& TopicId) 
         {
-            return Excel(xlfDec2hex, TopicId()) & OPER(L"-0000-0000-0000-000000000000");
+            return Excel(xlfDec2hex, TopicId) & OPER(L"-0000-0000-0000-000000000000");
+        }
+
+        Args& Alias(const std::wstring& alias)
+        {
+            Alias_.push_back(OPER(alias));
+
+            return *this;
+        }
+        const OPER& Alias() const
+        {
+            return Alias_;
+        }
+        bool isAlias(const OPER& alias) const
+        {
+            return OPER(xlerr::NA) != Excel(xlfMatch, alias, Alias_, OPER(0)); // exact match
+        }
+        bool isAlias(const std::wstring& alias) const
+        {
+            return isAlias(OPER(alias));
         }
 
 		/// Register an add-in function or macro
 		OPER Register() const
 		{
+            OPER oResult;
+
             if (isDocumentation()) {
-                return OPER(1); // Do not register if documentation only.
+                return oResult; // Do not register if documentation only.
             }
 
             OPER name = XlGetName();
             args[ARG::ModuleText] = name;
             
-            if (!documentation.empty()) {
-                OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
-                //chm &= OPER(L"0");
-                chm &= TopicId();
-                args[ARG::HelpTopic] = chm;
+            OPER ft = args[ARG::FunctionText];
+            for (const OPER& key : Key()) {
+                args[ARG::FunctionText] = key;
+                if (!documentation.empty()) {
+                    OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
+                    chm &= TopicId(key);
+                    args[ARG::HelpTopic] = chm;
+                }
+                OPER oReg = Excelv(xlfRegister, args);
+			    if (oReg.isErr()) {
+				    OPER oError(L"Failed to register: ");
+				    oError &= args[ARG::FunctionText];
+				    oError &= L"/";
+				    oError &= args[ARG::Procedure];
+                    oError &= L"\nDid you forget to #pragma XLLEXPORT a function?";
+
+                    MessageBoxW(0, oError.toStr().c_str(), L"Register Error", MB_OK);
+                }
+                else {
+                    oResult.push_back(oReg);
+                }
             }
-
-			OPER oResult = Excelv(xlfRegister, args);
-			if (oResult.isErr()) {
-				OPER oError(L"Failed to register: ");
-				oError &= args[ARG::FunctionText];
-				oError &= L"/";
-				oError &= args[ARG::Procedure];
-                oError &= L"\nDid you forget to #pragma XLLEXPORT a function?";
-				
-                ensure (xlretSuccess == Excel(xlcAlert, oError));
-			}
-
+            args[ARG::FunctionText] = ft;
+ 
 			return oResult;
 		}
         /// Unregister and add-in function or macro
