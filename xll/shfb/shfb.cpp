@@ -113,93 +113,17 @@ inline OPER idh_safename(OPER x)
     return x;
 }
 
-OPER content_layout_topic(const OPER& key)
-{
-    OPER topic(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
-    topic = Excel(xlfSubstitute, topic, OPER(L"{{Guid}}"), Args::Guid(key));
-    topic = Excel(xlfSubstitute, topic, OPER(L"{{Text}}"), key);
-    topic &= L"\n    ";
 
-    return topic;
-}
-#if 0
-    OPER cl(
-#include "Content Layout.content"
-    );
 
-    cl = Excel(xlfSubstitute, cl, OPER(L"{{TopicGUID}}"), Args::Guid(key));
-
-    OPER Topics;
-    //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
-    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
-        if (!arg.Documentation().empty() && arg.isFunction()) {
-            OPER id(L"<Topic id=\"{{Guid}}\" visible=\"True\" title=\"{{Text}} function\" tocTitle=\"{{Text}}\" />");
-            id = Excel(xlfSubstitute, id, OPER(L"{{Guid}}"), Args::Guid(key));
-            id = Excel(xlfSubstitute, id, OPER(L"{{Text}}"), key);
-            Topics &= L"\n    ";
-            Topics &= id;
-        }
-    }
-    cl = Excel(xlfSubstitute, cl, OPER(L"{{Topics}}"), Topics);
-
-    return cl;
-}
-#endif
-
-OPER template_shfbproj(const OPER& base)
-{
-    OPER tp(
-#include "template.shfbproj"
-    );
-    tp = Excel(xlfSubstitute, tp, OPER(L"{{Base}}"), base);
-#ifdef SHFB_ORGANIZATION
-    OPER org(L"<CopyrightText>Copyright &amp;#169%3b {{Organization}}</CopyrightText>");
-    org = Excel(xlfSubstitute, org, OPER(L"{{Organization}}"), OPER(SHFB_ORGANIZATION));
-    tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), org);
-#else
-    tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), OPER(L""));
-#endif
-#ifdef SHFB_FEEDBACKEMAILADDRESS
-    OPER email = OPER(L"<FeedbackEMailAddress>");
-    email = email & OPER(SHFB_FEEDBACKEMAILADDRESS);
-    email = email & OPER(L"</FeedbackEMailAddress>");
-    tp = Excel(xlfSubstitute, tp, OPER(L"{{FeedbackEMailAddress}}"), email);
-#else
-    tp = Excel(xlfSubstitute, tp, OPER(L"{{FeedbackEMailAddress}}"), OPER(L""));
-#endif
-
-    //<None Include = "Reference\FUNCTION.aml" / >
-    OPER Pre = OPER(L"\n    <None Include=\"");
-    OPER Post = OPER(L".aml\" />");
-    OPER ItemGroup = Pre & base & Post;
-    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
-        if (!arg.Documentation().empty()) {
-            OPER name;
-            if (arg.isDocumentation()) {
-                name = base;
-            }
-            else if (arg.isFunction()) {
-                name = arg.FunctionText();
-            }
-            ItemGroup = ItemGroup & Pre & name & Post;
-        }
-    }
-    tp = Excel(xlfSubstitute, tp, OPER(L"{{ItemGroup}}"), ItemGroup);
-
-    return tp;
-}
-
-OPER documentation_aml(const Args& args)
+OPER documentation_aml(const Args& args, const OPER& key)
 {
     OPER da(
 #include "Documentation.aml"
     );
 
-    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), Args::Guid(args.FunctionText()));
-    if (!args.Documentation().empty()) {
-        da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
-    }
-
+    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), Args::Guid(Args::TopicId(key)));
+    da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
+ 
     return da;
 }
 
@@ -209,7 +133,7 @@ OPER function_aml(const Args& args, const OPER& key)
 #include "Function.aml"
     );
 
-    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), Args::Guid(key));
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), Args::Guid(Args::TopicId(key)));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{FunctionHelp}}"), args.FunctionHelp());
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Syntax}}"), args.Syntax());
@@ -245,26 +169,121 @@ OPER function_aml(const Args& args, const OPER& key)
     return fa;
 }
 
-inline OPER alias_txt(const Args& arg)
+inline OPER alias_txt(const OPER& key)
 {
-    OPER at;
-
-    for (const OPER& key : arg.Key()) {
-        at.push_back(OPER(L"IDH_") & key & OPER(L"=html\\") & Args::Guid(key) & OPER(L".htm"));
-    }
-        
-    return at;
+    return OPER(L"IDH_") & key & OPER(L"=html\\") & Args::Guid(Args::TopicId(key)) & OPER(L".htm");
 }
 
-inline OPER map_h(const Args& arg)
+inline OPER map_h(const OPER& key)
 {
-    OPER mh;
+    return OPER(L"#define IDH_") & key & OPER(L" ") & Args::TopicId(key);
+}
 
-    for (const OPER& key : arg.Key()) {
-        mh.push_back(OPER(L"#define IDH_") & key & OPER(L" ") & Args::TopicId(key));
+OPER content_layout(const OPER& base)
+{
+    OPER cl(
+#include "Content Layout.content"
+    );
+
+    OPER Pre = L"\n   <Topic id =\"";
+    OPER visible = L"visible=\"true\" ";
+    OPER isExpanded = L"isExpanded=\"true\" ";
+    OPER isSelected = L"isSelected=\"true\" ";
+    OPER Post = L" />";
+    auto Topic = [](const OPER& t) {
+        return OPER(L"\n   <Topic ") & t & OPER(L" />");
+    };
+    auto attr = [](const wchar_t* name, const OPER& value) {
+        return OPER(name) & OPER(L"=\"") & value & OPER(L"\" ");
+    };
+
+    OPER Topics = Topic(attr(L"id", Args::Guid(Args::TopicId(base))) &
+                  visible & isExpanded & isSelected);
+
+    std::set<OPER> ts;
+
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
+        if (!arg.Documentation().empty()) {
+            if (arg.isFunction()) {
+                if (arg.Category().size() > 0) {
+                    ts.insert(arg.Category());
+                }
+                //  title="FUNCTION function" tocTitle="FUNCTION" linkText="FUNCTION" />
+                Topics &= Topic(
+                    attr(L"id", Args::Guid(Args::TopicId(key))) &
+                    attr(L"title", key)
+                );
+            }
+        }
     }
+    /*
+    for (const OPER& t : ts) {
+        Topics &= Topic(
+                      attr(L"id", Args::Guid(Args::TopicId(t))) &
+                      isExpanded &
+                      attr(L"title", t)
+                  );
+    }
+    */
 
-    return mh;
+    cl = Excel(xlfSubstitute, cl, OPER(L"{{Topics}}"), Topics);
+
+    return cl;
+}
+
+OPER template_shfbproj(const OPER& base)
+{
+    OPER tp(
+#include "template.shfbproj"
+    );
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{Base}}"), base);
+#ifdef SHFB_ORGANIZATION
+    OPER org(L"<CopyrightText>Copyright &amp;#169%3b {{Organization}}</CopyrightText>");
+    org = Excel(xlfSubstitute, org, OPER(L"{{Organization}}"), OPER(SHFB_ORGANIZATION));
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), org);
+#else
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{CopyrightText}}"), OPER(L""));
+#endif
+#ifdef SHFB_FEEDBACKEMAILADDRESS
+    OPER email = OPER(L"<FeedbackEMailAddress>");
+    email = email & OPER(SHFB_FEEDBACKEMAILADDRESS);
+    email = email & OPER(L"</FeedbackEMailAddress>");
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{FeedbackEMailAddress}}"), email);
+#else
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{FeedbackEMailAddress}}"), OPER(L""));
+#endif
+
+    //<None Include = "Reference\FUNCTION.aml" / >
+    OPER Pre = OPER(L"\n    <None Include=\"");
+    OPER Post = OPER(L".aml\" />");
+    OPER ItemGroup = Pre & base & Post;
+    OPER Pres = OPER(L"\n   <Folder Include=\"");
+    OPER Posts = OPER(L"\" />");
+    OPER ItemGroups;
+    std::set<OPER> igs;
+
+    for (const auto& [key, arg] : AddIn::KeyArgsMap) {
+        if (!arg.Documentation().empty()) {
+            OPER name;
+            if (arg.isDocumentation()) {
+                name = base;
+            }
+            else if (arg.isFunction()) {
+                if (arg.Category().size() > 0) {
+                    igs.insert(arg.Category());
+                }
+                name = key;
+            }
+            ItemGroup = ItemGroup & Pre & name & Post;
+        }
+    }
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{ItemGroup}}"), ItemGroup);
+    for (const OPER& ig : igs) {
+        ItemGroups = ItemGroups & Pres & ig & Posts;
+    }
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{ItemGroups}}"), ItemGroups);
+
+    return tp;
 }
 
 //!!! turn the Fopen - Fclose into an RAII class
@@ -276,7 +295,7 @@ void make_shfb(const OPER& lib)
     dir = dir & SHFB_DOCS;
     dir = dir & base;
     dir = dir & L"\\";
-#endif
+#endif // SHFB_DOCS
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
 
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
@@ -285,12 +304,8 @@ void make_shfb(const OPER& lib)
     xlfFile tp(dir & base & OPER(L".shfbproj"));
     tp.write(template_shfbproj(base));
 
-    xlfFile xcl(dir & OPER(L"Content Layout.content"));
-    OPER cl(
-#include "Content Layout.content"
-    );
-
-    cl = Excel(xlfSubstitute, cl, OPER(L"{{TopicGUID}}"), Args::Guid(base));
+    xlfFile cl(dir & OPER(L"Content Layout.content"));
+    cl.write(content_layout(base));
 
     xlfFile at(dir & OPER(L"alias.txt"));
     xlfFile mh(dir & OPER(L"map.h"));
@@ -299,21 +314,15 @@ void make_shfb(const OPER& lib)
             if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
                 xlfFile fd(dir & base & OPER(L".aml"));
-                fd.write(documentation_aml(arg));
+                fd.write(documentation_aml(arg, base));
             }
             else if (arg.isFunction()) {
-                for (const OPER& key : arg.Key()) {
-                    xlfFile fd(dir & key & OPER(L".aml"));
-                    fd.write(function_aml(arg, key));
-                }
+                xlfFile fd(dir & key & OPER(L".aml"));
+                fd.write(function_aml(arg, key));
+                at.writeln(alias_txt(key));
+                mh.writeln(map_h(key));
             }
             // else if (arg.isMacro()) { ...
-            for (const OPER& i : alias_txt(arg)) {
-                at.writeln(i);
-            }
-            for (const OPER& i : map_h(arg)) {
-                mh.writeln(i);
-            }
         }
     }
 }

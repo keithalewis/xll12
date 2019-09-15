@@ -540,14 +540,13 @@ namespace xll {
 
         OPER12& push_back(const OPER12& o)
         {
-            if (type() != xltypeMulti) {
-                ensure (size() == 0);
-                operator=(o); // overwrite
-                if (type() != xltypeMulti) {
-                    resize(1,1);
-                }
+            if (size() == 0) {
+                operator=(o);
+            }
+            else if (type() != xltypeMulti) {
+                resize(1, 1);
 
-                return *this;
+                return push_back(o);
             }
             else {
                 ensure(columns() == o.columns());

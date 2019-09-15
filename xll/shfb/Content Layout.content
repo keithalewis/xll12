@@ -1,6 +1,4 @@
 ﻿LR"shfb(<?xml version="1.0" encoding="utf-8"?>
-<Topics>
-  <Topic id="{{TopicGUID}}" visible="True" isExpanded="true" isSelected="true">{{Topics}}  
-  </Topic>
+<Topics>{{Topics}}
 </Topics>
 )shfb"

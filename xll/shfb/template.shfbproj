@@ -87,11 +87,8 @@
   </ItemGroup>
   <ItemGroup>{{ItemGroup}}
   </ItemGroup>
-  <!---
-  <ItemGroup>
-    <Folder Include="Reference\" />
+  <ItemGroup>{{ItemGroups}}
   </ItemGroup>
-  -->
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
 </Project>

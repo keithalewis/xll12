@@ -440,7 +440,7 @@ namespace xll {
             OPER oResult;
 
             if (isDocumentation()) {
-                return oResult; // Do not register if documentation only.
+                return OPER(-1); // Do not register if documentation only.
             }
 
             OPER name = XlGetName();
