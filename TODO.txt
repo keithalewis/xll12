@@ -24,4 +24,5 @@ Alias Document = Args;
 One arg is the document name. Default to base? Use as namespace?
 Must have Documentation call. Allow multiple?
 
-separate content_layout etc. into one requiring arg map and not.
+Generate Category files correctly.
+SHFB grouping not working properly. Put topics one level lower?

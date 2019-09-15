@@ -113,6 +113,19 @@ inline OPER idh_safename(OPER x)
     return x;
 }
 
+OPER Tag(const wchar_t* tag, const OPER& attr) {
+    return OPER(L"<") & OPER(tag) & OPER(L" ") & attr & OPER(L" />");
+};
+
+OPER Tag(const wchar_t* tag, const OPER& attr, const OPER& content)
+{
+    return OPER(L"<") & OPER(tag) & OPER(L" ") & attr & OPER(L">")
+        & content & OPER(L"</") & OPER(tag) & OPER(L">");
+}
+
+OPER Attr(const wchar_t* name, const OPER& value) {
+    return OPER(name) & OPER(L"=\"") & value & OPER(L"\" ");
+};
 
 
 OPER documentation_aml(const Args& args, const OPER& key)
@@ -185,46 +198,40 @@ OPER content_layout(const OPER& base)
 #include "Content Layout.content"
     );
 
-    OPER Pre = L"\n   <Topic id =\"";
-    OPER visible = L"visible=\"true\" ";
-    OPER isExpanded = L"isExpanded=\"true\" ";
-    OPER isSelected = L"isSelected=\"true\" ";
-    OPER Post = L" />";
-    auto Topic = [](const OPER& t) {
-        return OPER(L"\n   <Topic ") & t & OPER(L" />");
+    OPER visible = Attr(L"visible", OPER(L"true"));
+    OPER isExpanded = Attr(L"isExpanded", OPER(L"true"));
+    OPER isSelected = Attr(L"isSelected", OPER(L"true"));
+ 
+    auto Topic = [](const OPER& attr) {
+        return Tag(L"Topic", attr);
     };
-    auto attr = [](const wchar_t* name, const OPER& value) {
-        return OPER(name) & OPER(L"=\"") & value & OPER(L"\" ");
-    };
-
-    OPER Topics = Topic(attr(L"id", Args::Guid(Args::TopicId(base))) &
+    OPER Topics = Topic(Attr(L"id", Args::Guid(Args::TopicId(base))) &
                   visible & isExpanded & isSelected);
 
-    std::set<OPER> ts;
+    std::map<OPER, OPER> topicMap;
 
     for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (!arg.Documentation().empty()) {
             if (arg.isFunction()) {
-                if (arg.Category().size() > 0) {
-                    ts.insert(arg.Category());
-                }
+                OPER category = arg.Category();
                 //  title="FUNCTION function" tocTitle="FUNCTION" linkText="FUNCTION" />
-                Topics &= Topic(
-                    attr(L"id", Args::Guid(Args::TopicId(key))) &
-                    attr(L"title", key)
-                );
+                //topicMap[category] &= OPER(L"\n   ");
+                OPER topic = Topic(
+                    Attr(L"id", Args::Guid(Args::TopicId(key))) &
+                    Attr(L"title", key));
+                topicMap[category] = topicMap[category] & topic;
             }
+            // else if isMacro!!!
         }
     }
-    /*
-    for (const OPER& t : ts) {
-        Topics &= Topic(
-                      attr(L"id", Args::Guid(Args::TopicId(t))) &
-                      isExpanded &
-                      attr(L"title", t)
-                  );
+
+    for (const auto& [cat,topic] : topicMap) {
+        OPER attr = Attr(L"id", Args::Guid(Args::TopicId(cat)))
+            & Attr(L"title", cat)
+            & visible & isExpanded;
+        Topics &= OPER(L"\n  ");
+        Topics &= Tag(L"Topic", attr, topic);
     }
-    */
 
     cl = Excel(xlfSubstitute, cl, OPER(L"{{Topics}}"), Topics);
 
@@ -271,17 +278,21 @@ OPER template_shfbproj(const OPER& base)
             else if (arg.isFunction()) {
                 if (arg.Category().size() > 0) {
                     igs.insert(arg.Category());
+                    name = arg.Category() & L"\\";
                 }
-                name = key;
+                name &= key;
             }
             ItemGroup = ItemGroup & Pre & name & Post;
         }
     }
-    tp = Excel(xlfSubstitute, tp, OPER(L"{{ItemGroup}}"), ItemGroup);
+    
     for (const OPER& ig : igs) {
+        ItemGroup = ItemGroup & Pre & ig & Post;
         ItemGroups = ItemGroups & Pres & ig & Posts;
     }
+    tp = Excel(xlfSubstitute, tp, OPER(L"{{ItemGroup}}"), ItemGroup);
     tp = Excel(xlfSubstitute, tp, OPER(L"{{ItemGroups}}"), ItemGroups);
+    
 
     return tp;
 }
@@ -317,7 +328,12 @@ void make_shfb(const OPER& lib)
                 fd.write(documentation_aml(arg, base));
             }
             else if (arg.isFunction()) {
-                xlfFile fd(dir & key & OPER(L".aml"));
+                // kludge!!!
+                const OPER& cat = arg.Category();
+                xlfFile cd(dir & cat & OPER(L".aml"));
+                cd.write(documentation_aml(arg, cat));
+
+                xlfFile fd(dir & arg.Category() & OPER(L"\\") & key & OPER(L".aml"));
                 fd.write(function_aml(arg, key));
                 at.writeln(alias_txt(key));
                 mh.writeln(map_h(key));
