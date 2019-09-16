@@ -35,7 +35,7 @@ AddIn xai_function(
 	.Alias(L"XLL.FUNCTION.ALIAS") // alternate name
     .Documentation(
         P_(
-            L"Free-form documentation fore " C_(L"XLL.FUNCTION") L" goes here."
+            L"Free-form documentation for " C_(L"XLL.FUNCTION") L" goes here."
         )
         P_(L"But you can include MAML directives.")
         P_(L"This is " B_(L"bold") " and so is " B_("this"))
