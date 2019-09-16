@@ -8,7 +8,7 @@
 #define B_(x) TAG_(L"legacyBold", x)
 #define I_(x) TAG_(L"legacyItalic", x)
 #define U_(x) TAG_(L"legacyUnderline", x)
-#define P_(x) L"</para>" x L"<para>"
+#define PARA_(x) L"</para>" x L"<para>"
 #define C_(x) TAG_(L"codeInline", x)
 #define MATH_(x) TAG_(L"math", x)
 

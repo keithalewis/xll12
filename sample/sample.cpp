@@ -34,17 +34,17 @@ AddIn xai_function(
 	// Create entry for this function in Sandcastle Help File Builder project file.
 	.Alias(L"XLL.FUNCTION.ALIAS") // alternate name
     .Documentation(
-        P_(
+        PARA_(
             L"Free-form documentation for " C_(L"XLL.FUNCTION") L" goes here."
         )
-        P_(L"But you can include MAML directives.")
-        P_(L"This is " B_(L"bold") " and so is " B_("this"))
-        P_(L"Math: " MATH_(int_ SUB_(minus_ infin_) SUP_(infin_) L"e" SUP_(L"x" sup2_ L"/2") L" dx"))
+        PARA_(L"But you can include MAML directives.")
+        PARA_(L"This is " B_(L"bold") " and so is " B_("this"))
+        PARA_(L"Math: " MATH_(int_ SUB_(minus_ infin_) SUP_(infin_) L"e" SUP_(L"x" sup2_ L"/2") L" dx"))
     )
     .Remarks(
         L"This is a remark. "
         L"This is " B_(L"bold") L" and this is " I_(L"italic")
-        P_(L"This is a paragraph.")
+        PARA_(L"This is a paragraph.")
     )
     .Examples(LR"(
 This is an example.
