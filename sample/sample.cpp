@@ -12,6 +12,12 @@ AddIn xai_sample(
 This object will generate a Sandcastle Helpfile Builder project file.
 )"));
 
+AddIn xal_sample_category(
+    Documentation(LR"(
+This object will generate documentation for the Sample category.
+)")
+    .Category(L"Example")
+);
 // Information Excel needs to register add-in.
 AddIn xai_function(
 	// Function returning a pointer to an OPER with C++ name xll_function and Excel name XLL.FUNCTION.
@@ -22,7 +28,7 @@ AddIn xai_function(
 	// First argument is a double called x with an argument description and default value of 2
 	.Arg(XLL_DOUBLE, L"x", L"is the first double argument.", L"2")
 	// Paste function category.
-	.Category(L"Sample")
+	.Category(L"Example")
 	// Insert Function description.
 	.FunctionHelp(L"Help on XLL.FUNCTION goes here.")
 	// Create entry for this function in Sandcastle Help File Builder project file.

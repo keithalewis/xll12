@@ -324,15 +324,18 @@ void make_shfb(const OPER& lib)
         if (!arg.Documentation().empty()) {
             if (arg.isDocumentation()) {
                 // Assumes only one documentation add-in.
-                xlfFile fd(dir & base & OPER(L".aml"));
-                fd.write(documentation_aml(arg, base));
+                if (arg.Category().size() > 0) {
+                    const OPER& cat = arg.Category();
+                    xlfFile fd(dir & cat & OPER(L".aml"));
+                    fd.write(documentation_aml(arg, cat));
+
+                }
+                else { // top level documentation
+                    xlfFile fd(dir & base & OPER(L".aml"));
+                    fd.write(documentation_aml(arg, base));
+                }
             }
             else if (arg.isFunction()) {
-                // kludge!!!
-                const OPER& cat = arg.Category();
-                xlfFile cd(dir & cat & OPER(L".aml"));
-                cd.write(documentation_aml(arg, cat));
-
                 xlfFile fd(dir & arg.Category() & OPER(L"\\") & key & OPER(L".aml"));
                 fd.write(function_aml(arg, key));
                 at.writeln(alias_txt(key));
