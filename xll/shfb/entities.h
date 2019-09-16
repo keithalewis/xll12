@@ -1,9 +1,5 @@
 // entities.h - Unicode values for entities
 
-#ifndef T_
-#define T_(x) L##x
-#endif 
-#define S_(x) T_(x)
 
 #define TAG_(t,x) L"<" t L">" x L"</" t L">"
 
@@ -12,9 +8,9 @@
 #define B_(x) TAG_(L"legacyBold", x)
 #define I_(x) TAG_(L"legacyItalic", x)
 #define U_(x) TAG_(L"legacyUnderline", x)
-#define P_(x) TAG_(L"para", x)
-
-#undef S_
+#define P_(x) L"</para>" x L"<para>"
+#define C_(x) TAG_(L"codeInline", x)
+#define MATH_(x) TAG_(L"math", x)
 
 #define Aacute_ L"&#193;"
 #define aacute_ L"&#225;"

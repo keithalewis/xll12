@@ -1,22 +1,22 @@
 // sample.cpp - Simple example of using AddIn.
 #include <cmath>
 #include "../xll/xll.h"
-#include "../xll/shfb/shfb.h"
 #include "../xll/shfb/entities.h"
 
 using namespace xll;
-using namespace shfb;
 
 AddIn xai_sample(
-	Documentation(LR"(
+    Document(L"Short description goes here.")
+	.Documentation(LR"(
 This object will generate a Sandcastle Helpfile Builder project file.
 )"));
 
 AddIn xal_sample_category(
-    Documentation(LR"(
+    Document(L"The Example Category.")
+    .Category(L"Example")
+    .Documentation(LR"(
 This object will generate documentation for the Example category.
 )")
-    .Category(L"Example")
 );
 // Information Excel needs to register add-in.
 AddIn xai_function(
@@ -33,18 +33,24 @@ AddIn xai_function(
 	.FunctionHelp(L"Help on XLL.FUNCTION goes here.")
 	// Create entry for this function in Sandcastle Help File Builder project file.
 	.Alias(L"XLL.FUNCTION.ALIAS") // alternate name
-    .Documentation(maml()
-        .para(
-            maml()._(L"Free-form documentation on ").c(L"XLL.FUNCTION")._(L" goes here.")
+    .Documentation(
+        P_(
+            L"Free-form documentation fore " C_(L"XLL.FUNCTION") L" goes here."
         )
-        .para(L"But you can include MAML directives.")
-        .para(maml()
-            ._(L"This is ").bold(L"bold")._(L" and so is <legacyBold>this</legacyBold>")
-        )
-        .para(maml()
-            ._(L"Math: ").math(int_).sub(minus_ infin_).sup(infin_)._(L"e").sup(minus_ L"x" sup2_ L"/2")._(L" dx")
-        )
+        P_(L"But you can include MAML directives.")
+        P_(L"This is " B_(L"bold") " and so is " B_("this"))
+        P_(L"Math: " MATH_(int_ SUB_(minus_ infin_) SUP_(infin_) L"e" SUP_(L"x" sup2_ L"/2") L" dx"))
     )
+    .Remarks(
+        L"This is a remark. "
+        L"This is " B_(L"bold") L" and this is " I_(L"italic")
+        P_(L"This is a paragraph.")
+    )
+    .Examples(LR"(
+This is an example.
+</para><para>
+It has two paragraphs.
+)")
 );
 // Calling convention *must* be WINAPI (aka __stdcall) for Excel.
 LPOPER WINAPI xll_function(double x)

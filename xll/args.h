@@ -92,12 +92,13 @@ namespace xll {
 			args[ARG::MacroType] = OPER12(1);
 		}
         /// Documentation
-        Args(xcstr _documentation)
+        Args(xcstr functionHelp)
             : Args()
         {
             // needed for Key()
             //args[ARG::FunctionText] = L"*";
-            documentation = _documentation;
+            args[ARG::FunctionHelp] = functionHelp;
+            documentation = L"Add documentation using Document().Documetation(...)";
             args[ARG::MacroType] = OPER(-1);
         }
 
@@ -451,16 +452,19 @@ namespace xll {
             OPER name = XlGetName();
             args[ARG::ModuleText] = name;
             
-            OPER ft = args[ARG::FunctionText];
             for (const OPER& key : Key()) {
+                OPER ft = args[ARG::FunctionText];
+                OPER chm = args[ARG::HelpTopic];
                 args[ARG::FunctionText] = key;
                 if (!documentation.empty()) {
-                    OPER chm = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
-                    chm &= TopicId(key);
-                    args[ARG::HelpTopic] = chm;
+                    OPER ht = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
+                    ht &= TopicId(key);
+                    args[ARG::HelpTopic] = ht;
                 }
                 OPER oReg = Excelv(xlfRegister, args);
-			    if (oReg.isErr()) {
+                args[ARG::HelpTopic] = chm;
+                args[ARG::FunctionText] = ft;
+                if (oReg.isErr()) {
 				    OPER oError(L"Failed to register: ");
 				    oError &= args[ARG::FunctionText];
 				    oError &= L"/";
@@ -473,7 +477,6 @@ namespace xll {
                     oResult.push_back(oReg);
                 }
             }
-            args[ARG::FunctionText] = ft;
  
 			return oResult;
 		}
@@ -490,6 +493,7 @@ namespace xll {
 	using Function = Args;
 	using Macro = Args;
     using Documentation = Args;
+    using Document = Args;
 	// backwards compatibility
 	using ArgsX = Args;
 	using FunctionX = Args;

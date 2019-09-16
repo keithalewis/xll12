@@ -5,6 +5,24 @@
 
 using namespace xll;
 
+OPER Remarks(LR"(
+    <section address="Remarks">
+      <title>Remarks</title>
+      <content>
+        <para>{{Remarks}}</para>
+      </content>
+    </section>
+)");
+
+OPER Examples(LR"(
+    <section address="Examples">
+      <title>Examples</title>
+      <content>
+        <para>{{Examples}}</para>
+      </content>
+    </section>
+)");
+
 // Replace with appropriate values or OPER() to remove.
 static std::map<OPER, OPER> shfb_map = {
     { OPER(L"Organization"), OPER(SHFB_ORGANIZATION) },
@@ -135,6 +153,7 @@ OPER documentation_aml(const Args& args, const OPER& key)
     );
 
     da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), Args::Guid(Args::TopicId(key)));
+    da = Excel(xlfSubstitute, da, OPER(L"{{Summary}}"), args.FunctionHelp());
     da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
  
     return da;
@@ -161,19 +180,15 @@ OPER function_aml(const Args& args, const OPER& key)
     }
     fa = Excel(xlfSubstitute, fa, OPER(L"{{ListItems}}"), ListItems);
     if (!args.Remarks().empty()) {
-        OPER Remarks(L"<section address=\"Remarks\"><title>Remarks</title><content><para>");
-        Remarks.append(args.Remarks());
-        Remarks = Remarks & OPER(L"</para></content></section>");
-        fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), Remarks);
+        OPER remarks = Excel(xlfSubstitute, Remarks, OPER(L"{{Remarks}}"), OPER(args.Remarks()));
+        fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), remarks);
     }
     else {
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Remarks}}"), OPER(L""));
     }
     if (!args.Examples().empty()) {
-        OPER Examples(L"<section address=\"Examples\"><title>Examples</title><content><para>");
-        Examples &= args.Examples();
-        Examples &= L"</para></content></section>";
-        fa = Excel(xlfSubstitute, fa, OPER(L"{{Examples}}"), Examples);
+        OPER examples = Excel(xlfSubstitute, Examples, OPER(L"{{Examples}}"), OPER(args.Examples()));
+        fa = Excel(xlfSubstitute, fa, OPER(L"{{Examples}}"), examples);
     }
     else {
         fa = Excel(xlfSubstitute, fa, OPER(L"{{Examples}}"), OPER(L""));
@@ -310,7 +325,7 @@ void make_shfb(const OPER& lib)
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
     //OPER o = Excel(xlfEvaluate, s);
 
-    xlfFile tp(dir & base & OPER(L".shfbproj"));
+    xlfFile tp(dir & base & OPER(L"_shfb.shfbproj"));
     tp.write(template_shfbproj(base));
 
     xlfFile cl(dir & OPER(L"Content Layout.content"));

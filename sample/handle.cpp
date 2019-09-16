@@ -4,10 +4,11 @@
 using namespace xll;
 
 AddIn xal_xll_category(
-    Documentation(LR"(
+    Document(L"How to use handles.")
+    .Category(L"XLL")
+    .Documentation(LR"(
 This object will generate documentation for the XLL category.
 )")
-.Category(L"XLL")
 );
 
 namespace xll {
