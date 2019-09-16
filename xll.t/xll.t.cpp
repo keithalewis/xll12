@@ -321,7 +321,7 @@ void test_multi()
 */
 	OPER12 m0;
 	m0.push_back(OPER12(L"foo"));
-	ensure (m0.xltype == xltypeMulti);
+	ensure (m0.xltype == xltypeStr);
 	ensure (m0.rows() == 1);
 	ensure (m0.columns() == 1);
 	ensure (m0[0] == L"foo");

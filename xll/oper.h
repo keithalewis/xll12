@@ -545,7 +545,6 @@ namespace xll {
             }
             else if (type() != xltypeMulti) {
                 resize(1, 1);
-
                 return push_back(o);
             }
             else {

@@ -184,12 +184,12 @@ OPER function_aml(const Args& args, const OPER& key)
 
 inline OPER alias_txt(const OPER& key)
 {
-    return OPER(L"IDH_") & key & OPER(L"=html\\") & Args::Guid(Args::TopicId(key)) & OPER(L".htm");
+    return OPER(L"IDH_") & idh_safename(key) & OPER(L"=html\\") & Args::Guid(Args::TopicId(key)) & OPER(L".htm");
 }
 
 inline OPER map_h(const OPER& key)
 {
-    return OPER(L"#define IDH_") & key & OPER(L" ") & Args::TopicId(key);
+    return OPER(L"#define IDH_") & idh_safename(key) & OPER(L" ") & Args::TopicId(key);
 }
 
 OPER content_layout(const OPER& base)
@@ -278,9 +278,8 @@ OPER template_shfbproj(const OPER& base)
             else if (arg.isFunction()) {
                 if (arg.Category().size() > 0) {
                     igs.insert(arg.Category());
-                    name = arg.Category() & L"\\";
                 }
-                name &= key;
+                name = key;
             }
             ItemGroup = ItemGroup & Pre & name & Post;
         }
@@ -297,7 +296,6 @@ OPER template_shfbproj(const OPER& base)
     return tp;
 }
 
-//!!! turn the Fopen - Fclose into an RAII class
 void make_shfb(const OPER& lib)
 {
     OPER dir = dirname(lib);
@@ -323,7 +321,7 @@ void make_shfb(const OPER& lib)
     for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (!arg.Documentation().empty()) {
             if (arg.isDocumentation()) {
-                // Assumes only one documentation add-in.
+                // Assumes only one documentation add-in per category.
                 if (arg.Category().size() > 0) {
                     const OPER& cat = arg.Category();
                     xlfFile fd(dir & cat & OPER(L".aml"));
@@ -336,7 +334,7 @@ void make_shfb(const OPER& lib)
                 }
             }
             else if (arg.isFunction()) {
-                xlfFile fd(dir & arg.Category() & OPER(L"\\") & key & OPER(L".aml"));
+                xlfFile fd(dir & key & OPER(L".aml"));
                 fd.write(function_aml(arg, key));
                 at.writeln(alias_txt(key));
                 mh.writeln(map_h(key));

@@ -78,7 +78,6 @@ namespace xll {
 		Args(xcstr Procedure, xcstr FunctionText)
 			: Args()
 		{
-			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			Alias_ = args[ARG::FunctionText] = FunctionText;
 			args[ARG::MacroType] = OPER12(2);
@@ -87,7 +86,6 @@ namespace xll {
 		Args(xcstr TypeText, xcstr Procedure, xcstr FunctionText)
 			: Args()
 		{
-			//args[ARG::ModuleText] = XlGetName();
 			args[ARG::Procedure] = Procedure;
 			args[ARG::TypeText] = TypeText;
             Alias_ = args[ARG::FunctionText] = FunctionText;
@@ -98,7 +96,7 @@ namespace xll {
             : Args()
         {
             // needed for Key()
-            args[ARG::FunctionText] = L"*";
+            //args[ARG::FunctionText] = L"*";
             documentation = _documentation;
             args[ARG::MacroType] = OPER(-1);
         }
@@ -109,6 +107,10 @@ namespace xll {
 
 			return *this;
 		}
+        const OPER& ModuleText() const
+        {
+            return args[ARG::ModuleText];
+        }
 
 		/// Set the name of the C/C++ function to be called.
 		Args& Procedure(xcstr procedure)
@@ -173,6 +175,9 @@ namespace xll {
 		/// Set the category to be used in the function wizard.
 		Args& Category(xcstr category)
 		{
+            if (isDocumentation()) {
+                Alias_ = category;
+            }
 			args[ARG::Category] = category;
 
 			return *this;

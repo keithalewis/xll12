@@ -3,6 +3,13 @@
 
 using namespace xll;
 
+AddIn xal_xll_category(
+    Documentation(LR"(
+This object will generate documentation for the XLL category.
+)")
+.Category(L"XLL")
+);
+
 namespace xll {
 
 	// Simple base class.
