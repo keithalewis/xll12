@@ -406,7 +406,6 @@ namespace xll {
                 h = (h * A) ^ (s[0] * B);
                 s++;
             }
-            h /= 2;
 
             return h > 0 ? h : -h;
         }
@@ -422,9 +421,15 @@ namespace xll {
             return Excel(xlfText, Hash, OPER(L"General"));
         }
 
-        static OPER Guid(const OPER& TopicId) 
+        static OPER Guid(const OPER& key) 
         {
-            return Excel(xlfDec2hex, TopicId) & OPER(L"-0000-0000-0000-000000000000");
+            ensure(key.isStr());
+
+            int hash = hash_string(key.val.str + 1, key.val.str[0]);
+            wchar_t buf[40];
+            swprintf(buf, 40, L"%08X-0000-0000-0000-000000000000", hash);
+            
+            return OPER(buf);
         }
 
         Args& Alias(const std::wstring& alias)

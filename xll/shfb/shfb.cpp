@@ -152,7 +152,7 @@ OPER documentation_aml(const Args& args, const OPER& key)
 #include "Documentation.aml"
     );
 
-    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), Args::Guid(Args::TopicId(key)));
+    da = Excel(xlfSubstitute, da, OPER(L"{{TopicId}}"), Args::Guid(key));
     da = Excel(xlfSubstitute, da, OPER(L"{{Summary}}"), args.FunctionHelp());
     da = Excel(xlfSubstitute, da, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
  
@@ -165,7 +165,7 @@ OPER function_aml(const Args& args, const OPER& key)
 #include "Function.aml"
     );
 
-    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), Args::Guid(Args::TopicId(key)));
+    fa = Excel(xlfSubstitute, fa, OPER(L"{{TopicId}}"), Args::Guid(key));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{FunctionHelp}}"), args.FunctionHelp());
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Documentation}}"), OPER(args.Documentation()));
     fa = Excel(xlfSubstitute, fa, OPER(L"{{Syntax}}"), args.Syntax());
@@ -199,7 +199,7 @@ OPER function_aml(const Args& args, const OPER& key)
 
 inline OPER alias_txt(const OPER& key)
 {
-    return OPER(L"IDH_") & idh_safename(key) & OPER(L"=html\\") & Args::Guid(Args::TopicId(key)) & OPER(L".htm");
+    return OPER(L"IDH_") & idh_safename(key) & OPER(L"=html\\") & Args::Guid(key) & OPER(L".htm");
 }
 
 inline OPER map_h(const OPER& key)
@@ -220,7 +220,7 @@ OPER content_layout(const OPER& base)
     auto Topic = [](const OPER& attr) {
         return Tag(L"Topic", attr);
     };
-    OPER Topics = Topic(Attr(L"id", Args::Guid(Args::TopicId(base))) &
+    OPER Topics = Topic(Attr(L"id", Args::Guid(base)) &
                   visible & isExpanded & isSelected);
 
     std::map<OPER, OPER> topicMap;
@@ -232,7 +232,7 @@ OPER content_layout(const OPER& base)
                 //  title="FUNCTION function" tocTitle="FUNCTION" linkText="FUNCTION" />
                 //topicMap[category] &= OPER(L"\n   ");
                 OPER topic = Topic(
-                    Attr(L"id", Args::Guid(Args::TopicId(key))) &
+                    Attr(L"id", Args::Guid(key)) &
                     Attr(L"title", key));
                 topicMap[category] = topicMap[category] & topic;
             }
@@ -241,7 +241,7 @@ OPER content_layout(const OPER& base)
     }
 
     for (const auto& [cat,topic] : topicMap) {
-        OPER attr = Attr(L"id", Args::Guid(Args::TopicId(cat)))
+        OPER attr = Attr(L"id", Args::Guid(cat))
             & Attr(L"title", cat)
             & visible & isExpanded;
         Topics &= OPER(L"\n  ");
