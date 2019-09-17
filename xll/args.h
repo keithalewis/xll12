@@ -406,6 +406,7 @@ namespace xll {
                 h = (h * A) ^ (s[0] * B);
                 s++;
             }
+            h /= 2;
 
             return h > 0 ? h : -h;
         }
