@@ -394,8 +394,8 @@ namespace xll {
 			return Alias_;
         }
 
-	// Simple hash function
-        static OPER hash_string(const wchar_t* s, unsigned n)
+	    // Simple hash function
+        static int hash_string(const wchar_t* s, unsigned n)
         {
             static int A = 54059; /* a prime */
             static int B = 76963; /* another prime */
@@ -407,13 +407,18 @@ namespace xll {
                 s++;
             }
 
-            return Excel(xlfText, OPER(abs(h)), OPER(L"General")); // or return h % C;
+            return h > 0 ? h : -h;
         }
 
         // Integer hash used in help files.
         static OPER TopicId(const OPER& key)
         {
-            return hash_string(key.val.str + 1, key.val.str[0]);
+            ensure(key.isStr());
+
+            int hash = hash_string(key.val.str + 1, key.val.str[0]);
+            OPER Hash = OPER(static_cast<double>(hash));
+
+            return Excel(xlfText, Hash, OPER(L"General"));
         }
 
         static OPER Guid(const OPER& TopicId) 
