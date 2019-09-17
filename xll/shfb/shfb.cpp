@@ -380,5 +380,7 @@ xll_make_shfb(void)
     return TRUE;
 }
 #ifdef _DEBUG
+#ifdef SHFB_DOCS
 Auto<OpenAfter> xao_make_doc(xll_make_shfb);
+#endif
 #endif

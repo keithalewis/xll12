@@ -469,7 +469,7 @@ namespace xll {
                 args[ARG::FunctionText] = key;
                 if (!documentation.empty()) {
                     OPER ht = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
-                    ht &= TopicId(key);
+                    //ht &= TopicId(key);
                     args[ARG::HelpTopic] = ht;
                 }
                 OPER oReg = Excelv(xlfRegister, args);
