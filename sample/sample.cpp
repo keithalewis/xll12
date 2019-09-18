@@ -18,6 +18,7 @@ AddIn xal_sample_category(
 This object will generate documentation for the Example category.
 )")
 );
+
 // Information Excel needs to register add-in.
 AddIn xai_function(
 	// Function returning a pointer to an OPER with C++ name xll_function and Excel name XLL.FUNCTION.

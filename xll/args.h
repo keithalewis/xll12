@@ -96,9 +96,9 @@ namespace xll {
             : Args()
         {
             // needed for Key()
-            //args[ARG::FunctionText] = L"*";
+            Alias_ = args[ARG::FunctionText] = L"";
             args[ARG::FunctionHelp] = functionHelp;
-            documentation = L"Add documentation using Document().Documetation(...)";
+            documentation = L"Add documentation using Document().Documentation(...)";
             args[ARG::MacroType] = OPER(-1);
         }
 
@@ -469,7 +469,7 @@ namespace xll {
                 args[ARG::FunctionText] = key;
                 if (!documentation.empty()) {
                     OPER ht = Excel(xlfSubstitute, name, OPER(L".xll"), OPER(L".chm!"));
-                    //ht &= TopicId(key);
+                    ht &= TopicId(key);
                     args[ARG::HelpTopic] = ht;
                 }
                 OPER oReg = Excelv(xlfRegister, args);

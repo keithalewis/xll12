@@ -14,7 +14,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "sample\sample.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xll.t", "xll.t\xll.t.vcxproj", "{043C5D10-0F89-4152-8904-9015EDC709FC}"
 EndProject
-Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "sample_shfb", "sample\Debug\sample_shfb.shfbproj", "{C0987555-6461-44FD-8407-1DCB806274F1}"
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "sample_shfb", "sample\x64\Debug\sample_shfb.shfbproj", "{C0987555-6461-44FD-8407-1DCB806274F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
