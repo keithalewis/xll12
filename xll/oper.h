@@ -377,7 +377,9 @@ namespace xll {
                 wmemcpy(val.str + end, str, len);
             }
             else if (xltype == xltypeNil || xltype == xltypeMissing) { /// xltype == OPER12().xltype
-                operator=(str);
+                xltype = xltypeStr;
+                allocate_str(len);
+                copy_str(str);
             }
             else {
                 throw std::runtime_error("OPER12::operator&=: must be a string or default");

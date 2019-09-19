@@ -230,11 +230,12 @@ OPER content_layout(const OPER& base)
             if (arg.isFunction()) {
                 OPER category = arg.Category();
                 //  title="FUNCTION function" tocTitle="FUNCTION" linkText="FUNCTION" />
-                //topicMap[category] &= OPER(L"\n   ");
+                OPER& topicCategory = topicMap[category];
+                topicCategory &= OPER(L"\n    ");
                 OPER topic = Topic(
                     Attr(L"id", Args::Guid(key)) &
                     Attr(L"title", key));
-                topicMap[category] = topicMap[category] & topic;
+                topicCategory &= topic;
             }
             // else if isMacro!!!
         }
@@ -242,8 +243,7 @@ OPER content_layout(const OPER& base)
 
     for (const auto& [cat,topic] : topicMap) {
         OPER attr = Attr(L"id", Args::Guid(cat))
-            & Attr(L"title", cat)
-            & visible & isExpanded;
+            & Attr(L"title", cat) & visible;
         Topics &= OPER(L"\n  ");
         Topics &= Tag(L"Topic", attr, topic);
     }
@@ -388,5 +388,5 @@ xll_make_shfb(void)
     return TRUE;
 }
 #ifdef _DEBUG
-//Auto<OpenAfter> xao_make_doc(xll_make_shfb);
+Auto<OpenAfter> xao_make_doc(xll_make_shfb);
 #endif
