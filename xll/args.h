@@ -413,7 +413,9 @@ namespace xll {
         // Integer hash used in help files.
         static OPER TopicId(const OPER& key)
         {
-            ensure(key.isStr());
+            if (!key.isStr()) {
+                return OPER(L"");
+            }
 
             int hash = hash_string(key.val.str + 1, key.val.str[0]);
             OPER Hash = OPER(static_cast<double>(hash));
@@ -423,7 +425,9 @@ namespace xll {
 
         static OPER Guid(const OPER& key) 
         {
-            ensure(key.isStr());
+            if (!key.isStr()) {
+                return OPER(L"");
+            }
 
             int hash = hash_string(key.val.str + 1, key.val.str[0]);
             wchar_t buf[40];
