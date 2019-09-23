@@ -12,7 +12,7 @@
       	it with Excel by creating an <codeInline>xll::AddIn</codeInline> object.
       	</para>
       	<para>
-      	The library also creates documentation that is integrated with Excel.
+      	The library also let's you create documentation that is integrated with Excel.
       	</para>
     </introduction>
     <section address="Intro">

@@ -388,5 +388,5 @@ xll_make_shfb(void)
     return TRUE;
 }
 #ifdef _DEBUG
-Auto<OpenAfter> xao_make_doc(xll_make_shfb);
+//Auto<OpenAfter> xao_make_doc(xll_make_shfb);
 #endif
