@@ -92,13 +92,11 @@ namespace xll {
 			args[ARG::MacroType] = OPER12(1);
 		}
         /// Documentation
-        Args(xcstr functionHelp)
+        Args(xcstr category)
             : Args()
         {
             // needed for Key()
-            Alias_ = args[ARG::FunctionText] = L"";
-            args[ARG::FunctionHelp] = functionHelp;
-            documentation = L"Add documentation using Document().Documentation(...)";
+            Alias_ = args[ARG::Category] = category;
             args[ARG::MacroType] = OPER(-1);
         }
 
@@ -163,7 +161,7 @@ namespace xll {
         {
             return args[ARG::MacroType] == 0;
         }
-        bool isDocumentation() const
+        bool isDocument() const
         {
             return args[ARG::MacroType] == -1; // special type
         }
@@ -176,9 +174,6 @@ namespace xll {
 		/// Set the category to be used in the function wizard.
 		Args& Category(xcstr category)
 		{
-            if (isDocumentation()) {
-                Alias_ = category;
-            }
 			args[ARG::Category] = category;
 
 			return *this;
@@ -460,8 +455,8 @@ namespace xll {
 		{
             OPER oResult;
 
-            if (isDocumentation()) {
-                return OPER(-1); // Do not register if documentation only.
+            if (isDocument()) {
+                return OPER(-1); // Do not register if document.
             }
 
             OPER name = XlGetName();
@@ -495,10 +490,10 @@ namespace xll {
  
 			return oResult;
 		}
-        /// Unregister and add-in function or macro
+        /// Unregister an add-in function or macro
         int Unregister() const
         {
-            if (isDocumentation())
+            if (isDocument())
                 return TRUE;
 
             return Excel(xlfUnregister, RegisterId()) == true;

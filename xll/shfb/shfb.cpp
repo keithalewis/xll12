@@ -287,7 +287,7 @@ OPER template_shfbproj(const OPER& base)
     for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (!arg.Documentation().empty()) {
             OPER name;
-            if (arg.isDocumentation()) {
+            if (arg.isDocument()) {
                 name = base;
             }
             else if (arg.isFunction()) {
@@ -343,7 +343,7 @@ void make_shfb(const OPER& lib)
     xlfFile mh(dir & OPER(L"map.h"));
     for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (!arg.Documentation().empty()) {
-            if (arg.isDocumentation()) {
+            if (arg.isDocument()) {
                 // Assumes only one documentation add-in per category.
                 if (arg.Category().size() > 0) {
                     const OPER& cat = arg.Category();

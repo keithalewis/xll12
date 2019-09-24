@@ -6,7 +6,7 @@
 using namespace xll;
 
 AddIn xai_sample(
-    Document(L"Short description goes here.")
+    Document(L"") // top level documentation
 	.Documentation(LR"(
 This object will generate a Sandcastle Helpfile Builder project file.
 )"));
