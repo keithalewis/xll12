@@ -221,6 +221,23 @@ void test_num()
 //    OPER12 o4 = 0; // calls OPER12(const XCHAR*) !!!
 //    ensure(o4.xltype == xltypeNum);
 //    ensure(o4.val.num == 0);
+    OPER12 oi(3);
+    ensure(oi.xltype == xltypeInt);
+    double x;
+    x = oi;
+    ensure(x == 3);
+    OPER12 ob(true);
+    ensure(ob.xltype == xltypeBool);
+    x = ob;
+    ensure(x == 1);
+    ob = OPER12(false);
+    ensure(ob.xltype == xltypeBool);
+    x = ob;
+    ensure(x == 0);
+    OPER12 oe(xlerr::NA);
+    ensure(oe.xltype == xltypeErr);
+    x = oe;
+    ensure(isnan(x));
 }
 
 void test_str()

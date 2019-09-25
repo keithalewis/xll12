@@ -66,7 +66,7 @@ xll_base(short b)
         h = h_.get();
     }
     catch (const std::exception& ex) {
-        ex.what();
+        XLL_ERROR(ex.what());
     }
 
     return h;

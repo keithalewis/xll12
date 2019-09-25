@@ -306,7 +306,7 @@ namespace xll {
             if (type() == xltypeBool)
                 return val.xbool;
             if (type() == xltypeErr)
-                return false;
+                return std::numeric_limits<double>::quiet_NaN();
 //            if (type() == xltypeStr)
 //                return val.str[0] != 0 && val.str[1] != 0;
 
