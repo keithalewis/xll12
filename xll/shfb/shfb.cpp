@@ -326,16 +326,18 @@ void make_shfb(const OPER& lib)
     CreateDirectory(dir, NULL);
 #endif // SHFB_DOCS
     //<Topic id = "d7e05719-f06e-4480-8f4a-e3ce3aeef4e0" visible = "True" / >
-
-    // Create documentation if it does not exist.
-    if (AddIn::KeyArgsMap.find(OPER(L"")) == AddIn::KeyArgsMap.end()) {
-        std::wstring base_help = std::wstring(L"The ") + base.toStr() + L" add-in.";
-        std::wstring base_doc = std::wstring(L"Documentation for the ") + base.toStr() + L" Excel add-in.";
-        xll::AddIn xai_base(xll::Document(base_help.c_str()).Documentation(base_doc.c_str()));
-    }
-
     //OPER s = L"={\"a\",1.2;\"b\", TRUE}";
     //OPER o = Excel(xlfEvaluate, s);
+
+    // Add top level documentation if missing.
+    if (AddIn::KeyArgsMap.find(base) == AddIn::KeyArgsMap.end()) {
+        Document doc(base.toStr().c_str());
+        std::wstring s = L"Documentation for the ";
+        s += base.toStr();
+        s += L" add-in.";
+        doc.Documentation(s);
+        AddIn::KeyArgsMap[base] = doc;
+    }
 
     xlfFile tp(dir & base & OPER(L"_shfb.shfbproj"));
     tp.write(template_shfbproj(base));
@@ -345,14 +347,12 @@ void make_shfb(const OPER& lib)
 
     xlfFile at(dir & OPER(L"alias.txt"));
     xlfFile mh(dir & OPER(L"map.h"));
+    
     for (const auto& [key, arg] : AddIn::KeyArgsMap) {
         if (!arg.Documentation().empty()) {
             if (arg.isDocument()) {
                 // Assumes only one documentation add-in per category.
                 OPER cat = arg.Category();
-                if (cat.size() == 0) {
-                    cat = base;
-                }
                 xlfFile fd(dir & cat & OPER(L".aml"));
                 fd.write(documentation_aml(arg, cat));
             }
