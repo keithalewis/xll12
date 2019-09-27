@@ -96,7 +96,11 @@ inline OPER find_last_of(const OPER& find, const OPER& within)
 {
     OPER off{ 0 };
 
-    while (auto next = Excel(xlfFind, find, within, OPER(off + 1))) {
+    while (true) {
+        const auto& next = Excel(xlfFind, find, within, OPER(off + 1));
+        if (!next.isNum()) {
+            break;
+        }
         off = next;
     }
 
@@ -345,16 +349,12 @@ void make_shfb(const OPER& lib)
         if (!arg.Documentation().empty()) {
             if (arg.isDocument()) {
                 // Assumes only one documentation add-in per category.
-                if (arg.Category().size() > 0) {
-                    const OPER& cat = arg.Category();
-                    xlfFile fd(dir & cat & OPER(L".aml"));
-                    fd.write(documentation_aml(arg, cat));
-
+                OPER cat = arg.Category();
+                if (cat.size() == 0) {
+                    cat = base;
                 }
-                else { // top level documentation
-                    xlfFile fd(dir & base & OPER(L".aml"));
-                    fd.write(documentation_aml(arg, base));
-                }
+                xlfFile fd(dir & cat & OPER(L".aml"));
+                fd.write(documentation_aml(arg, cat));
             }
             else if (arg.isFunction()) {
                 xlfFile fd(dir & key & OPER(L".aml"));

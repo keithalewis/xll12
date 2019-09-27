@@ -306,6 +306,12 @@ void test_bool()
 	ensure (b.val.xbool == 1);
 	ensure (b.val.xbool == TRUE);
 	ensure (b);
+    b = false;
+    ensure(b.xltype == xltypeBool);
+    ensure(!b.val.xbool);
+    ensure(b.val.xbool == 0);
+    ensure(b.val.xbool == FALSE);
+    ensure(!b);
 }
 void test_multi()
 {

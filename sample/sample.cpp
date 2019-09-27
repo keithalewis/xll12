@@ -4,13 +4,13 @@
 #include "../xll/shfb/entities.h"
 
 using namespace xll;
-
+/*
 AddIn xai_sample(
     Document(L"") // top level documentation
 	.Documentation(LR"(
 This object will generate a Sandcastle Helpfile Builder project file.
 )"));
-
+*/
 AddIn xal_sample_category(
     Document(L"The Example Category.")
     .Category(L"Example")

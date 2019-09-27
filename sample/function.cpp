@@ -21,7 +21,7 @@ double WINAPI xll_call_function(HANDLEX h, double arg)
 
 double foo(double x)
 {
-    return 2*x;
+    return 2 * x;
 }
 AddIn xai_foo_function(
     Function(XLL_HANDLE, L"?xll_foo_function", L"FOO.FUNCTION")
@@ -31,7 +31,7 @@ AddIn xai_foo_function(
 HANDLEX WINAPI xll_foo_function()
 {
 #pragma XLLEXPORT
-    xll::handle<std::function<double(double)>> h(new std::function{foo});
+    xll::handle<std::function<double(double)>> h(new std::function{ foo });
 
     return h.get();
 }
@@ -44,7 +44,7 @@ AddIn xai_foo_lambda(
 HANDLEX WINAPI xll_foo_lambda()
 {
 #pragma XLLEXPORT
-    xll::handle<std::function<double(double)>> h(new std::function{[](double x) { return 3*x; }});
+    xll::handle<std::function<double(double)>> h(new std::function{ [](double x) { return 3 * x; } });
 
     return h.get();
 }
@@ -54,7 +54,7 @@ struct Foo {
     Foo(double x) : x(x) {}
     double operator()(double y)
     {
-        return x*y;
+        return x * y;
     }
 };
 AddIn xai_foo_member(
@@ -65,8 +65,8 @@ AddIn xai_foo_member(
 HANDLEX WINAPI xll_foo_member()
 {
 #pragma XLLEXPORT
- 
-    xll::handle<std::function<double(double)>> h(new std::function{Foo(4)});
+
+    xll::handle<std::function<double(double)>> h(new std::function{ Foo(4) });
 
     return h.get();
 }
