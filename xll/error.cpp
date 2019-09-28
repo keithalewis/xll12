@@ -1,6 +1,6 @@
 #pragma warning(disable: 4996)
 #include <stdexcept>
-#include "error.h"
+#include "xll.h"
 
 namespace Reg {
 	class CreateKey {
@@ -75,6 +75,7 @@ public:
 	{
 		Reg::CreateKey key(HKEY_CURRENT_USER, TEXT("Software\\KALX\\xll"));
 		key[TEXT("xll_alert_level")] = level;
+        value = level;
 
 		return *this;
 	}
@@ -93,6 +94,29 @@ DWORD XLL_ALERT_LEVEL(DWORD level)
     return olevel;
 }
 
+static xll::AddIn xai_set_alert_level(
+    xll::Function(XLL_LONG, L"?xll_set_alert_level", L"XLL.SET.ALERT.LEVEL")
+    .Arg(XLL_LONG, L"level", L"is the alert level mask to set.")
+    .FunctionHelp(L"Set the current alert level using a mask having bits for ERROR(1), WARNING(2), and INFORMATION(4).")
+    .Category(L"XLL")
+);
+DWORD WINAPI xll_set_alert_level(DWORD w)
+{
+#pragma XLLEXPORT
+    xll_alert_level = w;
+
+    return xll_alert_level;
+}
+static xll::AddIn xai_get_alert_level(
+    xll::Function(XLL_LONG, L"?xll_get_alert_level", L"XLL.GET.ALERT.LEVEL")
+    .FunctionHelp(L"Get the current alert level mask having bits for ERROR(1), WARNING(2), and INFORMATION(4).")
+    .Category(L"XLL")
+);
+DWORD WINAPI xll_get_alert_level()
+{
+#pragma XLLEXPORT
+    return xll_alert_level;
+}
 int 
 XLL_ALERT(const char* text, const char* caption, DWORD level, UINT type, bool force)
 {

@@ -438,7 +438,7 @@ void test_fp()
 	a2.push_back(4.56);
 	ensure (a2.rows() == 1);
 	ensure (a2.columns() == 2);
-	ensure (a2[1] = 4.56);
+	ensure (a2[1] == 4.56);
 	ensure (a2(0,1) == 4.56);
 
 	a2.push_back({7, 8});
