@@ -1,7 +1,7 @@
 // handle.h - Handles to C++ objects
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
-//#include <memory>
+#include <memory>
 #include <set>
 #include <windows.h>
 #include "XLCALL.H"
@@ -33,14 +33,14 @@ namespace xll {
 	template<class T>
 	class handle {
         class set {
-            static inline std::map<HANDLEX, T*> handle_map;
+            static inline std::map<HANDLEX, std::unique_ptr<T>> handle_map;
         public:
             // Convert pointer to (small) number based on first allocation.
             static HANDLEX lookup(T* p)
             {
                 static T* base = nullptr;
                 if (base == nullptr) {
-                    base = 8 + p;
+                    base = -8 + p;
                 }
                 return static_cast<HANDLEX>(p - base);
             }
@@ -53,18 +53,18 @@ namespace xll {
                 if (oldh.isNum() && oldh.val.num != 0) {
                     auto i = handle_map.find(h);
                     if (i != handle_map.end()) {
-                        delete i->second;
+                        i->second.release();
                         handle_map.erase(i);
                     }
                 }
 
-                handle_map.insert(std::make_pair(h, p));
+                handle_map.insert(std::make_pair(h, std::unique_ptr<T>(p)));
             }
             static T* find(HANDLEX h)
             {
                 auto i = handle_map.find(h);
 
-                return i == handle_map.end() ? nullptr : i->second;
+                return i == handle_map.end() ? nullptr : i->second.get();
             }
         };
 		T* pt;
