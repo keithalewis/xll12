@@ -12,7 +12,7 @@ This object will generate a Sandcastle Helpfile Builder project file.
 )"));
 */
 AddIn xal_sample_category(
-    Document(L"The Example Category.")
+    Document(L"")
     .Category(L"Example")
     .Documentation(LR"(
 This object will generate documentation for the Example category.

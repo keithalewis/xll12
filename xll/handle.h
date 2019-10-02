@@ -33,20 +33,7 @@ namespace xll {
 	template<class T>
 	class handle {
         class set {
-            static std::map<HANDLEX,T*>& handle_map()
-            {
-                struct map_ {
-                    std::map<HANDLEX,T*> m;
-                    ~map_()
-                    {
-                        for (auto& p : m) 
-                            delete p.second;
-                    }
-                };
-                static map_ m;
-
-                return m.m;
-            }
+            static inline std::map<HANDLEX, T*> handle_map;
         public:
             // Convert pointer to (small) number based on first allocation.
             static HANDLEX lookup(T* p)
@@ -64,20 +51,20 @@ namespace xll {
                 // delete if old handle in cell points at something
                 OPER oldh = Excel(xlCoerce, Excel(xlfCaller));
                 if (oldh.isNum() && oldh.val.num != 0) {
-                    auto i = handle_map().find(h);
-                    if (i != handle_map().end()) {
+                    auto i = handle_map.find(h);
+                    if (i != handle_map.end()) {
                         delete i->second;
-                        handle_map().erase(i);
+                        handle_map.erase(i);
                     }
                 }
 
-                handle_map().insert(std::make_pair(h, p));
+                handle_map.insert(std::make_pair(h, p));
             }
             static T* find(HANDLEX h)
             {
-                auto i = handle_map().find(h);
+                auto i = handle_map.find(h);
 
-                return i == handle_map().end() ? nullptr : i->second;
+                return i == handle_map.end() ? nullptr : i->second;
             }
         };
 		T* pt;

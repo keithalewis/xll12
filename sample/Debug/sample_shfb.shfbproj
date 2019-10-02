@@ -90,14 +90,13 @@
   <ItemGroup>
     <None Include="sample.aml" />
     <None Include="sample.aml" />
-    <None Include="sample.aml" />
-    <None Include="sample.aml" />
     <None Include="XLL.BASE.aml" />
     <None Include="XLL.BASE.VALUE.aml" />
     <None Include="XLL.DERIVED.aml" />
     <None Include="XLL.DERIVED.VALUE2.aml" />
     <None Include="XLL.FUNCTION.aml" />
     <None Include="XLL.FUNCTION.ALIAS.aml" />
+    <None Include="sample.aml" />
     <None Include="Example.aml" />
     <None Include="XLL.aml" />
   </ItemGroup>

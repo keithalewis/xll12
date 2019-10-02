@@ -350,9 +350,6 @@ void make_shfb(const OPER& lib)
             if (arg.isDocument()) {
                 // Assumes only one documentation add-in per category.
                 OPER cat = arg.Category();
-                if (cat.size() == 0) {
-                    cat = base;
-                }
                 xlfFile fd(dir & cat & OPER(L".aml"));
                 fd.write(documentation_aml(arg, cat));
             }

@@ -68,6 +68,7 @@ namespace xll {
 			: args(1, ARG::ArgumentHelp)
 		{
 			std::fill(args.begin(), args.end(), OPER12(xltype::Nil));
+            args[ARG::MacroType] = OPER(-1); // default is document
 		}
 		Args(const Args&) = default;
 		Args& operator=(const Args&) = default;
