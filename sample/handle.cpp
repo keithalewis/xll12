@@ -4,7 +4,7 @@
 using namespace xll;
 
 AddIn xal_xll_category(
-    Document()
+    Document(L"XLL")
     .Category(L"XLL")
     .Documentation(LR"(
 This object will generate documentation for the XLL category.

@@ -414,9 +414,9 @@ namespace xll {
             }
 
             int hash = hash_string(key.val.str + 1, key.val.str[0]);
-            OPER Hash = OPER(static_cast<double>(hash));
+            std::wstring Hash = std::to_wstring(hash);
 
-            return Excel(xlfText, Hash, OPER(L"General"));
+            return OPER(Hash);
         }
 
         static OPER Guid(const OPER& key) 
