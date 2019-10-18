@@ -6,14 +6,15 @@
 using namespace xll;
 /*
 AddIn xai_sample(
-    Document(L"") // top level documentation
+    Document(L"Sample") // top level documentation
+    .Category(L"Sample category")
 	.Documentation(LR"(
 This object will generate a Sandcastle Helpfile Builder project file.
 )"));
 */
 AddIn xal_sample_category(
-    Document(L"")
-    .Category(L"Example")
+    Document(L"Example")
+    .Category(L"Example Category")
     .Documentation(LR"(
 This object will generate documentation for the Example category.
 )")

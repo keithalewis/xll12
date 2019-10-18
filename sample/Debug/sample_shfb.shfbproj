@@ -90,6 +90,7 @@
   <ItemGroup>
     <None Include="sample.aml" />
     <None Include="sample.aml" />
+    <None Include="sample.aml" />
     <None Include="XLL.BASE.aml" />
     <None Include="XLL.BASE.VALUE.aml" />
     <None Include="XLL.DERIVED.aml" />
