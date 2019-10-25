@@ -11,7 +11,7 @@ using HANDLEX = double;
 namespace xll {
 
 	// encode and decode handles to strings
-	{
+	namespace {
 		// uint4 -> char
 		inline char enc(uint8_t i)
 		{
