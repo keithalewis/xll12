@@ -10,6 +10,19 @@ using HANDLEX = double;
 
 namespace xll {
 
+	// encode and decode handles to strings
+	{
+		// uint4 -> char
+		inline char enc(uint8_t i)
+		{
+			return i <= 9 ? '0' + i : 'A' + i - 10;
+		}
+		inline uint8_t dec(char c)
+		{
+			return c <= '9' ? c - '0' : 10 + c - 'A';
+		}
+	}
+
 	// HANDLEX that defaults to NaN
 	class handlex {
 		HANDLEX h_;
