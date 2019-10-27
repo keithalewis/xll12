@@ -158,6 +158,11 @@ namespace xll {
 
 				// delete if old handle in cell points at something
 				OPER oldh = Excel(xlCoerce, Excel(xlfCaller));
+				if (oldh.isStr()) {
+					if (oldh.val.str[0] > 1 && oldh.val.str[1] == '^') {
+						oldh = decode(oldh.val.str);
+					}
+				}
 				if (oldh.isNum() && oldh.val.num != 0) {
 					auto i = handle_map.find(h);
 					if (i != handle_map.end()) {
