@@ -17,9 +17,10 @@ namespace xll {
 		{
 			return i <= 9 ? '0' + i : 'A' + i - 10;
 		}
-		inline uint8_t dec(char c)
+		template<class C>
+		inline uint8_t dec(C c)
 		{
-			return c <= '9' ? c - '0' : 10 + c - 'A';
+			return static_cast<uint8_t>(c <= '9' ? c - '0' : 10 + c - 'A');
 		}
 		// encode/decode pointers
 		inline void encode(uint32_t p, char* h)
@@ -39,7 +40,8 @@ namespace xll {
 			h[6] = enc(p_.u4[3] & 0xF);
 			h[7] = enc((p_.u4[3] & 0xF0) >> 4);
 		}
-		inline void decode(const char* h, uint32_t* pu)
+		template<class C>
+		inline void decode(const C* h, uint32_t* pu)
 		{
 			union {
 				uint32_t u;
@@ -66,7 +68,8 @@ namespace xll {
 			encode(p_.u2[0], h);
 			encode(p_.u2[1], h + 8);
 		}
-		inline void decode(const char* h, uint64_t* pu)
+		template<class C>
+		inline void decode(const C* h, uint64_t* pu)
 		{
 			union {
 				uint64_t u;
@@ -81,7 +84,8 @@ namespace xll {
 
 	}
 
-	inline HANDLEX decode(const char* h)
+	template<class C>
+	inline HANDLEX decode(const C* h)
 	{
 		if (h[1] == '^') {
 			if (h[0] == 9) {
@@ -98,7 +102,7 @@ namespace xll {
 			}
 		}
 
-		return std::numeric_limits<double>::quiet_NaN();
+		return 0;
 	}
 #ifdef _M_X64
 	inline void encode(HANDLEX h, char* buf)
