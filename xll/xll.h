@@ -27,4 +27,6 @@ extern HINSTANCE xll_Instance;
 #pragma comment(linker, "/include:" XLL_DECORATE("xll_make_shfb", 0))
 //#pragma comment(linker, "/include:" XLL_DECORATE("xll_get_workbook", 4))
 //#pragma comment(linker, "/include:" XLL_DECORATE("xll_get_workspace", 4))
+#pragma comment(linker, "/include:" XLL_DECORATE("xll_encode", 8))
+#pragma comment(linker, "/include:" XLL_DECORATE("xll_decode", 4))
 #endif // _LIB

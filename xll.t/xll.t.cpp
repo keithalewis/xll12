@@ -378,11 +378,57 @@ void test_int()
 }
 void test_handle()
 {
-	auto pi = new std::vector<int>();
-	handle<std::vector<int>> h(pi);
-	auto pi2 = h.ptr();
-	ensure (pi == pi2);
+	//auto pi = new std::vector<int>();
+	//handle<std::vector<int>> h(pi);
+	//auto pi2 = h.ptr();
+	//ensure (pi == pi2);
 	//delete pi;
+	ensure('0' == enc(0));
+	ensure('9' == enc(9));
+	ensure('A' == enc(10));
+	ensure('F' == enc(15));
+
+	ensure(0 == dec('0'));
+	ensure(9 == dec('9'));
+	ensure(10 == dec('A'));
+	ensure(15 == dec('F'));
+
+	uint32_t p = 0x0123ABCD;
+	char buf[8];
+	encode(p, buf);
+	ensure(0 == strncmp(buf, "DCBA3210", 8));
+	uint32_t q;
+	decode(buf, &q);
+	ensure (p == q);
+
+	uint64_t p2 = 0x0123ABCDDCAB3210ul;
+	char buf2[16];
+	encode(p2, buf2);
+	ensure(0 == strncmp(buf2, "0123BACDDCBA3210", 16));
+	uint64_t q2;
+	decode(buf2, &q2);
+	ensure(p2 == q2);
+	{
+#ifdef _M_X64
+		char buf3[18];
+		HANDLEX h3 = 12345678;
+		encode(h3, buf3);
+		ensure(buf3[0] == 17);
+		ensure(buf3[1] == '^');
+		HANDLEX k3;
+		k3 = decode(buf3);
+		ensure(h3 == k3);
+#else
+		char buf1[10];
+		HANDLEX h = 12345678;
+		encode(h, buf1);
+		ensure(buf1[0] == 9);
+		ensure(buf1[1] == '^');
+		HANDLEX k;
+		k = decode(buf1);
+		ensure(h == k);
+#endif
+	}
 }
 
 void test_arity()
@@ -484,7 +530,7 @@ int main()
 	test_bool();
 	test_multi();
 	test_int();
-//    test_handle();
+    test_handle();
 //    test_base_derived();
 	test_arity();
 	test_fp();

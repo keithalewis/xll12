@@ -104,6 +104,9 @@
     <ClCompile Include="xll\shfb\shfb.cpp">
       <Filter>shfb</Filter>
     </ClCompile>
+    <ClCompile Include="xll\handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Visualizers\oper.natvis">

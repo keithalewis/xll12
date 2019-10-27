@@ -95,7 +95,7 @@ DWORD XLL_ALERT_LEVEL(DWORD level)
 }
 
 static xll::AddIn xai_set_alert_level(
-    xll::Function(XLL_LONG, L"?xll_set_alert_level", L"XLL.SET.ALERT.LEVEL")
+    xll::Function(XLL_LONG, L"?xll_set_alert_level", L"XLL.ALERT.LEVEL.SET")
     .Arg(XLL_LONG, L"level", L"is the alert level mask to set.")
     .FunctionHelp(L"Set the current alert level using a mask having bits for ERROR(1), WARNING(2), and INFORMATION(4).")
     .Category(L"XLL")
@@ -108,7 +108,7 @@ DWORD WINAPI xll_set_alert_level(DWORD w)
     return xll_alert_level;
 }
 static xll::AddIn xai_get_alert_level(
-    xll::Function(XLL_LONG, L"?xll_get_alert_level", L"XLL.GET.ALERT.LEVEL")
+    xll::Function(XLL_LONG, L"?xll_get_alert_level", L"XLL.ALERT.LEVEL.GET")
     .FunctionHelp(L"Get the current alert level mask having bits for ERROR(1), WARNING(2), and INFORMATION(4).")
     .Category(L"XLL")
 );
