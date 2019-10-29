@@ -1,7 +1,7 @@
 #include "xll.h"
 
 using namespace xll;
-
+#if 0
 static AddIn xai_encode(
 	Function(XLL_PSTRING, XLL_DECORATE(L"xll_encode", 8), L"ENCODE")
 	.Arg(XLL_HANDLE, L"handle", L"is a handle.")
@@ -30,3 +30,4 @@ HANDLEX WINAPI xll_decode(const wchar_t* str)
 //#pragma XLLEXPORT
 	return decode(str);
 }
+#endif // 0

@@ -9,7 +9,7 @@
 using HANDLEX = double;
 
 namespace xll {
-
+#if 0
 	// encode and decode handles to strings
 	namespace {
 		// uint4 -> char
@@ -123,7 +123,7 @@ namespace xll {
 		encode(u, buf + 2);
 	}
 #endif
-
+#endif
 	// HANDLEX that defaults to NaN
 	class handlex {
 		HANDLEX h_;
@@ -164,11 +164,13 @@ namespace xll {
 
 				// delete if old handle in cell points at something
 				OPER oldh = Excel(xlCoerce, Excel(xlfCaller));
+				/*
 				if (oldh.isStr()) {
 					if (oldh.val.str[0] > 1 && oldh.val.str[1] == '^') {
 						oldh = decode(oldh.val.str);
 					}
 				}
+				*/
 				if (oldh.isNum() && oldh.val.num != 0) {
 					auto i = handle_map.find(h);
 					if (i != handle_map.end()) {

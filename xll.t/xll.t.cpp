@@ -376,6 +376,7 @@ void test_int()
 		ensure (o.val.w == 1);
 	}
 }
+#if 0
 void test_handle()
 {
 	//auto pi = new std::vector<int>();
@@ -441,7 +442,7 @@ void test_handle()
 #endif
 	}
 }
-
+#endif // 0
 void test_arity()
 {
 	Args args(XLL_DOUBLE, L"?proc", L"Proc");
@@ -541,7 +542,7 @@ int main()
 	test_bool();
 	test_multi();
 	test_int();
-    test_handle();
+//    test_handle();
 //    test_base_derived();
 	test_arity();
 	test_fp();
