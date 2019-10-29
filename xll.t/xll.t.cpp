@@ -400,12 +400,23 @@ void test_handle()
 	uint32_t q;
 	decode(buf, &q);
 	ensure (p == q);
+	
+	wchar_t wbuf[8];
+	encode(p, wbuf);
+	ensure(0 == wcsncmp(wbuf, L"DCBA3210", 8));
+	decode(wbuf, &q);
 
 	uint64_t p2 = 0x0123ABCDDCAB3210ul;
 	char buf2[16];
 	encode(p2, buf2);
 	ensure(0 == strncmp(buf2, "0123BACDDCBA3210", 16));
 	uint64_t q2;
+	decode(buf2, &q2);
+	ensure(p2 == q2);
+
+	wchar_t wbuf2[16];
+	encode(p2, wbuf2);
+	ensure(0 == wcsncmp(wbuf2, L"0123BACDDCBA3210", 16));
 	decode(buf2, &q2);
 	ensure(p2 == q2);
 	{

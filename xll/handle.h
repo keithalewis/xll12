@@ -23,7 +23,8 @@ namespace xll {
 			return static_cast<uint8_t>(c <= '9' ? c - '0' : 10 + c - 'A');
 		}
 		// encode/decode pointers
-		inline void encode(uint32_t p, char* h)
+		template<class C>
+		inline void encode(uint32_t p, C* h)
 		{
 			union {
 				uint32_t u;
@@ -57,7 +58,8 @@ namespace xll {
 		}
 
 		// encode/decode pointers
-		inline void encode(uint64_t p, char* h)
+		template<class C>
+		inline void encode(uint64_t p, C* h)
 		{
 			union {
 				uint64_t u;
