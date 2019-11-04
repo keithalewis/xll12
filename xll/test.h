@@ -3,6 +3,7 @@
 #pragma once
 #include <exception>
 #include <functional>
+#include "test.h"
 
 namespace xll {
 	// Run a function on construction.
@@ -13,10 +14,10 @@ namespace xll {
                 f();
             }
             catch (const std::exception& ex) {
-                MessageBoxA(0, ex.what(), "Failed", MB_OK);
+                XLL_ERROR(ex.what());
             }
             catch (...) {
-                MessageBoxA(0, "Unknown exception in xll::test", "Failed", MB_OK);
+                XLL_ERROR("Unknown exception in xll::test");
             }
         }
     };

@@ -401,6 +401,10 @@ namespace xll {
         }
         OPER12& operator&=(const OPER12& o)
         {
+            if (o.xltype & (xltypeMissing | xltypeNil)) {
+                return *this;
+            }
+
             ensure(o.xltype & xltypeStr);
             return append(o.val.str + 1, o.val.str[0]);
         }

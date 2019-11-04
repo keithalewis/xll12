@@ -4,15 +4,16 @@
 #include "../xll/shfb/entities.h"
 
 using namespace xll;
-/*
+
 AddIn xai_sample(
-    Document(L"") // top level documentation
+    Document(L"sample") // top level documentation
+    .Category(L"sample")
 	.Documentation(LR"(
 This object will generate a Sandcastle Helpfile Builder project file.
 )"));
-*/
+
 AddIn xal_sample_category(
-    Document(L"The Example Category.")
+    Document(L"Example")
     .Category(L"Example")
     .Documentation(LR"(
 This object will generate documentation for the Example category.
