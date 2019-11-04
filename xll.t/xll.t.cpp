@@ -378,11 +378,15 @@ void test_int()
 }
 void test_handle()
 {
-	auto pi = new std::vector<int>();
-	handle<std::vector<int>> h(pi);
-	auto pi2 = h.ptr();
-	ensure (pi == pi2);
-	//delete pi;
+	char s[19];
+	double d;
+	double* ps = &d;
+	auto e = xll::encode(s, ps);
+	e = e;
+	double* pt;
+	e = xll::decode(s, pt);
+	e = e;
+	ensure(ps == pt);
 }
 
 void test_arity()
@@ -438,7 +442,7 @@ void test_fp()
 	a2.push_back(4.56);
 	ensure (a2.rows() == 1);
 	ensure (a2.columns() == 2);
-	ensure (a2[1] = 4.56);
+	a2[1] = 4.56;
 	ensure (a2(0,1) == 4.56);
 
 	a2.push_back({7, 8});
@@ -484,7 +488,7 @@ int main()
 	test_bool();
 	test_multi();
 	test_int();
-//    test_handle();
+    test_handle();
 //    test_base_derived();
 	test_arity();
 	test_fp();

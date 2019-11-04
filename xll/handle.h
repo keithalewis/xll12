@@ -1,7 +1,8 @@
 // handle.h - Handles to C++ objects
 // Copyright (c) KALX, LLC. All rights reserved. No warranty made.
 #pragma once
-//#include <memory>
+#include <charconv>
+#include <memory>
 #include <set>
 #include <windows.h>
 #include "XLCALL.H"
@@ -9,7 +10,37 @@
 using HANDLEX = double;
 
 namespace xll {
+    
+    // Convert to counted hexadecimal string
+    template<class T>
+	inline auto encode(char* s, const T* p)
+	{
+		/*__declspec(align(64))*/ union {
+			const T* p;
+			uint64_t u;
+		} u;
+		
+		u.p = p;
+		auto [t, err] = std::to_chars(s + 1, s + 17, u.u, 16);
+		s[0] = static_cast<char>(t - s - 1);
 
+		return err;
+	}
+	// convert from counted hexadecimal string
+	template<class T>
+	inline auto decode(const char* s, T*& p)
+	{
+		/*__declspec(align(64))*/ union {
+			T* p;
+			uint64_t u;
+		} u;
+
+		auto [q, err] = std::from_chars(s + 1, s + 1 + s[0], u.u, 16);
+		p = u.p;
+
+		return err;
+	}
+	
 	// HANDLEX that defaults to NaN
 	class handlex {
 		HANDLEX h_;
