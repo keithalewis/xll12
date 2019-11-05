@@ -379,14 +379,14 @@ void test_int()
 void test_handle()
 {
 	char s[19];
-	double d;
-	double* ps = &d;
-	auto e = xll::encode(s, ps);
+	double d = 1234;
+	int64_t u = static_cast<int64_t>(d);
+	auto e = xll::encode(s, u);
 	e = e;
-	double* pt;
-	e = xll::decode(s, pt);
+	int64_t v;;
+	e = xll::decode(s, v);
 	e = e;
-	ensure(ps == pt);
+	ensure(u == v);
 }
 
 void test_arity()
