@@ -383,7 +383,7 @@ void test_handle()
 	int64_t u = static_cast<int64_t>(d);
 	auto e = xll::encode(s, u);
 	e = e;
-	int64_t v;;
+	int64_t v;
 	e = xll::decode(s, v);
 	e = e;
 	ensure(u == v);
