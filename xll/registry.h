@@ -44,6 +44,18 @@ namespace Reg {
 
 				return key;
 			}
+			operator DWORD() const
+			{
+				DWORD dword, size = sizeof(DWORD);
+
+				LSTATUS status = RegGetValue(key, 0, value, RRF_RT_REG_DWORD, 0, &dword, &size);
+				if (ERROR_SUCCESS != status)
+				{
+					throw std::runtime_error("RegGetValue failed");
+				}
+
+				return dword;
+			}
 			// operator=(string) etc
 		};
 		Proxy operator[](PCTSTR value)

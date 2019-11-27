@@ -100,6 +100,25 @@ XLL_INFO(const char* e, bool force)
 }
 
 #ifdef _DEBUG
+
+struct test_dword {
+	Reg::CreateKey key;
+	test_dword()
+		: key(HKEY_CURRENT_USER, TEXT("tmp\\key"))
+	{
+		key[TEXT("foo")] = 123;
+		DWORD dw;
+		dw = key[TEXT("foo")];
+		if (dw != 123) {
+			MessageBox(0, L"dword failed", L"Error", MB_OK);
+		}
+	}
+	~test_dword()
+	{
+		RegDeleteKey(key, TEXT("tmp\\key"));
+	}
+};
+test_dword test_dword_{};
 #if 0
 struct test_registry {
     Reg::Key key;
