@@ -50,7 +50,7 @@
     <RootNamespaceContainer>False</RootNamespaceContainer>
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
-    <NamingMethod>Guid</NamingMethod>
+    <NamingMethod>MemberName</NamingMethod>
     <HelpTitle>The {{Base}} add-in library</HelpTitle>
     {{FeedbackEMailAddress}}
     <ContentPlacement>AboveNamespaces</ContentPlacement>
