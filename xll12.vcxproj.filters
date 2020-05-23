@@ -131,8 +131,10 @@
     <None Include="xll\shfb\Function.aml">
       <Filter>shfb</Filter>
     </None>
+    <None Include="portfile.cmake" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
+    <Text Include="CONTROL" />
   </ItemGroup>
 </Project>

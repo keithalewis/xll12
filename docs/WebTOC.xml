@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpTOC>
+
+  <HelpTOCNode Id="d7766569-f598-4191-a18f-139dced52bbc" Title="The xll12 Library" Url="html/2caaad8a-aada-4863-b318-4a77177320a6.htm">
+    <HelpTOCNode Title="Quick Start" Url="html/d7e05719-f06e-4480-8f4a-e3ce3aeef4e0.htm" />
+    <HelpTOCNode Title="Example" Url="html/1ca4c146-05e0-4c23-83af-81e46d7fea68.htm" />
+    <HelpTOCNode Title="The Life of an xll" Url="html/1ec286b2-14da-4e95-bce6-abb47f589578.htm" />
+    <HelpTOCNode Id="4b41238b-ddce-45e0-9938-889ee05cb243" Title="Reference" Url="html/33c94631-5dc8-4fac-bd60-40ac43616b90.htm">
+      <HelpTOCNode Title="AddIn" Url="html/aeab2827-2092-45be-8c56-5acb8d1646d3.htm" />
+      <HelpTOCNode Title="FUNCTION" Url="html/24b26f21-6447-4b47-bcc0-434d8a0bc506.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+</HelpTOC>
