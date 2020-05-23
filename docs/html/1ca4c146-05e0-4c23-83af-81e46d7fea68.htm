@@ -1,0 +1,130 @@
+﻿<html><head><meta http-equiv="X-UA-Compatible" content="IE=edge" /><link rel="shortcut icon" href="../icons/favicon.ico" /><link rel="stylesheet" type="text/css" href="../styles/branding.css" /><link rel="stylesheet" type="text/css" href="../styles/branding-en-US.css" /><script type="text/javascript" src="../scripts/branding.js"> </script><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Example</title><meta name="Language" content="en-us" /><meta name="Microsoft.Help.Id" content="1ca4c146-05e0-4c23-83af-81e46d7fea68" /><meta name="Description" content="Below is a complete example of how to call the sqrt function from the &lt;cmath&gt; standard library." /><meta name="Microsoft.Help.ContentType" content="Samples" /><meta name="BrandingAware" content="true" /><link type="text/css" rel="stylesheet" href="../styles/highlight.css" /><script type="text/javascript" src="../scripts/highlight.js"> </script><link rel="stylesheet" type="text/css" href="../styles/branding-Website.css" /><script type="text/javascript" src="../scripts/jquery-3.3.1.min.js"></script><script type="text/javascript" src="../scripts/branding-Website.js"></script><script type="text/javascript" src="../scripts/clipboard.min.js"></script></head><body onload="OnLoad('cs')"><input type="hidden" id="userDataCache" class="userDataStyle" /><div class="pageHeader" id="PageHeader">The xll12 add-in library<form id="SearchForm" method="get" action="#" onsubmit="javascript:TransferToSearchPage(); return false;"><input id="SearchTextBox" type="text" maxlength="200" /><button id="SearchButton" type="submit"></button></form></div><div class="pageBody"><div class="leftNav" id="leftNav"><div id="tocNav"><div class="toclevel0" data-toclevel="0"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="../html/2caaad8a-aada-4863-b318-4a77177320a6.htm" title="The xll12 add-in library" tocid="roottoc">The xll12 add-in library</a></div><div class="toclevel1" data-toclevel="1" data-childrenloaded="true"><a class="tocExpanded" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="../html/2caaad8a-aada-4863-b318-4a77177320a6.htm" title="The xll12 Library" tocid="2caaad8a-aada-4863-b318-4a77177320a6">The xll12 Library</a></div><div class="toclevel2" data-toclevel="2"><a data-tochassubtree="false" href="../html/d7e05719-f06e-4480-8f4a-e3ce3aeef4e0.htm" title="Quick Start" tocid="d7e05719-f06e-4480-8f4a-e3ce3aeef4e0">Quick Start</a></div><div class="toclevel2 current" data-toclevel="2"><a data-tochassubtree="false" href="../html/1ca4c146-05e0-4c23-83af-81e46d7fea68.htm" title="Example" tocid="1ca4c146-05e0-4c23-83af-81e46d7fea68">Example</a></div><div class="toclevel2" data-toclevel="2"><a data-tochassubtree="false" href="../html/1ec286b2-14da-4e95-bce6-abb47f589578.htm" title="The Life of an xll" tocid="1ec286b2-14da-4e95-bce6-abb47f589578">The Life of an xll</a></div><div class="toclevel2" data-toclevel="2"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="../html/33c94631-5dc8-4fac-bd60-40ac43616b90.htm" title="Reference" tocid="33c94631-5dc8-4fac-bd60-40ac43616b90">Reference</a></div></div><div id="tocResizableEW" onmousedown="OnMouseDown(event);"></div><div id="TocResize" class="tocResize"><img id="ResizeImageIncrease" src="../icons/TocOpen.gif" onclick="OnIncreaseToc()" alt="Click or drag to resize" title="Click or drag to resize" /><img id="ResizeImageReset" src="../icons/TocClose.gif" style="display:none" onclick="OnResetToc()" alt="Click or drag to resize" title="Click or drag to resize" /></div></div><div class="topicContent" id="TopicContent"><table class="titleTable"><tr><td class="titleColumn"><h1>Example</h1></td></tr></table><span class="introStyle"></span> <div class="introduction"><p>
+        Below is a complete example of how to call the <span class="code">sqrt</span>
+        function from the <span class="code">&lt;cmath&gt;</span> standard library.
+      </p></div><div class="collapsibleAreaRegion"><span class="collapsibleRegionTitle" onclick="SectionExpandCollapse('ID1RB')" onkeypress="SectionExpandCollapse_CheckKey('ID1RB', event)" tabindex="0"><img id="ID1RBToggle" class="collapseToggle" src="../icons/SectionExpanded.png" />Example</span></div><div id="ID1RBSection" class="collapsibleSection"><div class="codeSnippetContainer"><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetToolBar"><div class="codeSnippetToolBarText"><a id="ID0EAADAAA_copyCode" href="#" class="copyCodeSnippet" onclick="javascript:CopyToClipboard('ID0EAADAAA');return false;" title="Copy">Copy</a></div></div><div id="ID0EAADAAA_code_Div1" class="codeSnippetContainerCode" style="display: block"><pre xml:space="preserve"><span class="highlight-lineno"> 1</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// sample.cpp - Simple example of using AddIn.</span>
+<span class="highlight-lineno"> 2</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-preprocessor">#include</span> &lt;cmath&gt;
+<span class="highlight-lineno"> 3</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-preprocessor">#include</span> <span class="highlight-literal">"../xll/xll.h"</span>
+<span class="highlight-lineno"> 4</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-preprocessor">#include</span> <span class="highlight-literal">"../xll/shfb/entities.h"</span>
+<span class="highlight-lineno"> 5</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno"> 6</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">using</span> <span class="highlight-keyword">namespace</span> xll;
+<span class="highlight-lineno"> 7</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno"> 8</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>AddIn xai_sample(
+<span class="highlight-lineno"> 9</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    Document(L<span class="highlight-literal">"sample"</span>) <span class="highlight-comment">// top level documentation</span>
+<span class="highlight-lineno">10</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Documentation(LR"(
+<span class="highlight-lineno">11</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>This <span class="highlight-keyword">object</span> will generate a Sandcastle Helpfile Builder project file.
+<span class="highlight-lineno">12</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>)"));
+<span class="highlight-lineno">13</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">14</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>AddIn xal_sample_category(
+<span class="highlight-lineno">15</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    Document(L<span class="highlight-literal">"Example"</span>)
+<span class="highlight-lineno">16</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Documentation(LR"(
+<span class="highlight-lineno">17</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>This <span class="highlight-keyword">object</span> will generate documentation <span class="highlight-keyword">for</span> the Example category.
+<span class="highlight-lineno">18</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>)")
+<span class="highlight-lineno">19</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>);
+<span class="highlight-lineno">20</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">21</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Information Excel needs to register add-in.</span>
+<span class="highlight-lineno">22</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>AddIn xai_function(
+<span class="highlight-lineno">23</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">// Function returning a pointer to an OPER with C++ name xll_function and Excel name XLL.FUNCTION.</span>
+<span class="highlight-lineno">24</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">// Don't forget prepend a question mark to the C++ name.</span>
+<span class="highlight-lineno">25</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">//                     |</span>
+<span class="highlight-lineno">26</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">//                     v</span>
+<span class="highlight-lineno">27</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    Function(XLL_LPOPER, L<span class="highlight-literal">"?xll_function"</span>, L<span class="highlight-literal">"XLL.FUNCTION"</span>)
+<span class="highlight-lineno">28</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">// First argument is a double called x with an argument description and default value of 2</span>
+<span class="highlight-lineno">29</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Arg(XLL_DOUBLE, L<span class="highlight-literal">"x"</span>, L<span class="highlight-literal">"is the first double argument."</span>, L<span class="highlight-literal">"2"</span>)
+<span class="highlight-lineno">30</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">// Paste function category.</span>
+<span class="highlight-lineno">31</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Category(L<span class="highlight-literal">"Example"</span>)
+<span class="highlight-lineno">32</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">// Insert Function description.</span>
+<span class="highlight-lineno">33</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .FunctionHelp(L<span class="highlight-literal">"Help on XLL.FUNCTION goes here."</span>)
+<span class="highlight-lineno">34</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">// Create entry for this function in Sandcastle Help File Builder project file.</span>
+<span class="highlight-lineno">35</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Alias(L<span class="highlight-literal">"XLL.FUNCTION.ALIAS"</span>) <span class="highlight-comment">// alternate name</span>
+<span class="highlight-lineno">36</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Documentation(
+<span class="highlight-lineno">37</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        PARA_(
+<span class="highlight-lineno">38</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>            L<span class="highlight-literal">"Free-form documentation for "</span> C_(L<span class="highlight-literal">"XLL.FUNCTION"</span>) L<span class="highlight-literal">" goes here."</span>
+<span class="highlight-lineno">39</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        )
+<span class="highlight-lineno">40</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        PARA_(L<span class="highlight-literal">"But you can include MAML directives."</span>)
+<span class="highlight-lineno">41</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        PARA_(L<span class="highlight-literal">"This is "</span> B_(L<span class="highlight-literal">"bold"</span>) <span class="highlight-literal">" and so is "</span> B_(<span class="highlight-literal">"this"</span>))
+<span class="highlight-lineno">42</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        PARA_(L<span class="highlight-literal">"Math: "</span> MATH_(int_ SUB_(minus_ infin_) SUP_(infin_) L<span class="highlight-literal">"e"</span> SUP_(L<span class="highlight-literal">"x"</span> sup2_ L<span class="highlight-literal">"/2"</span>) L<span class="highlight-literal">" dx"</span>))
+<span class="highlight-lineno">43</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    )
+<span class="highlight-lineno">44</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Remarks(
+<span class="highlight-lineno">45</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        L<span class="highlight-literal">"This is a remark. "</span>
+<span class="highlight-lineno">46</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        L<span class="highlight-literal">"This is "</span> B_(L<span class="highlight-literal">"bold"</span>) L<span class="highlight-literal">" and this is "</span> I_(L<span class="highlight-literal">"italic"</span>)
+<span class="highlight-lineno">47</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        PARA_(L<span class="highlight-literal">"This is a paragraph."</span>)
+<span class="highlight-lineno">48</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    )
+<span class="highlight-lineno">49</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    .Examples(LR"(
+<span class="highlight-lineno">50</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>This <span class="highlight-keyword">is</span> an example.
+<span class="highlight-lineno">51</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>&lt;/para&gt;&lt;para&gt;
+<span class="highlight-lineno">52</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>It has two paragraphs.
+<span class="highlight-lineno">53</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>)")
+<span class="highlight-lineno">54</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>);
+<span class="highlight-lineno">55</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Calling convention *must* be WINAPI (aka __stdcall) for Excel.</span>
+<span class="highlight-lineno">56</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>LPOPER WINAPI xll_function(<span class="highlight-keyword">double</span> x)
+<span class="highlight-lineno">57</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>{
+<span class="highlight-lineno">58</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">// Be sure to export your function.</span>
+<span class="highlight-lineno">59</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-preprocessor">#pragma</span> XLLEXPORT
+<span class="highlight-lineno">60</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-keyword">static</span> OPER result;
+<span class="highlight-lineno">61</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">62</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-keyword">try</span> {
+<span class="highlight-lineno">63</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        ensure(x &gt;= <span class="highlight-number">0</span>);
+<span class="highlight-lineno">64</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        result = sqrt(x); <span class="highlight-comment">// OPER's act like Excel cells.</span>
+<span class="highlight-lineno">65</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    }
+<span class="highlight-lineno">66</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-keyword">catch</span> (<span class="highlight-keyword">const</span> std::exception&amp; ex) {
+<span class="highlight-lineno">67</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        XLL_ERROR(ex.what());
+<span class="highlight-lineno">68</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">69</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        result = OPER(xlerr::Num);
+<span class="highlight-lineno">70</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    }
+<span class="highlight-lineno">71</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">72</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-keyword">return</span> &amp;result;
+<span class="highlight-lineno">73</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>}</pre></div></div></div><script type="text/javascript">AddLanguageTabSet("ID0EAADAAA");</script></div><div class="collapsibleAreaRegion" id="Section1"><span class="collapsibleRegionTitle" onclick="SectionExpandCollapse('ID2RB')" onkeypress="SectionExpandCollapse_CheckKey('ID2RB', event)" tabindex="0"><img id="ID2RBToggle" class="collapseToggle" src="../icons/SectionExpanded.png" />Walkthrough</span></div><div id="ID2RBSection" class="collapsibleSection"><p>
+          Let's go through it line by line.
+        </p><p>
+          Line 2 pulls in everything you need to create an Excel add-in.
+        </p><p>
+          Line 4 saves you the trouble of typing <span class="code">xll::</span>
+            in front of the names of things.
+        </p><p>
+          Line 6 is where the real action starts. When your add-in is opened
+          in Excel, this object gets constructed. It tells Excel everything
+          it needs to know to call your code, and let's you supply information
+          to people that need to understand what your code does.
+        </p><p>
+          Line 7 is where you create a <span class="code">Function</span>.
+          The function returns a <span class="code">double</span>,
+          calls the C++ function <span class="code">xll_double</span>
+          when you enter <span class="code">=XLL.DOUBLE</span> in Excel.
+        </p><p>
+          You can specify the arguments your function takes using the
+          <a href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Named_Parameter" target="_blank">named parameter idiom</a>.
+
+          Line 8 indicates the first argument is a 64-bit floating point number. In the function
+          wizard it will be called "x" and the individual argument help will be
+          "is the number to double." These strings can be anything, so use your imagination
+          to come up with something that your users will find helpful.
+        </p><p>
+          Line 9 is a short description of what your functions does and 
+          line 10 specifies the category to use in the Function Wizard.
+        </p><p>Notice how the AddIn arguments appear in the Function Wizard:</p><div class="mediaNear"><artLink target="FunctionWizard" /></div><p>
+          Line 12 says the function returns a <span class="code">double</span>,
+            uses an old-fashioned
+            <a href="https://docs.microsoft.com/en-us/cpp/cpp/calling-conventions?view=vs-2017" target="_blank">calling convention</a>
+            , and begins the definition of the C++ function Excel will call.
+          Be sure to put <span class="code">WINAPI</span> between the return
+          type and the function name. If you forget there will be no warning and your
+          code will mysteriously fail at random times.
+        </p><p>
+          Unlike Unix, Windows does not export functions from shared libraries by default. Line 14
+          does that for you. Unlike <span class="code">WINAPI</span>, if you forget this you will be warned.
+        </p><p>
+          Since we are returning a pointer to an <span class="code">OPER</span> we need to make sure
+          what it is pointing at sticks around after the function returns. Line 15 declares the <span class="code">OPER</span>
+          to be <span class="code">static</span> so the pointer being returned in line 22 isn't pointing at garbage.
+        </p><p>
+          If you know something about C++ you might find line 18 confusing. C++ is strongly typed but
+          you are assigning a double to an <span class="code">OPER</span>. You can also assign a string
+          and a <span class="code">bool</span> to an <span class="code">OPER</span> and the right thing happens.
+        </p></div></div></div><div id="pageFooter" class="pageFooter"><p>Copyright © KALX, LLC</p><div class="feedbackLink">Send comments on this topic to
+        <a id="HT_MailLink" href="mailto:info%40kalx.net?Subject=The%20xll12%20add-in%20library">info@kalx.net</a></div>
+        <script type="text/javascript">
+        var HT_mailLink = document.getElementById("HT_MailLink");
+        var HT_mailLinkText = HT_mailLink.innerHTML;
+        HT_mailLink.href += ": " + document.title + "\u0026body=" + encodeURIComponent("Your feedback is used to improve the documentation and the product. Your e-mail address will not be used for any other purpose and is disposed of after the issue you report is resolved. While working to resolve the issue that you report, you may be contacted via e-mail to get further details or clarification on the feedback you sent. After the issue you report has been addressed, you may receive an e-mail to let you know that your feedback has been addressed.");
+        HT_mailLink.innerHTML = HT_mailLinkText;
+        </script></div></body></html>
