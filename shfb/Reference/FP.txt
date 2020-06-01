@@ -1,0 +1,75 @@
+<p>
+    If you want to do high-performance numerical computation in Excel, you will need
+    to use the <a href="http://xll.codeplex.com/SourceControl/changeset/view/8657#134555">
+        <code>FP</code></a> data type. It is a two dimensional array of double precision
+    floating point numbers defined by Microsoft as follows.</p>
+<div style="color: black; background-color: white;">
+    <pre><span style="color: blue;">typedef</span> <span style="color: blue;">struct</span> _FP
+{
+    <span style="color: blue;">unsigned</span> <span style="color: blue;">short</span> <span
+        style="color: blue;">int</span> rows;
+    <span style="color: blue;">unsigned</span> <span style="color: blue;">short</span> <span
+        style="color: blue;">int</span> columns;
+    <span style="color: blue;">double</span> <span style="color: blue;">array</span>[1];        <span
+        style="color: green;">/* Actually, array[rows][columns] */</span>
+} FP;
+</pre>
+</div>
+<p>
+    The funny looking one element array is what Dennis Ritchie deemed "<a href="http://c-faq.com/struct/structhack.html"
+        target="_blank">unwarranted chumminess with the compiler</a>." Our wrapper class
+    (also called <span class="codeInline">FP</span>, but in the <span class="codeInline">
+        xll</span> namespace) uses <a href="http://en.wikipedia.org/wiki/Placement_syntax"
+            target="_blank">placement new</a> to make an honest C++ citizen out of this
+    gimmick.</p>
+<div style="color: black; background-color: white;">
+    <pre>xll::FP a;
+assert (a.is_empty());
+assert (a.size() == 0);
+
+xll::FP b(2, 3);
+assert (b.rows() == 2 &amp;&amp; b.columns() == 3);
+b[3] = 4; <span style="color: green;">// 1-d index</span>
+assert (b(1, 0) == 4); <span style="color: green;">// 2-d index</span>
+
+b.reshape(3,2);
+assert (b.rows() == 3 &amp;&amp; b.columns() == 2);
+assert (b[3] == 4);
+assert (b(1, 1) == 4);
+
+std::sort(b.begin(), b.end()); <span style="color: green;">// STL friendly</span>
+</pre>
+</div>
+<p>
+    Of course Excel knows nothing about this data type so when you get an array passed
+    in from Excel you should declare it as either <span class="codeInline">_FP</span>
+    or <span class="codeInline">::FP</span>, but not <span class="codeInline">xll::FP</span>.</p>
+<div style="color: black; background-color: white;">
+    <pre><span style="color: blue;">static</span> AddIn xai_array_unique(
+	<span style="color: #a31515;">"?xll_array_unique"</span>, XLL_FP XLL_FP,
+	<span style="color: #a31515;">"ARRAY.UNIQUE"</span>, <span style="color: #a31515;">"Array"</span>,
+	<span style="color: #a31515;">"STL"</span>, <span style="color: #a31515;">"Remove consecutive
+        duplicates from Array."</span>
+);
+_FP* WINAPI
+xll_array_unique(<span style="color: blue;">const</span> _FP* pa)
+{
+<span style="color: blue;">#pragma</span> XLLEXPORT
+	<span style="color: blue;">static</span> xll::FP a;
+
+	a = *pa;
+	<span style="color: blue;">double</span>* pe = std::unique(a.begin(), a.end());
+	a.reshape(<span style="color: blue;">static_cast</span>&lt;WORD&gt;(pe - a.begin()), 1);
+
+	<span style="color: blue;">return</span> a.get();
+}
+</pre>
+</div>
+<p>
+    It is a good idea to declare pointers passed in from Excel as <span class="codeInline">
+        const</span> so the compiler will prevent you from stepping on Excel's memory
+    territory. Note that your <span class="codeInline">xll::FP</span> is declared <span
+        class="codeInline">static</span> because <span class="codeInline">operator&amp;()</span>
+    returns a pointer to a <span class="codeInline">_FP</span> and that needs to exist
+    after the function call returns so Excel has a chance to copy the array back to
+    its territory.</p>

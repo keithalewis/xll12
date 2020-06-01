@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<topic id="aeab2827-2092-45be-8c56-5acb8d1646d3" revisionNumber="1">
+<topic id="b5028b09-95f9-4d1a-a524-cb3095cfc0e0" revisionNumber="1">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <summary>
-      <para>Register Add-In Function</para>
+      <para>The <codeInline>FP12</codeInline> data type is used for two-dimensional floating point arrays.</para>
     </summary>
     <introduction>
       <!-- Uncomment this to generate an outline of the section and sub-section
@@ -11,35 +11,40 @@
            zero (0) to limit it to top-level sections only.  -->
       <!-- <autoOutline /> -->
       <para>
-        <codeInline>AddIn</codeInline> object stores The C function name (<codeInline>Procedure</codeInline>),
-        the C signature (<codeInline>TypeText</codeInline> - a character string specifying the return type
-        and C function argument types),
-        the name Excel uses for your function (<codeInline>FunctionText</codeInline>),
-        and the argument prompt (<codeInline>ArgumentText</codeInline>) that shows up after you type the function name and type Ctrl-Shift-A.
-        You can also specify the category (<codeInline>Category</codeInline>) and help text
-        (<codeInline>FunctionHelp</codeInline>) used in the Function Wizard.
-        This information is supplied to
-          <externalLink>
-          <linkText>
-            xlfRegister
-          </linkText>
-          <linkUri>http://msdn.microsoft.com/en-us/library/bb687900.aspx</linkUri>
-        </externalLink>
-        when <codeInline>xlAutoOpen</codeInline> is called by Excel.
-        </para>
-      <para>
-        There is more than one way to create <codeInline>AddIn</codeInline> objects. The simplest way is to specify the information Excel needs directly:
-      </para>
+      If you want to do high-performance numerical computation in Excel, you will need
+    to use the 
+        <codeInline>FP12</codeInline> data type. It is a two dimensional array of double precision
+    floating point numbers defined by Microsoft as follows.
+    <codeReference>FP#struct</codeReference>
+    The array of floating point numbers is not copied when supplied as an argument to a function,
+    it is a pointer to memory managed by Excel. Both VB and C# add-ins copy the data out
+    of Excel, and copy the data back in to Excel if used as a return value.
+    </para>
     </introduction>
     <!-- Add one or more top-level section elements.  These are collapsible.
          If using <autoOutline />, add an address attribute to identify it
          and specify a title so that it can be jumped to with a hyperlink. -->
     <section address="Section1">
-      <title>Optional section title</title>
+      <title><codeInline>xll::FP12</codeInline> class</title>
       <content>
         <!-- Uncomment this to create a sub-section outline
         <autoOutline /> -->
-        <para>Add one or more sections with content</para>
+        <para>
+        This class provides a wrapper around the vanilla struct modeled after
+        <codeInline>std::vector</codeInline> from the C++ standard library.
+        <codeReference>FP#usage</codeReference>
+        </para>
+        <para>
+         Of course Excel knows nothing about the C++ class so when you get an array passed
+    in from Excel you should declare it as either <codeInline>_FP12</codeInline>
+    or <codeInline>::FP12</codeInline>, but not <codeInline>xll::FP</codeInline>.
+    Likewise when you return this data type.
+        </para>
+        <para>
+        Here is an example of calling <codeInline>std::unique</codeInline> from the
+        C++ standard library.
+        <codeReference>FP#unique</codeReference>
+        </para>
       </content>
       <!-- If a section contains a sections element, its content creates
            sub-sections.  These are not collapsible.
@@ -81,9 +86,9 @@
       <link xlink:href="00e97994-e9e6-46e0-b420-5be86b2f8278">Some other topic</link>
 
       <externalLink>
-          <linkText>SHFB on CodePlex</linkText>
-          <linkAlternateText>Go to CodePlex</linkAlternateText>
-          <linkUri>http://shfb.codeplex.com</linkUri>
+          <linkText>SHFB on GitHub</linkText>
+          <linkAlternateText>Go to GitHub</linkAlternateText>
+          <linkUri>https://GitHub.com/EWSoftware/SHFB</linkUri>
       </externalLink>
 
       <codeEntityReference>T:TestDoc.TestClass</codeEntityReference>

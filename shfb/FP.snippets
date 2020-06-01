@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- This is an example code snippets file -->
+<examples>
+  <item id="FP#struct">
+    <sampleCode language="cpp">
+typedef struct _FP12
+{
+    int rows;
+    int columns;
+    double array[1];        /* Actually, array[rows][columns] */
+} FP12;
+    </sampleCode>
+  </item>
+  
+  <item id="FP#usage">
+    <sampleCode language="cpp">
+xll::FP a;
+assert (a.is_empty());
+assert (a.size() == 0);
+
+xll::FP b(2, 3);
+assert (b.rows() == 2 &amp;&amp; b.columns() == 3);
+b[3] = 4; // 1-d index
+assert (b(1, 0) == 4); // 2-d index
+
+b.reshape(3,2);
+assert (b.rows() == 3 &amp;&amp; b.columns() == 2);
+assert (b[3] == 4);
+assert (b(1, 1) == 4);
+
+std::sort(b.begin(), b.end()); // STL friendly
+    </sampleCode>
+  </item>
+  
+  <item id="FP#unique">
+    <sampleCode language="cpp">
+AddIn xai_array_unique(
+	Function(XLL_FP, L"?xll_array_unique", L"ARRAY.UNIQUE")
+	.Arg(XLL_FP, L"Array", L"is an array of numbers.")
+	.Category(L"STL")
+	.FunctionHelp(L"Remove consecutive duplicates from Array.")
+);
+_FP12* WINAPI
+xll_array_unique(const _FP12* pa)
+{
+#pragma XLLEXPORT
+	static xll::FP12 a; // static so a.get() exists after return
+
+	a = *pa; // copy to a
+	double* pe = std::unique(a.begin(), a.end());
+	a.reshape(pe - a.begin(), 1);
+	
+	return a.get(); // pointer to underlying FP12 data type
+}
+	</sampleCode>
+  </item></examples>
+

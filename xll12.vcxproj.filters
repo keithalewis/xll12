@@ -135,6 +135,7 @@
       <Filter>shfb</Filter>
     </None>
     <None Include="portfile.cmake" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

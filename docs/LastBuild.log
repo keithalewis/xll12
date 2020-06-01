@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder and Tools" version="2019.9.15.0" projectFile="C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\doc.shfbproj" started="4/9/2020 9:51:24 PM">
+<shfbBuild product="Sandcastle Help File Builder and Tools" version="2020.3.6.0" projectFile="C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\doc.shfbproj" started="6/1/2020 1:28:08 AM">
 <buildStep step="Initializing">
 Finding tools...
 The Sandcastle tools are located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\&#39;
@@ -12,11 +12,11 @@ Locating components in the following folder(s):
 Using framework reflection data for &#39;.NET Framework 4.0&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Data\.NETFramework&#39;
 Using presentation style &#39;VS2013&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013&#39;
 Loading and initializing plug-ins...
-Additional Content Only Version 2019.9.15.0
-Copyright &#169; 2006-2019, Eric Woodruff, All Rights Reserved
+Additional Content Only Version 2020.3.6.0
+Copyright &#169; 2006-2020, Eric Woodruff, All Rights Reserved
     This build will only include additional content items.
-Lightweight Website Style Version 2019.9.15.0
-Copyright &#169; 2006-2019, Eric Woodruff, All Rights Reserved
+Lightweight Website Style Version 2020.3.6.0
+Copyright &#169; 2006-2020, Eric Woodruff, All Rights Reserved
 Portions Copyright &#169; 2014, Sam Harwell, All Rights Reserved
 -------------------------------
 Clearing any prior web/markdown output...
@@ -28,7 +28,7 @@ Validating and copying documentation source information
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
 <plugIn name="Lightweight Website Style" behavior="After" priority="1000">
-</plugIn>    Last step completed in 00:00:00.1351
+</plugIn>    Last step completed in 00:00:00.0180
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
@@ -38,23 +38,24 @@ Generating API filter for MRefBuilder...
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
 <plugIn name="Additional Content Only" behavior="InsteadOf" priority="1000">
-</plugIn>    Last step completed in 00:00:00.0180
+</plugIn>    Last step completed in 00:00:00.0120
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
 <plugIn name="Additional Content Only" behavior="InsteadOf" priority="1000">
-</plugIn>    Last step completed in 00:00:00.0050
+</plugIn>    Last step completed in 00:00:00.0010
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
 <plugIn name="Additional Content Only" behavior="InsteadOf" priority="1000">
-</plugIn>    Last step completed in 00:00:00.0413
+</plugIn>    Last step completed in 00:00:00.0070
 </buildStep>
 <buildStep step="CopyConceptualContent">
 Copying conceptual content...
 Copying standard token shared content file...
 Checking for other token files...
 Checking for code snippets files...
+    Found C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\FP.snippets
 Copying images and creating the media map file...
 Generating conceptual topic files
     Parsing topic file &#39;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\The xll12 Library.aml&#39;
@@ -69,73 +70,74 @@ Generating conceptual topic files
     C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Reference\Reference.aml -&gt; C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\ddueXml\33c94631-5dc8-4fac-bd60-40ac43616b90.xml
     Parsing topic file &#39;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Reference\AddIn.aml&#39;
     C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Reference\AddIn.aml -&gt; C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\ddueXml\aeab2827-2092-45be-8c56-5acb8d1646d3.xml
+    Parsing topic file &#39;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Reference\FP12.aml&#39;
+    C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Reference\FP12.aml -&gt; C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\ddueXml\b5028b09-95f9-4d1a-a524-cb3095cfc0e0.xml
     Parsing topic file &#39;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Reference\FUNCTION.aml&#39;
     C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Reference\FUNCTION.aml -&gt; C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\ddueXml\24b26f21-6447-4b47-bcc0-434d8a0bc506.xml
-    Last step completed in 00:00:00.2291
+    Last step completed in 00:00:00.1167
 </buildStep>
 <buildStep step="CreateConceptualTopicConfigs">
 Creating conceptual topic configuration files...
     Companion files
     _ContentMetadata_.xml
     Merging topic IDs into manifest.xml
-    Last step completed in 00:00:00.2017
+    Last step completed in 00:00:00.0598
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
 No additional content to copy
-    Last step completed in 00:00:00.0060
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="MergeTablesOfContents">
 Merging conceptual and additional tables of contents...
-    Last step completed in 00:00:00.0060
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
 [C:\Program Files (x86)\MSBuild\14.0\bin\amd64\MSBuild.exe - GenerateIntermediateTOC.proj]
-Build started 4/9/2020 9:51:28 PM.
+Build started 6/1/2020 1:28:10 AM.
 Project &quot;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\GenerateIntermediateTOC.proj&quot; on node 1 (default targets).
 GenerateIntermediateTOC:
-  XslTransform (v2019.9.15.0)
-  Copyright c 2006-2019, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2019, Eric Woodruff, All Rights Reserved.
+  XslTransform (v2020.3.6.0)
+  Copyright c 2006-2020, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2020, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\ProductionTransforms\CreateVSToc.xsl&#39;.
 Done Building Project &quot;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\GenerateIntermediateTOC.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.36
+Time Elapsed 00:00:01.37
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.7348
+    Last step completed in 00:00:01.9416
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.6742
+    Last step completed in 00:00:00.3137
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
 C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\sandcastle.config
   Updating reference topic configurations.
   Updating conceptual topic configurations.
-    Removing unused ExampleComponent.
 <plugIn name="Additional Content Only" behavior="After" priority="1000">
-</plugIn>    Last step completed in 00:00:00.1277
+</plugIn>    Last step completed in 00:00:00.1147
 </buildStep>
 <buildStep step="BuildTopics">
 Building help topics...
 [C:\Program Files (x86)\MSBuild\14.0\bin\amd64\MSBuild.exe - BuildTopics.proj]
-Build started 4/9/2020 9:51:29 PM.
+Build started 6/1/2020 1:28:12 AM.
 Project &quot;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\BuildTopics.proj&quot; on node 1 (default targets).
 BuildTopics:
-  BuildAssembler (v2019.9.15.0)
-  Copyright c 2006-2019, Microsoft Corporation, All Rights Reserved.
-  Portions Copyright c 2006-2019, Eric Woodruff, All Rights Reserved.
+  BuildAssembler (v2020.3.6.0)
+  Copyright c 2006-2020, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2020, Eric Woodruff, All Rights Reserved.
   Loading configuration...
   ResolveReferenceLinksComponent: The member ID URL cache &#39;C:\Users\kal\AppData\Local\EWSoftware\Sandcastle Help File Builder\Cache\MemberIdUrl.cache&#39; does not exist yet.  All IDs will be looked up in this build which will slow it down.
   Processing topics...
 BuildAssembler : warning : ResolveArtLinksComponent: [1ca4c146-05e0-4c23-83af-81e46d7fea68] Unknown art target &#39;FunctionWizard&#39; [C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveArtLinksComponent: [1ca4c146-05e0-4c23-83af-81e46d7fea68] Unknown art target &#39;FunctionWizard&#39; [C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\BuildTopics.proj]
-  Processed 7 topic(s)
+  Processed 8 topic(s)
   2 warning(s)
   CopyFromIndexComponent: &quot;metadata&quot; in-memory cache entries used: 1 of 15.
   ResolveArtLinksComponent: Copying media files...
@@ -144,34 +146,34 @@ Done Building Project &quot;C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Hel
 
 Build succeeded.
 
-Time Elapsed 00:00:05.47
-    Last step completed in 00:00:05.6884
+Time Elapsed 00:00:04.42
+    Last step completed in 00:00:04.8794
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
-    Last step completed in 00:00:00.0199
+    Last step completed in 00:00:00.0070
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
 [C:\Program Files (x86)\MSBuild\14.0\bin\amd64\MSBuild.exe - ExtractHtmlInfo.proj]
-Sandcastle Help File Builder and Tools, version 2019.9.15.0
-Copyright c 2006-2019, Eric Woodruff, All Rights Reserved
+Sandcastle Help File Builder and Tools, version 2020.3.6.0
+Copyright c 2006-2020, Eric Woodruff, All Rights Reserved
 E-Mail: Eric@EWoodruff.us
 
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\Output\HtmlHelp1
-Processed 7 HTML files
+Processed 8 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\xll12.hhk
 Saving HTML Help 1 table of contents to C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\xll12.hhc
 
 Processing website files in C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\Output\Website
-Processed 7 HTML files
+Processed 8 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\WebKI.xml
 Saving website table of contents to C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\WebTOC.xml
-    Last step completed in 00:00:00.6959
+    Last step completed in 00:00:01.3169
 </buildStep>
 <buildStep step="CopyStandardHelpContent">
 Copying standard help content...
@@ -315,7 +317,7 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\Web\scripts\branding-Website.js -&gt; C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\Output\Website\scripts\branding-Website.js
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\Web\scripts\clipboard.min.js -&gt; C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\Output\Website\scripts\clipboard.min.js
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\Web\scripts\jquery-3.3.1.min.js -&gt; C:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\Output\Website\scripts\jquery-3.3.1.min.js
-    Last step completed in 00:00:02.3953
+    Last step completed in 00:00:01.4233
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -327,7 +329,7 @@ Generating HTML Help 1 index file...
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0269
+    Last step completed in 00:00:00.0083
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -344,11 +346,11 @@ Compiling HTML Help 1 file...
   
   Compile time: 0 minutes, 0 seconds
   
-  9	Topics
+  10	Topics
   
-  16	Local links
+  18	Local links
   
-  1	Internet link
+  2	Internet links
   
   0	Graphics
   
@@ -356,36 +358,36 @@ Compiling HTML Help 1 file...
   
   
   
-  Created c:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\Output\HtmlHelp1\xll12.chm, 62,142 bytes
+  Created c:\Users\kal\Source\Repos\keithalewis\xll12\shfb\Help\Working\Output\HtmlHelp1\xll12.chm, 64,980 bytes
   
-  Compression decreased file by 78,664 bytes.
+  Compression decreased file by 84,328 bytes.
   
-    Last step completed in 00:00:01.5981
+    Last step completed in 00:00:02.1316
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
-    Last step completed in 00:00:00.0020
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
 <plugIn name="Lightweight Website Style" behavior="After" priority="1000">
 Adding lightweight search and TOC elements to each topic...
-</plugIn>    Last step completed in 00:00:00.7064
+</plugIn>    Last step completed in 00:00:00.4814
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
 
-Copied 116 files for the website content
-    Last step completed in 00:00:00.8416
+Copied 117 files for the website content
+    Last step completed in 00:00:00.9563
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:00.0757
+    Last step completed in 00:00:00.0708
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 4/9/2020 9:51:41 PM.  Total time: 00:00:17.2789
+Build completed successfully at 6/1/2020 1:28:23 AM.  Total time: 00:00:15.0461
 
 </buildStep>
 </shfbBuild>

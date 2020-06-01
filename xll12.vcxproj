@@ -228,6 +228,7 @@
   <ItemGroup>
     <None Include="LICENSE.md" />
     <None Include="portfile.cmake" />
+    <None Include="README.md" />
     <None Include="xll12.bat" />
     <None Include="xll\shfb\Content Layout.content">
       <SubType>Designer</SubType>

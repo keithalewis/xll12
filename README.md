@@ -2,6 +2,7 @@
 
 This library makes it easy to create Excel add-ins for
 versions of Excel 12 or greater. See
+http://keithalewis.github.io/xll12/ for documentation and
 [xlltemplate](https://github.com/keithalewis/xlltemplate) to get started.
 
 In order to hook up Excel [Help on this function]() to your Sandcastle Help File Builder documentation you must run `shfb.bat` in the `xll12` folder.
