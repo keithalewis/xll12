@@ -1,0 +1,64 @@
+﻿<html><head><meta http-equiv="X-UA-Compatible" content="IE=edge" /><link rel="shortcut icon" href="../icons/favicon.ico" /><link rel="stylesheet" type="text/css" href="../styles/branding.css" /><link rel="stylesheet" type="text/css" href="../styles/branding-en-US.css" /><script type="text/javascript" src="../scripts/branding.js"> </script><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>FP12</title><meta name="Language" content="en-us" /><meta name="Microsoft.Help.Id" content="b5028b09-95f9-4d1a-a524-cb3095cfc0e0" /><meta name="Description" content="The FP12 data type is used for two-dimensional floating point arrays." /><meta name="Microsoft.Help.ContentType" content="Concepts" /><meta name="BrandingAware" content="true" /><link rel="stylesheet" type="text/css" href="../styles/branding-Website.css" /><script type="text/javascript" src="../scripts/jquery-3.3.1.min.js"></script><script type="text/javascript" src="../scripts/branding-Website.js"></script><script type="text/javascript" src="../scripts/clipboard.min.js"></script></head><body onload="OnLoad('cs')"><input type="hidden" id="userDataCache" class="userDataStyle" /><div class="pageHeader" id="PageHeader">The xll12 add-in library<form id="SearchForm" method="get" action="#" onsubmit="javascript:TransferToSearchPage(); return false;"><input id="SearchTextBox" type="text" maxlength="200" /><button id="SearchButton" type="submit"></button></form></div><div class="pageBody"><div class="leftNav" id="leftNav"><div id="tocNav"><div class="toclevel0" data-toclevel="0"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="../html/2caaad8a-aada-4863-b318-4a77177320a6.htm" title="The xll12 add-in library" tocid="roottoc">The xll12 add-in library</a></div><div class="toclevel0" data-toclevel="0"><a class="tocCollapsed" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="../html/2caaad8a-aada-4863-b318-4a77177320a6.htm" title="The xll12 Library" tocid="2caaad8a-aada-4863-b318-4a77177320a6">The xll12 Library</a></div><div class="toclevel1" data-toclevel="1" data-childrenloaded="true"><a class="tocExpanded" onclick="javascript: Toggle(this);" href="#!" /><a data-tochassubtree="true" href="../html/33c94631-5dc8-4fac-bd60-40ac43616b90.htm" title="Reference" tocid="33c94631-5dc8-4fac-bd60-40ac43616b90">Reference</a></div><div class="toclevel2" data-toclevel="2"><a data-tochassubtree="false" href="../html/aeab2827-2092-45be-8c56-5acb8d1646d3.htm" title="AddIn" tocid="aeab2827-2092-45be-8c56-5acb8d1646d3">AddIn</a></div><div class="toclevel2 current" data-toclevel="2"><a data-tochassubtree="false" href="../html/b5028b09-95f9-4d1a-a524-cb3095cfc0e0.htm" title="FP12" tocid="b5028b09-95f9-4d1a-a524-cb3095cfc0e0">FP12</a></div><div class="toclevel2" data-toclevel="2"><a data-tochassubtree="false" href="../html/24b26f21-6447-4b47-bcc0-434d8a0bc506.htm" title="FUNCTION" tocid="24b26f21-6447-4b47-bcc0-434d8a0bc506">FUNCTION</a></div></div><div id="tocResizableEW" onmousedown="OnMouseDown(event);"></div><div id="TocResize" class="tocResize"><img id="ResizeImageIncrease" src="../icons/TocOpen.gif" onclick="OnIncreaseToc()" alt="Click or drag to resize" title="Click or drag to resize" /><img id="ResizeImageReset" src="../icons/TocClose.gif" style="display:none" onclick="OnResetToc()" alt="Click or drag to resize" title="Click or drag to resize" /></div></div><div class="topicContent" id="TopicContent"><table class="titleTable"><tr><td class="titleColumn"><h1>FP12</h1></td></tr></table><span class="introStyle"></span> <div class="summary"><p>The <span class="code">FP12</span> data type is used for two-dimensional floating point arrays.</p></div><div class="introduction"><p>
+      If you want to do high-performance numerical computation in Excel, you will need
+    to use the 
+        <span class="code">FP12</span> data type. It is a two dimensional array of double precision
+    floating point numbers defined by Microsoft as follows.
+    <div class="codeSnippetContainer"><div class="codeSnippetContainerTabs"><div id="ID0EAABADAAA_tab1" class="codeSnippetContainerTabSingle">C++</div></div><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetToolBar"><div class="codeSnippetToolBarText"><a id="ID0EAABADAAA_copyCode" href="#" class="copyCodeSnippet" onclick="javascript:CopyToClipboard('ID0EAABADAAA');return false;" title="Copy">Copy</a></div></div><div id="ID0EAABADAAA_code_Div1" class="codeSnippetContainerCode" style="display: block"><pre xml:space="preserve">typedef struct _FP12
+{
+    int rows;
+    int columns;
+    double array[1];        /* Actually, array[rows][columns] */
+} FP12;</pre></div></div></div><script type="text/javascript">AddLanguageTabSet("ID0EAABADAAA");</script>
+    The array of floating point numbers is not copied when supplied as an argument to a function,
+    it is a pointer to memory managed by Excel. Both VB and C# add-ins copy the data out
+    of Excel, and copy the data back in to Excel if used as a return value.
+    </p></div><div class="collapsibleAreaRegion" id="Section1"><span class="collapsibleRegionTitle" onclick="SectionExpandCollapse('ID1RB')" onkeypress="SectionExpandCollapse_CheckKey('ID1RB', event)" tabindex="0"><img id="ID1RBToggle" class="collapseToggle" src="../icons/SectionExpanded.png" /><span class="code">xll::FP12</span> class</span></div><div id="ID1RBSection" class="collapsibleSection"><p>
+        This class provides a wrapper around the vanilla struct modeled after
+        <span class="code">std::vector</span> from the C++ standard library.
+        <div class="codeSnippetContainer"><div class="codeSnippetContainerTabs"><div id="ID0EAAACBBAAA_tab1" class="codeSnippetContainerTabSingle">C++</div></div><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetToolBar"><div class="codeSnippetToolBarText"><a id="ID0EAAACBBAAA_copyCode" href="#" class="copyCodeSnippet" onclick="javascript:CopyToClipboard('ID0EAAACBBAAA');return false;" title="Copy">Copy</a></div></div><div id="ID0EAAACBBAAA_code_Div1" class="codeSnippetContainerCode" style="display: block"><pre xml:space="preserve">xll::FP a;
+assert (a.is_empty());
+assert (a.size() == 0);
+
+xll::FP b(2, 3);
+assert (b.rows() == 2 &amp;&amp; b.columns() == 3);
+b[3] = 4; // 1-d index
+assert (b(1, 0) == 4); // 2-d index
+
+b.reshape(3,2);
+assert (b.rows() == 3 &amp;&amp; b.columns() == 2);
+assert (b[3] == 4);
+assert (b(1, 1) == 4);
+
+std::sort(b.begin(), b.end()); // STL friendly</pre></div></div></div><script type="text/javascript">AddLanguageTabSet("ID0EAAACBBAAA");</script></p><p>
+         Of course Excel knows nothing about the C++ class so when you get an array passed
+    in from Excel you should declare it as either <span class="code">_FP12</span>
+    or <span class="code">::FP12</span>, but not <span class="code">xll::FP</span>.
+    Likewise when you return this data type.
+        </p><p>
+        Here is an example of calling <span class="code">std::unique</span> from the
+        C++ standard library.
+        <div class="codeSnippetContainer"><div class="codeSnippetContainerTabs"><div id="ID0EAAAABBAAA_tab1" class="codeSnippetContainerTabSingle">C++</div></div><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetToolBar"><div class="codeSnippetToolBarText"><a id="ID0EAAAABBAAA_copyCode" href="#" class="copyCodeSnippet" onclick="javascript:CopyToClipboard('ID0EAAAABBAAA');return false;" title="Copy">Copy</a></div></div><div id="ID0EAAAABBAAA_code_Div1" class="codeSnippetContainerCode" style="display: block"><pre xml:space="preserve">AddIn xai_array_unique(
+	Function(XLL_FP, L"?xll_array_unique", L"ARRAY.UNIQUE")
+	.Arg(XLL_FP, L"Array", L"is an array of numbers.")
+	.Category(L"STL")
+	.FunctionHelp(L"Remove consecutive duplicates from Array.")
+);
+_FP12* WINAPI
+xll_array_unique(const _FP12* pa)
+{
+#pragma XLLEXPORT
+	static xll::FP12 a; // static so a.get() exists after return
+
+	a = *pa; // copy to a
+	double* pe = std::unique(a.begin(), a.end());
+	a.reshape(pe - a.begin(), 1);
+	
+	return a.get(); // pointer to underlying FP12 data type
+}</pre></div></div></div><script type="text/javascript">AddLanguageTabSet("ID0EAAAABBAAA");</script></p></div></div></div><div id="pageFooter" class="pageFooter"><p>Copyright © KALX, LLC</p><div class="feedbackLink">Send comments on this topic to
+        <a id="HT_MailLink" href="mailto:info%40kalx.net?Subject=The%20xll12%20add-in%20library">info@kalx.net</a></div>
+        <script type="text/javascript">
+        var HT_mailLink = document.getElementById("HT_MailLink");
+        var HT_mailLinkText = HT_mailLink.innerHTML;
+        HT_mailLink.href += ": " + document.title + "\u0026body=" + encodeURIComponent("Your feedback is used to improve the documentation and the product. Your e-mail address will not be used for any other purpose and is disposed of after the issue you report is resolved. While working to resolve the issue that you report, you may be contacted via e-mail to get further details or clarification on the feedback you sent. After the issue you report has been addressed, you may receive an e-mail to let you know that your feedback has been addressed.");
+        HT_mailLink.innerHTML = HT_mailLinkText;
+        </script></div></body></html>
