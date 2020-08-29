@@ -1,5 +1,10 @@
 # xll12
 
+## News Flash!
+
+A new version of this library is available at [xlladdins/xll](https://github.com/xlladdins/xll).
+See [xlladdins.com](https://xlladdins.com) for more informaton.
+
 This library makes it easy to create Excel add-ins for
 versions of Excel 12 or greater. See
 http://keithalewis.github.io/xll12/ for documentation and
